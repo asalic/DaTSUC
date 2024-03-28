@@ -16,15 +16,15 @@ interface PaginationFooterProps {
 function PaginationFooter({skip, limit, total, onSkipChange}: PaginationFooterProps) {
     const onClickPg = useCallback((pg: number) => {
         onSkipChange(limit * (pg - 1));
-    }, [skip, limit]);
+    }, [skip, limit, onSkipChange]);
 
     const onClickPrevious = useCallback(() => {
         onSkipChange(skip - limit);
-    }, [skip, limit]);
+    }, [skip, limit, onSkipChange]);
 
     const onClickNext = useCallback(() => {
         onSkipChange(skip + limit);
-    }, [skip, limit]);
+    }, [skip, limit, onSkipChange]);
 
     
     let items = [];
