@@ -3,11 +3,13 @@ import { Spinner } from 'react-bootstrap';
 
 interface LoadingViewProps {
 
-  what: string;
+  what?: string;
+  fullMessage?: string;
 }
 
 function LoadingView(props: LoadingViewProps) {
-  return <div style={{width: "parent", wordBreak: "break-all"}}><Spinner animation="border" className="me-2"/>Loading { props.what }. Please wait...</div>
+  const msg = props.fullMessage ?? `Loading ${props.what}. Please wait...`;
+  return <div style={{width: "parent", wordBreak: "break-all"}}><Spinner size="sm" animation="border" className="me-2"/><i>{msg}</i></div>
 }
 
 export default LoadingView;
