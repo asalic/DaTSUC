@@ -115,6 +115,12 @@ function App({keycloakReady}: AppProps) {
                           postMessage={postMessage} dataManager={dataManager} activeTab={DatasetView.TAB_ACCESS_HISTORY}/>} />
                     <Route path="/datasets/:datasetId/access/dlg-app-dashboard" 
                       element={getDSV({...opt, tab: DatasetView.TAB_HISTORY, sdo: DatasetView.SHOW_DLG_APP_DASHBOARD })} />
+
+                    <Route path="/datasets/:datasetId/acl" 
+                      element={<DatasetView showDialog={showDialog} keycloakReady={keycloakReady} 
+                          postMessage={postMessage} dataManager={dataManager} activeTab={DatasetView.TAB_ACL}/>} />
+                    <Route path="/datasets/:datasetId/acl/dlg-app-dashboard" 
+                      element={getDSV({...opt, tab: DatasetView.TAB_ACL, sdo: DatasetView.SHOW_DLG_APP_DASHBOARD })} />
                     
                     <Route path="*" element={
                         <main style={{ padding: "1rem" }}>

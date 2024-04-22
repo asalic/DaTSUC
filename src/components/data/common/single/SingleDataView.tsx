@@ -20,6 +20,7 @@ import Dataset from "../../model/Dataset";
 import LoadingError from "../../model/LoadingError";
 import LoadingData from "../../model/LoadingData";
 import AccessHistoryView from "./access/AccessHistoryView";
+import AccessControlList from "./acl/AccessControlList";
 
 const KUBE_APPS_CLUSTER = "default";
 
@@ -28,6 +29,7 @@ DatasetView.TAB_DETAILS = "details";
 DatasetView.TAB_STUDIES = "studies";
 DatasetView.TAB_HISTORY = "history";
 DatasetView.TAB_ACCESS_HISTORY = "access";
+DatasetView.TAB_ACL = "acl";
 //DatasetView.TAB_DASHBOARD = "dashboard";
 
 DatasetView.SHOW_DLG_APP_DASHBOARD = "dlg-app-dashboard"
@@ -412,6 +414,12 @@ function SingleDataView(props: SingleDataViewProps) {
                           </Nav.Item>)
                       : (<Fragment />)
                   }
+                  {keycloak.authenticated && allValues.data?.["allowedActionsForTheUser"].includes("manageACL") ?
+                     (<Nav.Item key="acl-nav" title="The access control list for current dataset">
+                            <Nav.Link eventKey="acl">ACL</Nav.Link>
+                          </Nav.Item>)
+                      : (<Fragment />)
+                  }
               </Nav>
 
             </Col>
@@ -436,6 +444,11 @@ function SingleDataView(props: SingleDataViewProps) {
                     (<Tab.Pane eventKey="access" key="access-pane" >
                       <AccessHistoryView datasetId={datasetId} keycloakReady={props.keycloakReady} postMessage={props.postMessage} dataManager={props.dataManager}/>
                      </Tab.Pane>)
+                  : (<Fragment />)}
+                {keycloak.authenticated && allValues.data?.["allowedActionsForTheUser"].includes("manageACL") ?
+                    (<Tab.Pane eventKey="acl" key="acl-pane" >
+                      <AccessControlList datasetId={datasetId} dataset={allValues.data} keycloakReady={props.keycloakReady} postMessage={props.postMessage} dataManager={props.dataManager}/>
+                      </Tab.Pane>)
                   : (<Fragment />)}
               </Tab.Content>
             </Col>

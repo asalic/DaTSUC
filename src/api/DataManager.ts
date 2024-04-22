@@ -42,4 +42,17 @@ export default class DataManager {
   getProjects(token:  string | null | undefined): Promise<XMLHttpRequest> {
     return WebClient.getProjects(token);
   }
+
+  getAcl(token:  string, datasetId: string): Promise<XMLHttpRequest> {
+    return WebClient.getAcl(token, datasetId);
+  }
+
+  putAcl(token:  string, datasetId: string, username: string): Promise<XMLHttpRequest> {
+    return WebClient.updateAcl(token, datasetId, username, "PUT");
+  }
+
+  deleteAcl(token:  string, datasetId: string, username: string): Promise<XMLHttpRequest> {
+    return WebClient.updateAcl(token, datasetId, username, "DELETE");
+  }
+
 }
