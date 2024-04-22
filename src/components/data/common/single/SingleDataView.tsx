@@ -7,14 +7,14 @@ import { EnvelopeFill } from 'react-bootstrap-icons';
 import DatasetDetailsView from "./details/DatasetDetailsView";
 import DatasetHistoryView from "./history/DatasetHistoryView";
 import DatasetStudiesView from "./studies/DatasetStudiesView";
-import Message from "../../model/Message";
-import Breadcrumbs from "../Breadcrumbs";
+import Message from "../../../../model/Message";
+import Breadcrumbs from "../../common/Breadcrumbs";
 import UnauthorizedView from "../UnauthorizedView";
 import ResourceNotFoundView from "../ResourceNotFoundView";
 import DatasetFieldEdit from "./common/DatasetFieldEdit";
 import Util from "../../Util";
 import Config from "../../config.json";
-import Dialog from "../Dialog";
+import Dialog from "../common/Dialog";
 import DataManager from "../../api/DataManager";
 import Dataset from "../../model/Dataset";
 import LoadingError from "../../model/LoadingError";
@@ -228,7 +228,7 @@ function Actions({data, patchDatasetCb, showDialog}: ActionsProps) {
   return <Fragment />;
 }
 
-interface DatasetViewProps {
+interface SingleDataViewProps {
   dataManager: DataManager;
   postMessage: Function;
   showDialog: Function;
@@ -238,7 +238,7 @@ interface DatasetViewProps {
 
 }
 
-function DatasetView(props: DatasetViewProps) {
+function SingleDataView(props: SingleDataViewProps) {
    const location = useLocation();
 
   // const path: string | null | undefined = matchPath( location.pathname, routesTabs )?.path;
@@ -446,4 +446,4 @@ function DatasetView(props: DatasetViewProps) {
       );
 }
 
-export default DatasetView;
+export default SingleDataView;

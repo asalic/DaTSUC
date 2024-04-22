@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import React, { useEffect } from 'react' ;
 import { Breadcrumb } from 'react-bootstrap';
-import type BreadcrumbElem from "../model/BreadcrumbElem";
+import type BreadcrumbElem from "../../model/BreadcrumbElem";
 
 interface BreadcrumbsProps {
       elems: BreadcrumbElem[];

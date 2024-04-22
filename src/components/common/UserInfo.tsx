@@ -4,7 +4,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import { Person } from "react-bootstrap-icons";
 
 
-import Config from "../config.json";
+import Config from "../../config.json";
 
 function UserInfo() {
   let {keycloak} = useKeycloak();

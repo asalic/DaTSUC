@@ -19,7 +19,7 @@ import RespTraces from "../../../model/RespTraces";
 import TracesBCPaginated from "../../../model/TracesBCPaginated";
 import LoadingError from "../../../model/LoadingError";
 import TableNoData from "../../TableNoData";
-import PaginationFooter from "../../PaginationFooter";
+import PaginationFooter from "../../common/PaginationFooter";
 
 class LoadingTraces extends LoadingData<TraceTable[]> {
   tracesFiltered: TraceTable[];

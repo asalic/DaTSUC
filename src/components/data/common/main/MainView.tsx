@@ -3,17 +3,17 @@ import { Container} from 'react-bootstrap';
 import { useKeycloak } from '@react-keycloak/web';
 import { useSearchParams } from "react-router-dom";
 
-import Message from "../model/Message";
-import DatasetsSearch from  "./DatasetsSearch";
-import DatasetsMainTable from "./DatasetsMainTable";
-import Config from "../config.json";
-import DatasetsFiltering from './filter/DatasetsFiltering';
-import PaginationFooter from './PaginationFooter';
-import type LoadingData from '../model/LoadingData';
-import DataManager from '../api/DataManager';
-import ItemPage from '../model/ItemPage';
-import Dataset from '../model/Dataset';
-import Util from '../Util';
+import Message from "../../../../model/Message";
+import SearchComponent from  "../../../common/SearchComponent";
+import MainTable from "./MainTable";
+import Config from "../../../../config.json";
+import FilteringView from '../../../data/common/main/filter/FilteringView';
+import PaginationFooter from '../../../common/PaginationFooter';
+import type LoadingData from '../../../../model/LoadingData';
+import DataManager from '../../../../api/DataManager';
+import ItemPage from '../../../../model/ItemPage';
+import Dataset from '../../../../model/Dataset';
+import Util from '../../../../Util';
 
 function getSortDirectionDesc(searchParam?: string | null, sortBy?: string | null): string {
   if (!sortBy) {
@@ -33,14 +33,14 @@ function getSortDirectionDesc(searchParam?: string | null, sortBy?: string | nul
   return searchParam;// === "ascending" ? false : true;
 }
 
-interface DatasetsViewProps {
+interface MainViewProps {
   keycloakReady: boolean;
   dataManager: DataManager;
   postMessage: Function;
   activeTab?: string;
 }
 
-function DatasetsView (props: DatasetsViewProps) {
+function MainView(props: MainViewProps) {
   //let navigate = useNavigate();
   let { keycloak } = useKeycloak();
   const [searchParams, setSearchParams] = useSearchParams("");
@@ -150,15 +150,15 @@ function DatasetsView (props: DatasetsViewProps) {
       return (
         <Container fluid>
           <div>
-            <DatasetsSearch initValue={searchString} updSearchParams={updSearchParams} />
+            <SearchComponent initValue={searchString} updSearchParams={updSearchParams} />
           </div>
           <div style={{display: "flex", flexDirection: "row"}}>
             <div>
-              <DatasetsFiltering filterUpdate={filterUpdate} searchParams={searchParams}  loading={allData.loading} 
+              <FilteringView filterUpdate={filterUpdate} searchParams={searchParams}  loading={allData.loading} 
                   keycloakReady={props.keycloakReady} dataManager={props.dataManager} postMessage={postMessage}/>
             </div>
             <div style={{flexGrow: "1"}}>
-              <DatasetsMainTable data={allData.data && allData.data?.list ? allData.data.list.slice(0, limit) : []}
+              <MainTable data={allData.data && allData.data?.list ? allData.data.list.slice(0, limit) : []}
                 dataManager={props.dataManager}
                 postMessage={props.postMessage}
                 currentSort={{
@@ -180,4 +180,4 @@ function DatasetsView (props: DatasetsViewProps) {
       );
 }
 
-export default DatasetsView;
+export default MainView;

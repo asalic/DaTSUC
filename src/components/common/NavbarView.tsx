@@ -3,8 +3,8 @@ import React, { useMemo, useId }from "react";
 import { GridFill } from 'react-bootstrap-icons';
 
 import UserInfo from "./UserInfo";
-import Config from "../config.json"
-import Util from "../Util";
+import Config from "../../config.json"
+import Util from "../../Util";
 
 function getReleaseConf() {
   const release = Util.getReleaseType(Config);

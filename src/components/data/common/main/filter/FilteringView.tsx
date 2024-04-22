@@ -1,10 +1,10 @@
 import React from "react";
 import { Container } from "react-bootstrap";
-import DataManager from "../../api/DataManager";
+import DataManager from "../../../../api/DataManager";
 import FilterFlags from "./FilterFlags";
 import FilterProject from "./FilterProject";
 
-interface DatasetsFilteringProps {
+interface FilteringViewProps {
     searchParams: URLSearchParams;
     filterUpdate: Function;
     loading: boolean;
@@ -13,7 +13,7 @@ interface DatasetsFilteringProps {
     postMessage: Function;
 }
 
-function DatasetsFiltering({searchParams, filterUpdate, loading, keycloakReady, dataManager, postMessage}: DatasetsFilteringProps) {
+function FilteringView({searchParams, filterUpdate, loading, keycloakReady, dataManager, postMessage}: FilteringViewProps) {
 
     return <Container>
         <FilterFlags filterUpdate={filterUpdate} searchParams={searchParams} loading={loading}/>
@@ -25,4 +25,4 @@ function DatasetsFiltering({searchParams, filterUpdate, loading, keycloakReady, 
     </Container>;
 }
 
-export default DatasetsFiltering;
+export default FilteringView;

@@ -5,11 +5,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import {Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 
 import DataManager from "./api/DataManager";
-import MessageView from "./components/MessageView";
-import Dialog from "./components/Dialog";
+import MessageView from "./components/common/MessageView";
+import Dialog from "./components/common/Dialog";
 import DatasetView from "./components/dataset/DatasetView";
-import NavbarView from "./components/NavbarView";
-import Footer from "./components/Footer";import DatasetsView from "./components/DatasetsView";
+import NavbarView from "./components/common/NavbarView";
+import Footer from "./components/common/Footer";
+import MainView from "./components/main/MainView";
 import Config from "./config.json";
 import FairView from "./components/FairView";
 import SupportView from "./components/SupportView"; 
@@ -90,7 +91,7 @@ function App({keycloakReady}: AppProps) {
                 <Route path="/" element={<Navigate to="/datasets" replace />} />
                 <Route path="/fair" element={<FairView />} />
                 <Route path="/support" element={<SupportView />} />
-                <Route path="/datasets" element={<DatasetsView keycloakReady={keycloakReady} 
+                <Route path="/datasets" element={<MainView keycloakReady={keycloakReady} 
                     dataManager={dataManager} postMessage={postMessage} />} />
                     <Route path="/datasets/:datasetId/details" 
                       element={<DatasetView showDialog={showDialog} keycloakReady={keycloakReady} 

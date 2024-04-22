@@ -6,16 +6,16 @@ import { useKeycloak } from '@react-keycloak/web';
 
 import Config from "../../../config.json";
 import Message from "../../../model/Message";
-import LoadingView from "../../LoadingView";
+import LoadingView from "../../common/LoadingView";
 import Series from "../../../model/Series";
 import LoadingData from "../../../model/LoadingData";
 import LoadingError from "../../../model/LoadingError";
 import DataManager from '../../../api/DataManager';
 import Study from '../../../model/Study';
 import Util from '../../../Util';
-import TableNoData from '../../TableNoData';
+import TableNoData from "../../common/TableNoData";
 import { useSearchParams } from 'react-router-dom';
-import PaginationFooter from '../../PaginationFooter';
+import PaginationFooter from '../../common/PaginationFooter';
 import ItemPage from '../../../model/ItemPage';
 
 //const STUDY_VISIBLE_SERIES = 1;

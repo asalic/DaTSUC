@@ -5,10 +5,10 @@ import { useTable, useRowSelect, useFilters, useGlobalFilter, useSortBy, Row, Co
 import React, { Fragment, useMemo, useState } from 'react';
 import {matchSorter} from 'match-sorter';
 
-import DataManager from "../api/DataManager";
-import type Dataset from "../model/Dataset";
-import DatasetsTableSortBy from "../model/DatasetsTableSortBy";
-import TableNoData from "./TableNoData";
+import DataManager from "../../../../api/DataManager";
+import type Dataset from "../../../../model/Dataset";
+import MainTableSortBy from "../../../../model/MainTableSortBy"
+import TableNoData from "../../../common/TableNoData";
 
 
 // const IndeterminateCheckbox = forwardRef(
@@ -335,7 +335,7 @@ interface TableProps {
 
   columns: Array<Column<any>>;
   data: Array<any>;
-  sortBy: DatasetsTableSortBy[];
+  sortBy: MainTableSortBy[];
   updSearchParams: Function;
 }
 
@@ -498,12 +498,12 @@ interface DatasetsMainTableProps {
   data: Dataset[],
   dataManager: DataManager,
   postMessage: Function;
-  currentSort: DatasetsTableSortBy;
+  currentSort: MainTableSortBy;
   updSearchParams: Function;
 }
 
 function DatasetsMainTable(props: DatasetsMainTableProps): JSX.Element {
-  const sortBy: DatasetsTableSortBy[] = useMemo(() => {return [props.currentSort]}, [props.currentSort]);
+  const sortBy: MainTableSortBy[] = useMemo(() => {return [props.currentSort]}, [props.currentSort]);
   const columns = useMemo(() => [
     // {
     //   Header: 'ID',

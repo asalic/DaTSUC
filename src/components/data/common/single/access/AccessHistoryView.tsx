@@ -11,7 +11,7 @@ import Util from '../../../Util';
 import type AccessHistory from "../../../model/AccessHistory";
 import type ItemPage from "../../../model/ItemPage";
 import DataManager from '../../../api/DataManager';
-import PaginationFooter from '../../PaginationFooter';
+import PaginationFooter from '../../common/PaginationFooter';
 import LoadingData from '../../../model/LoadingData';
 import TableNoData from "../../TableNoData";
 
