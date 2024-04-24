@@ -1,22 +1,23 @@
 import { useKeycloak } from "@react-keycloak/web";
 import React, { FormEvent, useCallback, useRef, useState } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
-import DataManager from "../../../api/DataManager";
-import LoadingData from "../../../model/LoadingData";
-import LoadingError from "../../../model/LoadingError";
-import Util from "../../../Util";
-import LoadingView from "../../LoadingView";
+import DataManager from "../../../../../api/DataManager";
+import LoadingData from "../../../../../model/LoadingData";
+import LoadingError from "../../../../../model/LoadingError";
+import Util from "../../../../../Util";
+import { useParams } from "react-router-dom";
+import LoadingView from "../../../../common/LoadingView";
 
 interface UserAddProps {
     dataManager: DataManager;
     postMessage: Function;
     addAclUser: Function;
     keycloakReady: boolean;
-    datasetId: string;
 }
 
 export default function UserAdd(props: UserAddProps) {
     let { keycloak } = useKeycloak();
+    const params = useParams();
     const [data, setData] = useState<LoadingData<string>>({
         loading: false,
         error: null,
@@ -24,17 +25,18 @@ export default function UserAdd(props: UserAddProps) {
         statusCode: -1
     });
     const formRef = useRef(null);
+    const singleDataId: string | undefined = params["singleDataId"];
 
     const addUserCb = useCallback((e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (props.keycloakReady && keycloak.authenticated && keycloak.token) {
+        if (props.keycloakReady && keycloak.authenticated && keycloak.token && singleDataId) {
             const formData = new FormData(e.target as HTMLFormElement);
             const username = formData.get("username")?.toString();
             if (username) {
                 setData((prev) => {
                     return {...prev, loading: true, error: null, statusCode: -1, data: null}
                 });
-                props.dataManager.putAcl(keycloak.token, props.datasetId, username)
+                props.dataManager.putAcl(keycloak.token, singleDataId, username)
                 .then(
                     (xhr: XMLHttpRequest) => {
                         setData((prev) => {

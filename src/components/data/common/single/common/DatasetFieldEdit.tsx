@@ -3,14 +3,14 @@ import { PencilFill } from 'react-bootstrap-icons';
 import React, { ReactNode, useState, useEffect } from "react";
 import { useKeycloak } from '@react-keycloak/web';
 
-import StaticValues from "../../../api/StaticValues";
-import Dialog from "../../common/Dialog";
+import StaticValues from "../../../../../api/StaticValues";
+import Dialog from "../../../../common/Dialog";
 import Footer from "./fieldedit/Footer";
 import Body from "./fieldedit/Body";
 import BodyPid from "./fieldedit/BodyPid";
 import BodyId from "./fieldedit/BodyId";
 import BodyLicense from "./fieldedit/BodyLicense";
-import DataManager from "../../../api/DataManager";
+import DataManager from "../../../../../api/DataManager";
 
 function transformValue(field: string, value: any) {
   if (field === "pids") {

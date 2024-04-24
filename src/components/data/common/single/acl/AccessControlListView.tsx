@@ -1,26 +1,27 @@
 import { useKeycloak } from "@react-keycloak/web";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Container } from "react-bootstrap";
-import DataManager from "../../../api/DataManager";
-import AclUser from "../../../model/AclUser";
-import Dataset from "../../../model/Dataset";
-import LoadingData from "../../../model/LoadingData";
-import LoadingError from "../../../model/LoadingError";
-import Message from "../../../model/Message";
-import Util from "../../../Util";
+import DataManager from "../../../../../api/DataManager";
+import AclUser from "../../../../../model/AclUser";
+import Dataset from "../../../../../model/Dataset";
+import LoadingData from "../../../../../model/LoadingData";
+import LoadingError from "../../../../../model/LoadingError";
+import Message from "../../../../../model/Message";
+import Util from "../../../../../Util";
 import UserAdd from "./UserAdd";
 import UserList from "./UserList";
+import { useParams } from "react-router-dom";
 
-interface AccessControlListProps {
+interface AccessControlListViewProps {
     dataManager: DataManager;
     keycloakReady: boolean;
-    datasetId: string;
     postMessage: Function;
     dataset: Dataset;
 }
 
 
-export default function AccessControlList(props: AccessControlListProps) {
+export default function AccessControlListView(props: AccessControlListViewProps) {
+  const params = useParams();
 
     let { keycloak } = useKeycloak();
     const [data, setData] = useState<LoadingData<AclUser[]>>({
@@ -30,13 +31,14 @@ export default function AccessControlList(props: AccessControlListProps) {
          statusCode: -1
   
     });
+    const singleDataId: string | undefined = params["singleDataId"];
 
     const getAcl = useCallback(() => {
-      if (props.keycloakReady && keycloak.authenticated && keycloak.token) {
+      if (props.keycloakReady && keycloak.authenticated && keycloak.token && singleDataId) {
           setData( prevValues => {
              return { ...prevValues, loading: true, error: null, data: null, statusCode: -1 }
           });
-          props.dataManager.getAcl(keycloak.token, props.datasetId)
+          props.dataManager.getAcl(keycloak.token, singleDataId)
             .then(
               (xhr: XMLHttpRequest) => {
                 const users: AclUser[] = JSON.parse(xhr.response);
@@ -66,8 +68,8 @@ export default function AccessControlList(props: AccessControlListProps) {
 
 
     const deleteAcl = useCallback((username: string) => {
-      if (props.keycloakReady && keycloak.authenticated && keycloak.token) {
-          props.dataManager.deleteAcl(keycloak.token, props.datasetId, username)
+      if (props.keycloakReady && keycloak.authenticated && keycloak.token && singleDataId) {
+          props.dataManager.deleteAcl(keycloak.token, singleDataId, username)
             .then(
               (xhr: XMLHttpRequest) => {
                 const users: AclUser[] = data.data?.filter(u => u.username !== username) ?? [];
@@ -95,7 +97,7 @@ export default function AccessControlList(props: AccessControlListProps) {
         </Alert>
         : <></>
       }
-        <UserAdd  datasetId={props.datasetId} dataManager={props.dataManager} postMessage={props.postMessage}  addAclUser={addAclUserCb} keycloakReady={props.keycloakReady}></UserAdd>
+        <UserAdd dataManager={props.dataManager} postMessage={props.postMessage}  addAclUser={addAclUserCb} keycloakReady={props.keycloakReady}></UserAdd>
         <UserList currentUserName={keycloak.tokenParsed?.['preferred_username']} deleteAcl={deleteAcl} data={data} />
 
     </Container>;

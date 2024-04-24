@@ -4,22 +4,24 @@ import React, { CellProps, useTable } from 'react-table';
 import type { Column } from 'react-table';
 import { useKeycloak } from '@react-keycloak/web';
 import {
+  useParams,
   useSearchParams,
 } from 'react-router-dom';
 
-import Message from "../../../model/Message";
 import DataFilterView from "./DataFilterView";
-import LoadingView from "../../LoadingView";
-import Config from "../../../config.json";
-import LoadingData from "../../../model/LoadingData";
-import DataManager from "../../../api/DataManager";
-import Util from "../../../Util";
-import TraceTable from "../../../model/TraceTable";
-import RespTraces from "../../../model/RespTraces";
-import TracesBCPaginated from "../../../model/TracesBCPaginated";
-import LoadingError from "../../../model/LoadingError";
-import TableNoData from "../../TableNoData";
-import PaginationFooter from "../../common/PaginationFooter";
+import Config from "../../../../../config.json";
+import LoadingData from "../../../../../model/LoadingData";
+import DataManager from "../../../../../api/DataManager";
+import Util from "../../../../../Util";
+import TraceTable from "../../../../../model/TraceTable";
+import RespTraces from "../../../../../model/RespTraces";
+import TracesBCPaginated from "../../../../../model/TracesBCPaginated";
+import LoadingError from "../../../../../model/LoadingError";
+import PaginationFooter from "../../../../common/PaginationFooter";
+import TableNoData from "../../../../common/TableNoData";
+import LoadingView from "../../../../common/LoadingView";
+import ErrorView from "../../../../common/ErrorView";
+import NoDataView from "../../../../common/NoDataView";
 
 class LoadingTraces extends LoadingData<TraceTable[]> {
   tracesFiltered: TraceTable[];
@@ -77,17 +79,16 @@ function TableComponent({ columns, data }: TableComponentProps<any>): JSX.Elemen
   )
 }
 
-interface DatasetHistoryViewProps {
-  datasetId: string;
+interface HistoryViewProps {
   keycloakReady: boolean;
   postMessage: Function;
   dataManager: DataManager;
-
 }
 
 
-function DatasetHistoryView(props: DatasetHistoryViewProps) {
+function HistoryView(props: HistoryViewProps) {
   const [searchParams, setSearchParams] = useSearchParams("");
+  const params = useParams();
 
   const [data, setData] = useState<LoadingTraces>({
     loading: false,
@@ -98,6 +99,7 @@ function DatasetHistoryView(props: DatasetHistoryViewProps) {
     statusCode: -1
   });
 
+  const datasetId: string | undefined = params["singleDataId"];
 
   const updSearchParams = useCallback((params: Object) => Util.updSearchParams(params, searchParams, setSearchParams), 
     [searchParams, setSearchParams]);
@@ -123,11 +125,11 @@ function DatasetHistoryView(props: DatasetHistoryViewProps) {
   let { keycloak } = useKeycloak();
   //console.log(keycloak);
     useEffect(() => {
-        if (props.keycloakReady && keycloak.authenticated) {
+        if (props.keycloakReady && keycloak.authenticated && datasetId) {
           setData( prevValues => {
             return { ...prevValues, loading: true, status: -1, error: null, data: [], tracesFiltered: [], totalTracesCnt: 0 }
             });
-          props.dataManager.getTracesDataset(keycloak.token, props.datasetId, skip, limit)
+          props.dataManager.getTracesDataset(keycloak.token, datasetId, skip, limit)
             .then(
               (xhr: XMLHttpRequest) => {
                 let totalTracesCnt = 0;
@@ -156,7 +158,7 @@ function DatasetHistoryView(props: DatasetHistoryViewProps) {
               },
               (xhr: XMLHttpRequest) => {
                 const error: LoadingError = Util.getErrFromXhr(xhr);
-                props.postMessage(new Message(Message.ERROR, error.title, error.text));
+                //props.postMessage(new Message(Message.ERROR, error.title, error.text));
                 setData( prevValues => {
                    return { ...prevValues, totalTracesCnt: 0, data: [], tracesFiltered: [], loading: false,
                     statusCode: xhr.status, error }
@@ -165,7 +167,7 @@ function DatasetHistoryView(props: DatasetHistoryViewProps) {
             }
 
     }, //1000);},
-    [props.datasetId, props.keycloakReady, keycloak.authenticated, searchParams, setSearchParams]);
+    [datasetId, props.keycloakReady, keycloak.authenticated, searchParams, setSearchParams]);
 
   const columns: Column<any>[] = useMemo(
     () => [
@@ -197,54 +199,62 @@ function DatasetHistoryView(props: DatasetHistoryViewProps) {
     ], []);
     if (data.loading) {
       return <LoadingView what="dataset history" />;
+    } else {    
+      if (data.error) {
+        return <ErrorView message={data.error?.title + ": " + data.error?.text} />
+      } else {
+        if (data.data) {
+          return (
+            <Container fluid>
+              <Row>
+                <Col lg={3} md={12}>
+                  <DataFilterView traces={data.data ?? []} updFilteredData={updFilteredData} 
+                    dataManager={props.dataManager} 
+                    postMessage={props.postMessage}/>
+                </Col>
+                <Col lg={9} md={12} className="d-flex flex-column">
+                  <TableComponent columns={columns} data={data.tracesFiltered} />
+                  {/* <div className="w-100  d-flex  justify-content-center align-self-end" >
+                    <Button className="position-relative me-4" disabled={page === 1 ? true : false}
+                      onClick={(e) => {
+                        setSearchParams(prevValues => {
+                          return { ...prevValues, 
+                          skipStudies: (skip - limit),
+                          limitStudies: limit };
+                          });
+                        // setSkipLimit(prevValues => {
+                        //   return { ...prevValues, skip, limit };
+                        // });
+                      }
+                      }>Previous</Button>
+                    <Button className="position-relative me-4"  disabled={page === numPages ? true : false}
+                      onClick={(e) => {
+                        setSearchParams(prevValues => {
+                          return { ...prevValues, 
+                          skipStudies: (skip + limit),
+                          limitStudies: limit };
+                          });
+                        // setSkipLimit(prevValues => {
+                        //   return { ...prevValues, skip, limit };
+                        // });
+                      }
+                        }>Next</Button>
+                    <span>Page <b>{page}</b> of <b>{numPages}</b></span>
+                  </div> */}
+          
+                  <div className="d-flex flex-row justify-content-center w-100" >
+                    <PaginationFooter skip={skip} limit={limit} total={data.totalTracesCnt} onSkipChange={onSkipChange} />
+                  </div>
+                </Col>
+              </Row>
+            </Container>
+          );
+        } else {
+          return <NoDataView/>;
+        }
+      }
     }
-
-    return (
-        <Container fluid>
-          <Row>
-            <Col lg={3} md={12}>
-              <DataFilterView traces={data.data ?? []} updFilteredData={updFilteredData} 
-                 dataManager={props.dataManager} 
-                postMessage={props.postMessage}/>
-            </Col>
-            <Col lg={9} md={12} className="d-flex flex-column">
-              <TableComponent columns={columns} data={data.tracesFiltered} />
-              {/* <div className="w-100  d-flex  justify-content-center align-self-end" >
-                <Button className="position-relative me-4" disabled={page === 1 ? true : false}
-                  onClick={(e) => {
-                    setSearchParams(prevValues => {
-                      return { ...prevValues, 
-                      skipStudies: (skip - limit),
-                      limitStudies: limit };
-                      });
-                    // setSkipLimit(prevValues => {
-                    //   return { ...prevValues, skip, limit };
-                    // });
-                  }
-                  }>Previous</Button>
-                <Button className="position-relative me-4"  disabled={page === numPages ? true : false}
-                  onClick={(e) => {
-                    setSearchParams(prevValues => {
-                      return { ...prevValues, 
-                      skipStudies: (skip + limit),
-                      limitStudies: limit };
-                      });
-                    // setSkipLimit(prevValues => {
-                    //   return { ...prevValues, skip, limit };
-                    // });
-                  }
-                    }>Next</Button>
-                <span>Page <b>{page}</b> of <b>{numPages}</b></span>
-              </div> */}
-      
-              <div className="d-flex flex-row justify-content-center w-100" >
-                <PaginationFooter skip={skip} limit={limit} total={data.totalTracesCnt} onSkipChange={onSkipChange} />
-              </div>
-            </Col>
-          </Row>
-        </Container>
-    );
 
 }
 
-export default DatasetHistoryView;
+export default HistoryView;

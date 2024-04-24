@@ -1,11 +1,11 @@
 import React, {useState, useEffect } from "react";
 import {InputGroup, Accordion} from "react-bootstrap";
-import FilterCategory from "../../../model/FilterCategory";
-import FilterTrace from "../../../model/FilterTrace";
-import LoadingData from "../../../model/LoadingData";
+import FilterCategory from "../../../../../model/FilterCategory";
+import FilterTrace from "../../../../../model/FilterTrace";
+import LoadingData from "../../../../../model/LoadingData";
 
-import Message from "../../../model/Message";
-import Util from "../../../Util";
+import Message from "../../../../../model/Message";
+import Util from "../../../../../Util";
 
 interface DataFilterEntry {
   filterName: string;

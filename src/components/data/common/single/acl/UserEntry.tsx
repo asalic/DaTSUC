@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, ListGroup } from "react-bootstrap";
 import { XCircleFill } from "react-bootstrap-icons";
-import AclUser from "../../../model/AclUser";
+import AclUser from "../../../../../model/AclUser";
 
 interface UserEntryProps {
     user: AclUser;

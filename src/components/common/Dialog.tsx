@@ -1,7 +1,7 @@
 import { Modal} from 'react-bootstrap';
 import React, { useState, useEffect} from "react";
 import type DialogSettings from '../../model/DialogSettings';
-import { DialogSize } from '../../model/DialogSize';
+import DialogSize from '../../model/DialogSize';
 
 let outsideSetShow: Function | null;
 

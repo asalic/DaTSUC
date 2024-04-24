@@ -1,11 +1,10 @@
-import { ReactNode } from "react";
-import { DialogSize } from "./DialogSize";
+import DialogSize from "./DialogSize";
 
 
 export default interface DialogSettings {
-    body: ReactNode;
-    footer: ReactNode;
-    title: string;
+    body: JSX.Element;
+    footer: JSX.Element;
+    title: JSX.Element;
     onBeforeClose: Function | null;
     scrollable: boolean;
     size: DialogSize;

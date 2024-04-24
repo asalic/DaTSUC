@@ -1,8 +1,8 @@
 import React, {ReactNode, useEffect, useState} from "react";
 import { Accordion, Button, Col, Container, Row } from "react-bootstrap";
-import DataManager from "../../../api/DataManager";
-import FilterCategory from "../../../model/FilterCategory";
-import TraceTable from "../../../model/TraceTable";
+import DataManager from "../../../../../api/DataManager";
+import FilterCategory from "../../../../../model/FilterCategory";
+import TraceTable from "../../../../../model/TraceTable";
 
 import DataFilterCategory from "./DataFilterCategory";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "react-bootstrap";
-import DataManager from "../../../../api/DataManager";
+import DataManager from "../../../../../api/DataManager";
 import FilterFlags from "./FilterFlags";
 import FilterProject from "./FilterProject";
 

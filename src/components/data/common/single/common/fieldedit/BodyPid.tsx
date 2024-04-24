@@ -1,7 +1,7 @@
 import { Button, Form } from "react-bootstrap";
 import React, {useState, FormEvent} from "react";
 
-import StaticValues from "../../../../api/StaticValues";
+import StaticValues from "../../../../../../api/StaticValues";
 
 interface Pid {
   preferred: string | null;

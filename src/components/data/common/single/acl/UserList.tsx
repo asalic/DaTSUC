@@ -1,9 +1,9 @@
 import React from "react";
 import { ListGroup } from "react-bootstrap";
-import AclUser from "../../../model/AclUser";
-import LoadingData from "../../../model/LoadingData";
-import LoadingView from "../../LoadingView";
+import AclUser from "../../../../../model/AclUser";
+import LoadingData from "../../../../../model/LoadingData";
 import UserEntry from "./UserEntry";
+import LoadingView from "../../../../common/LoadingView";
 
 
 interface UserListProps {

@@ -2,9 +2,9 @@ import { useKeycloak } from "@react-keycloak/web";
 import React, { useState, useEffect, Fragment, useCallback } from "react";
 import { Button, Placeholder } from "react-bootstrap";
 import Select, { ActionMeta, Props, GroupBase, SingleValue } from 'react-select';
-import DataManager from "../../../../api/DataManager";
-import LoadingData from "../../../../model/LoadingData";
-import Util from "../../../../Util";
+import DataManager from "../../../../../../api/DataManager";
+import LoadingData from "../../../../../../model/LoadingData";
+import Util from "../../../../../../Util";
 
 interface SelOpt {
     value: string;

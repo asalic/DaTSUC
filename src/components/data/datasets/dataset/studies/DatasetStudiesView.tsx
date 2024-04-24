@@ -4,19 +4,19 @@ import { CellProps, useTable } from 'react-table';
 import type { Column } from 'react-table';
 import { useKeycloak } from '@react-keycloak/web';
 
-import Config from "../../../config.json";
-import Message from "../../../model/Message";
-import LoadingView from "../../common/LoadingView";
-import Series from "../../../model/Series";
-import LoadingData from "../../../model/LoadingData";
-import LoadingError from "../../../model/LoadingError";
-import DataManager from '../../../api/DataManager';
-import Study from '../../../model/Study';
-import Util from '../../../Util';
-import TableNoData from "../../common/TableNoData";
-import { useSearchParams } from 'react-router-dom';
-import PaginationFooter from '../../common/PaginationFooter';
-import ItemPage from '../../../model/ItemPage';
+import Config from "../../../../../config.json";
+import Message from "../../../../../model/Message";
+import LoadingView from "../../../../common/LoadingView";
+import Series from "../../../../../model/Series";
+import LoadingData from "../../../../../model/LoadingData";
+import LoadingError from "../../../../../model/LoadingError";
+import DataManager from '../../../../../api/DataManager';
+import Study from '../../../../../model/Study';
+import Util from '../../../../../Util';
+import TableNoData from "../../../../common/TableNoData";
+import { useParams, useSearchParams } from 'react-router-dom';
+import PaginationFooter from '../../../../common/PaginationFooter';
+import ItemPage from '../../../../../model/ItemPage';
 
 //const STUDY_VISIBLE_SERIES = 1;
 
@@ -88,13 +88,13 @@ function generateSeriesCell(series: Series[], seriesLimit: number, onclickCb: Fu
 }
 
 interface DatasetStudiesViewProps {
-  datasetId: string;
   keycloakReady: boolean;
   postMessage: Function;
   dataManager: DataManager;
 }
 
 function DatasetStudiesView(props: DatasetStudiesViewProps): JSX.Element {
+  const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams("");
 
   let { keycloak } = useKeycloak();
@@ -105,7 +105,7 @@ function DatasetStudiesView(props: DatasetStudiesViewProps): JSX.Element {
        statusCode: -1
 
   });
-
+  const datasetId: string | undefined = params["datasetId"];
 
   const updSearchParams = useCallback((params: Object) => Util.updSearchParams(params, searchParams, setSearchParams), 
     [searchParams, setSearchParams]);
@@ -115,11 +115,11 @@ function DatasetStudiesView(props: DatasetStudiesViewProps): JSX.Element {
     updSearchParams({skip: skip === 0 ? null : skip});
   }, [skip, limit, updSearchParams, searchParams, setSearchParams]);
   useEffect(() => {
-    if (props.keycloakReady && keycloak.authenticated) {
+    if (props.keycloakReady && keycloak.authenticated && datasetId) {
         setData( prevValues => {
            return { ...prevValues, loading: true, error: null, data: null, statusCode: -1 }
         });
-        props.dataManager.getStudies(keycloak.token, props.datasetId, skip, limit)
+        props.dataManager.getStudies(keycloak.token, datasetId, skip, limit)
           .then(
             (xhr: XMLHttpRequest) => {
               const pagedStudies: ItemPage<Study> = JSON.parse(xhr.response);
@@ -136,7 +136,7 @@ function DatasetStudiesView(props: DatasetStudiesViewProps): JSX.Element {
               });
             });
         }
-  }, [props.datasetId, props.keycloakReady, keycloak.authenticated, searchParams, setSearchParams]);
+  }, [datasetId, props.keycloakReady, keycloak.authenticated, searchParams, setSearchParams]);
   // const lastPage = Number(props.studiesCount) % Number(limit) === 0 ? 0 : 1;
   // let numPages = Math.floor(Number(props.studiesCount) / Number(limit)) + lastPage;
   // if (numPages === 0)

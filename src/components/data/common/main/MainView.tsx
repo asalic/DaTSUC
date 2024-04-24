@@ -37,7 +37,7 @@ interface MainViewProps {
   keycloakReady: boolean;
   dataManager: DataManager;
   postMessage: Function;
-  activeTab?: string;
+  activeTab?: string | undefined;
 }
 
 function MainView(props: MainViewProps) {

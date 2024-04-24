@@ -1,11 +1,11 @@
 import { useKeycloak } from "@react-keycloak/web";
 import React, { useCallback, useEffect, useState } from "react";
 import { Container, Dropdown } from "react-bootstrap";
-import DataManager from "../../api/DataManager";
-import LoadingData from "../../model/LoadingData";
-import Message from "../../model/Message";
-import Util from "../../Util";
-import LoadingView from "../LoadingView";
+import DataManager from "../../../../../api/DataManager";
+import LoadingData from "../../../../../model/LoadingData";
+import Message from "../../../../../model/Message";
+import Util from "../../../../../Util";
+import LoadingView from "../../../../common/LoadingView";
 
 const ALL_PROJECTS = "All projects";
 

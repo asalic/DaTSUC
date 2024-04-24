@@ -2,10 +2,10 @@ import { Container, Badge } from "react-bootstrap";
 import React, { Fragment }from "react";
 
 import DatasetFieldEdit from "../common/DatasetFieldEdit";
-import RouteFactory from "../../../api/RouteFactory";
-import Dataset from "../../../model/Dataset";
-import DataManager from "../../../api/DataManager";
-import Util from "../../../Util";
+import RouteFactory from "../../../../../api/RouteFactory";
+import DataManager from "../../../../../api/DataManager";
+import Util from "../../../../../Util";
+import SingleData from "../../../../../model/SingleData";
 
 const PREVIOUS_ID = "Previous version";
 const NEXT_ID = "Next version";
@@ -15,7 +15,7 @@ interface EntryWithStudyResult {
   show: boolean;
 }
 
-function getIdEdit(text: string, ds?: Dataset, showDialog?: Function, patchDataset?: Function, keycloakReady?: boolean, dataManager?: DataManager) {
+function getIdEdit<T extends SingleData> (text: string, ds?: T, showDialog?: Function, patchDataset?: Function, keycloakReady?: boolean, dataManager?: DataManager) {
   if (text === PREVIOUS_ID && ds && ds.editablePropertiesByTheUser.includes("previousId") && showDialog && patchDataset && keycloakReady && dataManager) {
     return <DatasetFieldEdit datasetId={ds.id} showDialog={showDialog} field="previousId" fieldDisplay="previous version"
       oldValue={ds.previousId} patchDataset={patchDataset} keycloakReady={keycloakReady} dataManager={dataManager}/>;
@@ -27,7 +27,7 @@ function getIdEdit(text: string, ds?: Dataset, showDialog?: Function, patchDatas
   return <Fragment />;
 }
 
-function getIDLink(text: string, id: string | null, canEdit: boolean, data?: Dataset, 
+function getIDLink<T extends SingleData>(text: string, id: string | null, canEdit: boolean, data?: T, 
       showDialog?: Function, patchDataset?: Function, keycloakReady?: boolean, dataManager?: DataManager) {
   if (id || canEdit) {
     return <p title={`ID of the ${text} version of this dataset`}><b>{text}</b>
@@ -74,15 +74,15 @@ function getYearLowHigh(ageLow: number | null, ageHigh: number | null, ageUnit: 
   return ageLstItemTxt;
 }
 
-interface DatasetDetailsBoxProps {
-  dataset: Dataset;
+interface DatasetDetailsBoxProps<T extends SingleData> {
+  dataset: T;
   showDialog: Function;
   patchDataset: Function;
   keycloakReady: boolean;
   dataManager: DataManager;
 }
 
-function DatasetDetailsBox(props: DatasetDetailsBoxProps) {
+function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps<T>) {
     //const [bgCopyId]
     const dataset = props.dataset;
     const ageLstItemTxt: string = getYearLowHigh(dataset.ageLow, dataset.ageHigh, dataset.ageUnit, dataset.ageNullCount, "age");

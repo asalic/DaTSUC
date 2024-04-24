@@ -2,27 +2,27 @@ import { useKeycloak } from "@react-keycloak/web";
 import React, { Fragment, useState, useEffect } from "react";
 import { useCallback } from "react";
 import { Alert } from "react-bootstrap";
-import DataManager from "../../../api/DataManager";
+import DataManager from "../../../../../api/DataManager";
 
-import RouteFactory from "../../../api/RouteFactory";
-import Config from "../../../config.json";
-import Dataset from "../../../model/Dataset";
-import Message from "../../../model/Message";
-import Util from "../../../Util";
+import RouteFactory from "../../../../../api/RouteFactory";
+import Config from "../../../../../config.json";
+import Message from "../../../../../model/Message";
+import Util from "../../../../../Util";
+import SingleData from "../../../../../model/SingleData";
 
 const MSG_INVALIDATED = 1;
 const MSG_NEXT_ID = 2;
 const MSG_CREATION_STAT = 3;
 
-interface MessageBox {
+interface MessageBox<T extends SingleData> {
     postMessage: Function;
     keycloakReady: boolean;
     dataManager: DataManager;
-    dataset: Dataset;
+    dataset: T;
     getDataset: Function;
 }
 
-function MessageBox({postMessage, keycloakReady, dataManager, dataset, getDataset}: MessageBox) {
+function MessageBox<T extends SingleData>({postMessage, keycloakReady, dataManager, dataset, getDataset}: MessageBox<T>) {
     const [msgs, setMsgs] = useState<object>({});
     const { keycloak } = useKeycloak();
     useEffect(() => {

@@ -1,7 +1,7 @@
 import { Button, FormControl } from "react-bootstrap";
 import React, { useState, Fragment, FormEvent } from "react";
 
-import licenses from "../../../../licenses.json";
+import licenses from "../../../../../../licenses.json";
 
 
 interface License {

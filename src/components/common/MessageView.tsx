@@ -1,7 +1,7 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {Alert} from "react-bootstrap";
 
-import Message from "../model/Message";
+import Message from "../../model/Message";
 
 interface MessageViewProps {
 
