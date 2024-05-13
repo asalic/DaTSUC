@@ -71,7 +71,7 @@ function Dialog({settings}: DialogProps) {
 
 Dialog.SIZE_SM = "sm";
 Dialog.SIZE_LG = "lg";
-Dialog.SIZE_XXL = "xxl";
+Dialog.SIZE_XXL = "xl";
 
 Dialog.HANDLE_CLOSE = handleClose;
 export default Dialog;
