@@ -93,6 +93,20 @@ export default class WebClient {
     return WebClient._call("GET", Config.datasetService + "/projects", headers,
                 null, "text", null );
   }
+
+  static getAcl(token:  string, datasetId: string): Promise<XMLHttpRequest> {
+    let headers = new Map();
+    headers.set("Authorization", "Bearer " + token);
+    return WebClient._call("GET", Config.datasetService + "/datasets/" + datasetId + "/acl", headers,
+                null, "text", null );
+  }
+
+  static updateAcl(token:  string, datasetId: string, username: string, operation: string): Promise<XMLHttpRequest> {
+    let headers = new Map();
+    headers.set("Authorization", "Bearer " + token);
+    return WebClient._call(operation, Config.datasetService + "/datasets/" + datasetId + "/acl/" + encodeURIComponent(username), headers,
+                null, "text", null );
+  }
   
   static _prepQueryParams(qTmp: QueryParamsType): object | null {
     const entr = Object.entries(qTmp);

@@ -70,7 +70,7 @@ function DatasetsView (props: DatasetsViewProps) {
   }, [searchString, sortBy, sortDirection, skip, limit, updSearchParams, searchParams, setSearchParams]);
 
   const filterUpdate = useCallback((params: Object) => updSearchParams({...params, skip: null}),
-    [searchParams, setSearchParams, updSearchParams]);
+    [skip, updSearchParams]);
 
 
   //console.log(`searchString is ${searchString}`);
