@@ -125,7 +125,7 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>) {
             <Col sm={10}>
               <Tab.Content>
                 {
-                  props.tabs.map(s => 
+                  props.tabs.filter(s => s.eventKey === props.activeTab).map(s => 
                     <Tab.Pane eventKey={s.eventKey}>
                         {s.view}
                     </Tab.Pane>
