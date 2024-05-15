@@ -4,7 +4,6 @@ import React, { CellProps, useTable } from 'react-table';
 import type { Column } from 'react-table';
 import { useKeycloak } from '@react-keycloak/web';
 import {
-  useParams,
   useSearchParams,
 } from 'react-router-dom';
 
@@ -83,12 +82,12 @@ interface HistoryViewProps {
   keycloakReady: boolean;
   postMessage: Function;
   dataManager: DataManager;
+  singleDataId: string;
 }
 
 
 function HistoryView(props: HistoryViewProps) {
   const [searchParams, setSearchParams] = useSearchParams("");
-  const params = useParams();
 
   const [data, setData] = useState<LoadingTraces>({
     loading: false,
@@ -99,7 +98,6 @@ function HistoryView(props: HistoryViewProps) {
     statusCode: -1
   });
 
-  const datasetId: string | undefined = params["singleDataId"];
 
   const updSearchParams = useCallback((params: Object) => Util.updSearchParams(params, searchParams, setSearchParams), 
     [searchParams, setSearchParams]);
@@ -125,11 +123,11 @@ function HistoryView(props: HistoryViewProps) {
   let { keycloak } = useKeycloak();
   //console.log(keycloak);
     useEffect(() => {
-        if (props.keycloakReady && keycloak.authenticated && datasetId) {
+        if (props.keycloakReady && keycloak.authenticated && props.singleDataId) {
           setData( prevValues => {
             return { ...prevValues, loading: true, status: -1, error: null, data: [], tracesFiltered: [], totalTracesCnt: 0 }
             });
-          props.dataManager.getTracesDataset(keycloak.token, datasetId, skip, limit)
+          props.dataManager.getTracesDataset(keycloak.token, props.singleDataId, skip, limit)
             .then(
               (xhr: XMLHttpRequest) => {
                 let totalTracesCnt = 0;
@@ -167,7 +165,7 @@ function HistoryView(props: HistoryViewProps) {
             }
 
     }, //1000);},
-    [datasetId, props.keycloakReady, keycloak.authenticated, searchParams, setSearchParams]);
+    [props.singleDataId, props.keycloakReady, keycloak.authenticated, searchParams, setSearchParams]);
 
   const columns: Column<any>[] = useMemo(
     () => [

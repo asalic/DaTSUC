@@ -2,7 +2,7 @@ import React, {useMemo, useState, useEffect, useCallback } from 'react';
 import { Table as BTable, Container, Row, Col} from 'react-bootstrap';
 import { CellProps, Column, useTable } from 'react-table';
 import { useKeycloak } from '@react-keycloak/web';
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import Config from "../../../../../config.json";
 import Message from "../../../../../model/Message";
@@ -79,6 +79,7 @@ interface AccessHistoryViewProps {
   keycloakReady: boolean;
   dataManager: DataManager;
   postMessage: Function;
+  singleDataId: string;
 
 }
 
@@ -86,7 +87,6 @@ interface AccessHistoryViewProps {
 function AccessHistoryView(props: AccessHistoryViewProps): JSX.Element {
     const [searchParams, setSearchParams] = useSearchParams("");
     let { keycloak } = useKeycloak();
-    const params = useParams();
     const [data, setData] = useState<LoadingData<ItemPage<AccessHistory>>>({
       statusCode: -1,
        loading: false,
@@ -100,7 +100,6 @@ function AccessHistoryView(props: AccessHistoryViewProps): JSX.Element {
        }
 
     });
-    const datasetId: string | undefined = params["datasetId"];
     const updSearchParams = useCallback((params: Object) => Util.updSearchParams(params, searchParams, setSearchParams), [searchParams, setSearchParams]);
     const skip = searchParams.get("skip") ? Number(searchParams.get("skip")) : 0;
     const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : Config.defaultLimitAccess;
@@ -110,11 +109,11 @@ function AccessHistoryView(props: AccessHistoryViewProps): JSX.Element {
     }, [skip, limit, updSearchParams, searchParams, setSearchParams]);
 
   useEffect(() => {
-      if (props.keycloakReady && keycloak.authenticated && datasetId) {
+      if (props.keycloakReady && keycloak.authenticated && props.singleDataId) {
         setData( prevValues => {
            return { ...prevValues, loading: true, error: null, data: null, statusCode: -1 }
         });
-        props.dataManager.getDatasetAccessHistory(keycloak.token, datasetId, skip, limit)
+        props.dataManager.getDatasetAccessHistory(keycloak.token, props.singleDataId, skip, limit)
           .then(
             (xhr: XMLHttpRequest) => {
               let  data = JSON.parse(xhr.response);
@@ -147,7 +146,7 @@ function AccessHistoryView(props: AccessHistoryViewProps): JSX.Element {
                 });
             });
         }
-  }, [props.keycloakReady, datasetId, keycloak.authenticated, searchParams, setSearchParams]);
+  }, [props.keycloakReady, props.singleDataId, keycloak.authenticated, searchParams, setSearchParams]);
   const columns = useMemo(
     () => [
       {

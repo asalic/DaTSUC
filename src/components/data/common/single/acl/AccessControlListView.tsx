@@ -10,18 +10,17 @@ import Message from "../../../../../model/Message";
 import Util from "../../../../../Util";
 import UserAdd from "./UserAdd";
 import UserList from "./UserList";
-import { useParams } from "react-router-dom";
 
 interface AccessControlListViewProps {
     dataManager: DataManager;
     keycloakReady: boolean;
     postMessage: Function;
     dataset: Dataset;
+    singleDataId: string;
 }
 
 
 export default function AccessControlListView(props: AccessControlListViewProps) {
-  const params = useParams();
 
     let { keycloak } = useKeycloak();
     const [data, setData] = useState<LoadingData<AclUser[]>>({
@@ -31,14 +30,13 @@ export default function AccessControlListView(props: AccessControlListViewProps)
          statusCode: -1
   
     });
-    const singleDataId: string | undefined = params["singleDataId"];
 
     const getAcl = useCallback(() => {
-      if (props.keycloakReady && keycloak.authenticated && keycloak.token && singleDataId) {
+      if (props.keycloakReady && keycloak.authenticated && keycloak.token && props.singleDataId) {
           setData( prevValues => {
              return { ...prevValues, loading: true, error: null, data: null, statusCode: -1 }
           });
-          props.dataManager.getAcl(keycloak.token, singleDataId)
+          props.dataManager.getAcl(keycloak.token, props.singleDataId)
             .then(
               (xhr: XMLHttpRequest) => {
                 const users: AclUser[] = JSON.parse(xhr.response);
@@ -68,8 +66,8 @@ export default function AccessControlListView(props: AccessControlListViewProps)
 
 
     const deleteAcl = useCallback((username: string) => {
-      if (props.keycloakReady && keycloak.authenticated && keycloak.token && singleDataId) {
-          props.dataManager.deleteAcl(keycloak.token, singleDataId, username)
+      if (props.keycloakReady && keycloak.authenticated && keycloak.token && props.singleDataId) {
+          props.dataManager.deleteAcl(keycloak.token, props.singleDataId, username)
             .then(
               (xhr: XMLHttpRequest) => {
                 const users: AclUser[] = data.data?.filter(u => u.username !== username) ?? [];

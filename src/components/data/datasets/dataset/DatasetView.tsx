@@ -15,6 +15,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import LoadingError from "../../../../model/LoadingError";
 import { showDialogAppDashhboard } from "../../common/single/common/Operations";
 import Dataset from "../../../../model/Dataset";
+import ResourceNotFoundView from "../../../common/ResourceNotFoundView";
 
 
 DatasetView.TAB_STUDIES = "studies";
@@ -40,8 +41,7 @@ function DatasetView(props: DatasetViewProps) {
          data: null,
          statusCode: -1
       });
-    
-    const datasetId: string | undefined = params["singleDataId"];
+    const datasetId: string = params["singleDataId"] ?? "";
 
 
     const getDataset = //useCallback(
@@ -135,13 +135,13 @@ function DatasetView(props: DatasetViewProps) {
         result.push({
                 eventKey: "studies",
                 title: "Studies",
-                view: <DatasetStudiesView keycloakReady={props.keycloakReady}
+                view: <DatasetStudiesView datasetId={datasetId} keycloakReady={props.keycloakReady}
                     postMessage={props.postMessage} dataManager={props.dataManager}/>
             },
             {
                 eventKey: "history",
                 title: "History",
-                view: <HistoryView keycloakReady={props.keycloakReady} postMessage={props.postMessage} 
+                view: <HistoryView singleDataId={datasetId} keycloakReady={props.keycloakReady} postMessage={props.postMessage} 
                     dataManager={props.dataManager}/>
 
             }
@@ -150,7 +150,7 @@ function DatasetView(props: DatasetViewProps) {
             result.push({
                 eventKey: "access",
                 title: "Access",
-                view: <AccessHistoryView keycloakReady={props.keycloakReady} postMessage={props.postMessage} 
+                view: <AccessHistoryView singleDataId={datasetId} keycloakReady={props.keycloakReady} postMessage={props.postMessage} 
                     dataManager={props.dataManager}/>
             })
         }
@@ -158,7 +158,7 @@ function DatasetView(props: DatasetViewProps) {
             result.push({
                 eventKey: "acl",
                 title: "ACL",
-                view: <AccessControlListView dataset={allValues.data} keycloakReady={props.keycloakReady} postMessage={props.postMessage}
+                view: <AccessControlListView singleDataId={datasetId} dataset={allValues.data} keycloakReady={props.keycloakReady} postMessage={props.postMessage}
                     dataManager={props.dataManager}/>
 
             })
@@ -167,11 +167,16 @@ function DatasetView(props: DatasetViewProps) {
       return result;
     }, [keycloak.authenticated, props, allValues])
 
-    return <SingleDataView dataManager={props.dataManager} postMessage={props.postMessage} 
-        showDialog={props.showDialog} keycloakReady={props.keycloakReady}
-        showdDlgOpt={props.showdDlgOpt} activeTab={props.activeTab}
-        tabs={tabs} patchSingleData={patchDataset} singleData={allValues}
-    />;
+    if (datasetId === "") {
+      console.error("Dataset ID cannot be empty");
+      return <ResourceNotFoundView id={"<datasetId_empty_string>"} />;
+    } else {
+      return <SingleDataView dataManager={props.dataManager} postMessage={props.postMessage} 
+          showDialog={props.showDialog} keycloakReady={props.keycloakReady}
+          showdDlgOpt={props.showdDlgOpt} activeTab={props.activeTab}
+          tabs={tabs} patchSingleData={patchDataset} singleData={allValues}
+      />;
+    }
 
 }
 
