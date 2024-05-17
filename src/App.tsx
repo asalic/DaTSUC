@@ -18,6 +18,7 @@ import type DialogSettings from "./model/DialogSettings";
 import DialogSize from "./model/DialogSize";
 import DatasetsMainView from "./components/data/datasets/DatasetsMainView";
 import SingleDataView from "./components/data/common/single/main/SingleDataView";
+import ModelsMainView from "./components/data/models/ModelsMainView";
 
 interface Dsv {
   tab: string;
@@ -92,6 +93,8 @@ function App({keycloakReady}: AppProps) {
                     <Route path="/" element={<Navigate to="/datasets" replace />} />
                     <Route path="/fair" element={<FairView />} />
                     <Route path="/support" element={<SupportView />} />
+                    <Route path="/models" element={<ModelsMainView keycloakReady={keycloakReady} 
+                        dataManager={dataManager} postMessage={postMessage} />} />
                     <Route path="/datasets" element={<DatasetsMainView keycloakReady={keycloakReady} 
                         dataManager={dataManager} postMessage={postMessage} />} />
                     <Route path="/datasets/:singleDataId/details" 

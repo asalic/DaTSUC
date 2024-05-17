@@ -37,6 +37,7 @@ function NavbarView() {
                 </div>
             </Navbar.Brand>
             <Nav.Link title="List of datasets" href={Config.basename + "/datasets"}>Datasets</Nav.Link>
+            <Nav.Link title="List of models" href={Config.basename + "/models"}>Models</Nav.Link>
             <NavDropdown title="Documentation" id="documentation-dropdown">
               <NavDropdown.Item title="Dataset Usage Guide" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/ubuntu-python/rootfs/home/chaimeleon/application-examples/dataset-access-guide.ipynb" target="_blank">Dataset Usage</NavDropdown.Item>
               <NavDropdown.Item title="Workstation Usage Guide " href="https://github.com/chaimeleon-eu/workstation-images/blob/main/usage-guide.md" target="_blank">Workstation Usage</NavDropdown.Item>
