@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Dropdown, DropdownButton } from "react-bootstrap";
 import SingleDataView from "./SingleDataView";
 import Dialog from "../../../../common/Dialog";
+import DialogSize from "../../../../../model/DialogSize";
 
 function getAction(condition: boolean, actionCb: Function, txt: string, keyName: string): JSX.Element {
     if (condition) {
@@ -41,7 +42,7 @@ function showDialogPublishDs<T extends SingleData>(token: string | null | undefi
                 : <></>}
           </div>,
         title: <div>Publish dataset <b>{data["name"]}</b> (<i>{data["id"]}</i>)</div>,
-        size: Dialog.SIZE_LG,
+        size: DialogSize.SIZE_LG,
         onBeforeClose: null
       });
     } else {

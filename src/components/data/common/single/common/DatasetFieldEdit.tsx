@@ -4,13 +4,13 @@ import React, { ReactNode, useState, useEffect } from "react";
 import { useKeycloak } from '@react-keycloak/web';
 
 import StaticValues from "../../../../../api/StaticValues";
-import Dialog from "../../../../common/Dialog";
 import Footer from "./fieldedit/Footer";
 import Body from "./fieldedit/Body";
 import BodyPid from "./fieldedit/BodyPid";
 import BodyId from "./fieldedit/BodyId";
 import BodyLicense from "./fieldedit/BodyLicense";
 import DataManager from "../../../../../api/DataManager";
+import DialogSize from "../../../../../model/DialogSize";
 
 function transformValue(field: string, value: any) {
   if (field === "pids") {
@@ -74,7 +74,7 @@ function DatasetFieldEdit(props: DatasetFieldEditProps) {
           footer: <Footer updValue={updValue} patchDataset={patchDataset} oldValue={props.oldValue} />,
           body: body,
           title: <span>Edit <b>{props.fieldDisplay}</b></span>,
-          size: Dialog.SIZE_LG,
+          size: DialogSize.SIZE_LG,
           onBeforeClose: null
         });
         //patchDataset(props.field, props.newValue, props.succUpdCb);

@@ -38,23 +38,29 @@ function Dialog({settings}: DialogProps) {
   useEffect(() => {
       setShow(settings.show);
   }, [settings]);
-  let dialogClassName = "modal-90w";
-  let size: "xl" | "lg" | "sm" = "sm";
-  if (settings.size === DialogSize.SIZE_XL) {
+  let dialogClassName = undefined;
+  let size: "xl" | "lg" | "sm" | undefined = undefined;
+  if (settings.size === DialogSize.SIZE_XXL) {
     dialogClassName = "modal-xxl";
+    //size = "";
+  } if (settings.size === DialogSize.SIZE_XL) {
+    dialogClassName = "";
     size = "xl";
   } else if (settings.size === DialogSize.SIZE_LG) {
-      dialogClassName = "modal-lg";
+      dialogClassName = "";
       size = "lg";
   } else if (settings.size === DialogSize.SIZE_SM) {
-      dialogClassName = "modal-sm";
+      dialogClassName = "";
       size = "sm";
   } else {
-    console.error(`unhandled dialog size ${dialogClassName}`);
+    console.error(`unhandled dialog size ${settings.size}`);
   }
   return (
     <>
-      <Modal dialogClassName={dialogClassName} size={size} show={show} scrollable={settings.scrollable} onHide={() => handleClose(settings.onBeforeClose)}>
+      <Modal 
+          {...(dialogClassName !== undefined && { dialogClassName })} 
+          {...(size !== undefined && { size: size })} 
+          show={show} scrollable={settings.scrollable} onHide={() => handleClose(settings.onBeforeClose)}>
         <Modal.Header closeButton>
           <Modal.Title>{settings.title}</Modal.Title>
         </Modal.Header>
@@ -68,10 +74,6 @@ function Dialog({settings}: DialogProps) {
     </>
   );
 }
-
-Dialog.SIZE_SM = "sm";
-Dialog.SIZE_LG = "lg";
-Dialog.SIZE_XXL = "xxl";
 
 Dialog.HANDLE_CLOSE = handleClose;
 export default Dialog;
