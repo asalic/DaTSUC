@@ -2,11 +2,11 @@
     "include": ["./src/**/*.js", "./src/**/*.ts", "./src/**/*.jsx", "./src/**/*.tsx", "./src/**/*.json", "TraceView.tsx"],
     "exclude": ["./test", "./node_modules", "./build"],
     "compilerOptions": {
+      "rootDir": "./src",
       "jsx": "react",
       "allowSyntheticDefaultImports": true,
       "sourceMap": true,
-        "outDir": "./build/",
-        "rootDir": "src",
+      "outDir": "./build/",
       "lib": [
         "ES2022", "dom", "dom.iterable"
       ],

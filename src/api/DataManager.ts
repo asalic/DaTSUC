@@ -55,4 +55,8 @@ export default class DataManager {
     return WebClient.updateAcl(token, datasetId, username, "DELETE");
   }
 
+  getLicenses(token:  string): Promise<XMLHttpRequest> {
+    return WebClient.getLicenses(token);
+  }
+
 }
