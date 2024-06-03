@@ -35,7 +35,6 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
   //   ageLstItem = <span>Less than {dataset.ageHigh} {dataset.ageUnit[1]}</span>
 
   // }
-  console.log(props.data);
   if (dataset) {
     let pids = dataset.pids;
     let pidUrl: string = "";

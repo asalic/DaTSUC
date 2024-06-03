@@ -291,7 +291,8 @@ function ColNameIdRender({row}: ColNameIdRenderProps): JSX.Element {
   return (
     <Fragment>
     {row.original["name"]}
-    &nbsp;(<i className={txtIdClass} onAnimationEnd={() => setCopySuc(null)}>{row.original["id"]}</i>
+    <br />
+    (<i className={txtIdClass} onAnimationEnd={() => setCopySuc(null)}>{row.original["id"]}</i>
     <Button variant="link" className="m-0 p-0 ms-1" onClick={(e) =>
             {
               if (navigator.clipboard) { 

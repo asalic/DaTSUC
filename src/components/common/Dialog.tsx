@@ -6,7 +6,6 @@ import DialogSize from '../../model/DialogSize';
 let outsideSetShow: Function | null;
 
 const handleClose = (onBeforeClose?: Function | null) => {
-  console.log(onBeforeClose);
   if (onBeforeClose) {
     if (typeof onBeforeClose === 'function') {
         onBeforeClose();

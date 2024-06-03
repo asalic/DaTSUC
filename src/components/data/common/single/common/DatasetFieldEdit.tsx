@@ -59,7 +59,7 @@ function DatasetFieldEdit(props: DatasetFieldEditProps) {
   
   let body: ReactNode | null = null;
   if (props.field === "license" || props.field === "licenseUrl") {
-    body = <BodyLicense updValue={updValue} oldValue={props.oldValue} />;
+    body = <BodyLicense updValue={updValue} oldValue={props.oldValue} dataManager={props.dataManager} keycloakReady={props.keycloakReady}/>;
   } else if (props.field === "pids") {
     body = <BodyPid updValue={updValue} oldValue={value} />;
   } else if (props.field === "previousId") {
