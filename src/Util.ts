@@ -116,4 +116,10 @@ export default class Util {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
+  static popPath(path: string): string {
+    let pS = path.split("/");
+    pS.pop();
+    return pS.join("/");
+  }
+
 }

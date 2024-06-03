@@ -107,6 +107,16 @@ export default class WebClient {
     return WebClient._call(operation, Config.datasetService + "/datasets/" + datasetId + "/acl/" + encodeURIComponent(username), headers,
                 null, "text", null );
   }
+
+  static getLicenses(token:  string): Promise<XMLHttpRequest> {
+    let headers = new Map();
+    if (token) {
+      headers.set("Authorization", "Bearer " + token);
+    }
+    return WebClient._call("GET", Config.datasetService + "/licenses", headers,
+                null, "text", null );
+
+  }
   
   static _prepQueryParams(qTmp: QueryParamsType): object | null {
     const entr = Object.entries(qTmp);
