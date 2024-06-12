@@ -1,6 +1,6 @@
 {
   "name": "dataset-explorer",
-  "version": "2.0.0-BETA",
+  "version": "2.0.1-BETA",
   "private": true,
   "homepage": ".",
   "dependencies": {

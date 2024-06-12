@@ -47,7 +47,7 @@ function DatasetView(props: DatasetViewProps) {
     const getDataset = //useCallback(
       (token: string | null | undefined, datasetId: string) => {
         setAllValues(  (prevValues: LoadingData<Dataset>) => {
-          return { ...prevValues, loading: true, error: null, data: null, status: -1 }
+          return { ...prevValues, loading: true, error: null, data: null, statusCode: -1 }
           });
         props.dataManager.getDataset(token, datasetId)
           .then(
@@ -61,18 +61,24 @@ function DatasetView(props: DatasetViewProps) {
               data["license"] = JSON.parse(data["licenseUrl"].replace(/'/g,"\""));//(typeof data["licenseUrl"] === "object" ? data["licenseUrl"] : JSON.parse(data["licenseUrl"])); //data["licenseUrl"].title;//JSON.parse(data["licenseUrl"]);
               }
               setAllValues(  (prevValues: LoadingData<Dataset>) => {
-              return { ...prevValues, loading: false, error: null, data: data, status: xhr.status }
+              return { ...prevValues, loading: false, error: null, data: data, statusCode: xhr.status }
               });
           },
           (xhr: XMLHttpRequest) => {
-              const error: LoadingError = Util.getErrFromXhr(xhr);
+            const error: LoadingError = Util.getErrFromXhr(xhr);
               if (xhr.status === 401) {
-              keycloak.login();
-              } else {
-              props.postMessage(new Message(Message.ERROR, error.title, error.text));
+                // if (token === null || token === undefined) {
+                //   keycloak.login();
+                // } else {
                   setAllValues( (prevValues: LoadingData<Dataset>) => {
-                  return { ...prevValues, data: null, loading: false, error: error, status: xhr.status}
+                    return { ...prevValues, data: null, loading: false, error, statusCode: xhr.status}
                   });
+                //}
+              } else {
+                props.postMessage(new Message(Message.ERROR, error.title, error.text));
+                    setAllValues( (prevValues: LoadingData<Dataset>) => {
+                    return { ...prevValues, data: null, loading: false, error: error, statusCode: xhr.status}
+                    });
               }
           });
       }//, [props.dataManager, keycloak, props.postMessage, props.keycloakReady, setAllValues]);
@@ -86,14 +92,14 @@ function DatasetView(props: DatasetViewProps) {
             // setAllValues( prevValues => {
             //   let data = JSON.parse(JSON.stringify(prevValues));
             //   data[field] = value;
-            //    return { ...prevValues, isLoading: false, isLoaded: true, error: null, data, status: xhr.status }
+            //    return { ...prevValues, isLoading: false, isLoaded: true, error: null, data, statusCode: xhr.status }
             // });
         },
         (xhr: XMLHttpRequest) => {
             const error = Util.getErrFromXhr(xhr);
             props.postMessage(new Message(Message.ERROR, error.title, error.text));
             // setAllValues( prevValues => {
-            //    return { ...prevValues, data: null, isLoading: false, isLoaded: true, error: Util.getErrFromXhr(xhr), status: xhr.status }
+            //    return { ...prevValues, data: null, isLoading: false, isLoaded: true, error: Util.getErrFromXhr(xhr), statusCode: xhr.status }
             // });
         });
         };
