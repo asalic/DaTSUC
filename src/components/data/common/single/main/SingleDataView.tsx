@@ -10,6 +10,9 @@ import ResourceNotFoundView from "../../../../common/ResourceNotFoundView";
 import Breadcrumbs from "../../../../common/Breadcrumbs";
 import SingleDataTitle from "./SingleDataTitle";
 import SingleDataActions from "./SingleDataActions";
+import LoadingView from "../../../../common/LoadingView";
+import ErrorView from "../../../../common/ErrorView";
+import { useKeycloak } from "@react-keycloak/web";
 
 
 SingleDataView.TAB_DETAILS = "details";
@@ -67,6 +70,7 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>) {
 
     let params = useParams();
   let navigate = useNavigate();
+  const { keycloak } = useKeycloak();
   //const [activeTab, setActivetab] = useState<string>(props.activeTab);
   const datasetId: string | undefined = params["singleDataId"];//props.datasetId;
     // const handlePostMsg = useCallback((msgType, title, text) => {
@@ -75,69 +79,68 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>) {
   if (datasetId) {
     if (props.singleData.error !== null) {
       if (props.singleData.statusCode === 401) {
-        return <UnauthorizedView />
+        return <UnauthorizedView loggedIn={props.keycloakReady && keycloak.token !== null && keycloak.token !== undefined}/>
       } else if (props.singleData.statusCode === 404) {
         return <ResourceNotFoundView id={datasetId} />;
       } else {
-        return <div>Error</div>;
+        return <ErrorView message={`Error loading resource ID '${datasetId}': ${props.singleData.error["title"]}`} />
       }
     } else if (props.singleData.data === null || props.singleData.loading) {
-        return <div>loading...</div>;
+      return <LoadingView what={`resource ID '${datasetId}'`} />;
     }
   } else {
     if (props.singleData.data === null || props.singleData.loading) {
-      return <div>loading...</div>
+      return <LoadingView what={`resource ID '${datasetId}'`} />;
     } else {    
       return <div>No dataset ID specified</div>; 
     }
   }
 
-  return (
-    <Fragment>
-      <Breadcrumbs elems={[{text: 'Dataset information', link: "", active: true}]}/>
-      <Row className="mb-4 mt-4">
-        <Col md={11}>
-          <SingleDataTitle data={props.singleData.data} patchDataset={props.patchSingleData} showDialog={props.showDialog} 
-            keycloakReady={props.keycloakReady} dataManager={props.dataManager} datasetId={datasetId} />
-        </Col>
-        <Col md={1}>
-          <div className="float-end">
-            <SingleDataActions data={props.singleData.data} patchDatasetCb={props.patchSingleData} showDialog={props.showDialog}/>
-          </div>
-        </Col>
-      </Row>
-      <Container fluid className="w-100 h-75">
-
-        <Tab.Container defaultActiveKey="details" activeKey={props.activeTab} 
-              onSelect={(k) => {console.log(k);navigate(`/datasets/${datasetId}/${k}`)}}>
-          <Row>
-            <Col sm={2}>
-              <Nav variant="pills" className="flex-column mb-5">
-                {
-                  props.tabs.map(s => 
-                    <Nav.Item>
-                      <Nav.Link eventKey={s.eventKey}>{s.title}</Nav.Link>
-                    </Nav.Item>
-                  )
-                }
-              </Nav>
+      return (
+        <Fragment>
+          <Breadcrumbs elems={[{text: 'Dataset information', link: "", active: true}]}/>
+          <Row className="mb-4 mt-4">
+            <Col md={11}>
+              <SingleDataTitle data={props.singleData.data} patchDataset={props.patchSingleData} showDialog={props.showDialog} 
+                keycloakReady={props.keycloakReady} dataManager={props.dataManager} datasetId={datasetId} />
             </Col>
-            <Col sm={10}>
-              <Tab.Content>
-                {
-                  props.tabs.filter(s => s.eventKey === props.activeTab).map(s => 
-                    <Tab.Pane eventKey={s.eventKey}>
-                        {s.view}
-                    </Tab.Pane>
-                  )
-                }
-              </Tab.Content>
+            <Col md={1}>
+              <div className="float-end">
+                <SingleDataActions data={props.singleData.data} patchDatasetCb={props.patchSingleData} showDialog={props.showDialog}/>
+              </div>
             </Col>
           </Row>
-        </Tab.Container>
-      </Container>
-    </Fragment>
-      );
+          <Container fluid className="w-100 h-75">
+    
+            <Tab.Container defaultActiveKey="details" activeKey={props.activeTab} 
+                  onSelect={(k) => {console.log(k);navigate(`/datasets/${datasetId}/${k}`)}}>
+              <Row>
+                <Col sm={2}>
+                  <Nav variant="pills" className="flex-column mb-5">
+                    {
+                      props.tabs.map(s => 
+                        <Nav.Item>
+                          <Nav.Link eventKey={s.eventKey}>{s.title}</Nav.Link>
+                        </Nav.Item>
+                      )
+                    }
+                  </Nav>
+                </Col>
+                <Col sm={10}>
+                  <Tab.Content>
+                    {
+                      props.tabs.filter(s => s.eventKey === props.activeTab).map(s => 
+                        <Tab.Pane eventKey={s.eventKey}>
+                            {s.view}
+                        </Tab.Pane>
+                      )
+                    }
+                  </Tab.Content>
+                </Col>
+              </Row>
+            </Tab.Container>
+          </Container>
+        </Fragment>
+          );
 }
-
 export default SingleDataView;

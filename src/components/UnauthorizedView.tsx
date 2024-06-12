@@ -1,10 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
-function UnauthorizedView() {
+interface UnauthorizedViewProps {
+  loggedIn?: boolean | undefined;
+}
 
+function UnauthorizedView(props: UnauthorizedViewProps) {
+  let msg = `Please log in to access this page.`;
+  if (props?.loggedIn) {
+    msg = 'You are not authorized to access this resource.'
+  }
   return (
-    <h4 className="m-2">Please log in to see this page or return to the <Link to="/">home</Link> page.</h4>
+    <h4 className="m-2">{msg}</h4>
   )
 
 }
