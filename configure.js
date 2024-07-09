@@ -2,7 +2,7 @@ const fs = require('fs');
 let pjson = require('./package.json');
 
 if (process.argv.length !== 3) {
-  console.error("This script requires an argument, either dev (for development execution), prod-test (for production test), or prod (for production release)");
+  console.error("This script requires an argument, either dev (for development execution), prod-test (for production test), prod (for production release), or prod-eucaim (production eucaim cluster");
   process.exit(1);
 }
 

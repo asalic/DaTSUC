@@ -1,0 +1,34 @@
+{
+    "appVersion": "<replace_me>",
+    "release": "prod-eucaim",
+    "datasetService": "https://eucaim-node.i3m.upv.es/dataset-service/api",
+    "tracerService": "https://eucaim-node.i3m.upv.es/tracer-service/tracer/api/v1",
+    "caseExplorerService": "https://eucaim-node.i3m.upv.es/omni/",
+    "basename": "/dataset-service",
+    "defaultLimitDatasets": 30,
+    "defaultLimitStudies": 30,
+    "defaultLimitTraces": 30,
+    "defaultLimitAccess": 30,
+    "kubeAppsUrl": "https://eucaim-node.i3m.upv.es/apps/",
+    "userAccountUrl": "https://eucaim-node.i3m.upv.es/auth/realms/EUCAIM-NODE/account",
+    "refreshDatasetCreate": 15000,
+    "keycloak": {
+      "config": {
+        "url": "https://eucaim-node.i3m.upv.es/auth/",
+        "realm": "EUCAIM-NODE",
+        "clientId": "dataset-explorer"
+      },
+      "initOptions": {
+        "responseMode": "fragment",
+        "checkLoginIframe": true,
+        "onLoad": "check-sso"
+        }
+    },
+    "project": {
+      "name": "EUCAIM",
+      "doi": null,
+      "termsConditions": null,
+      "privacyPolicy": null,
+      "favicon": "/eucaim-logo.jpg"
+    }
+  }

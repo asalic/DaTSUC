@@ -1,6 +1,6 @@
 {
   "name": "dataset-explorer",
-  "version": "2.0.1-BETA",
+  "version": "2.0.2-BETA",
   "private": true,
   "homepage": ".",
   "dependencies": {
@@ -37,7 +37,9 @@
     "start": "node configure.js dev && react-scripts start",
     "build-dev": "node configure.js dev  && PUBLIC_URL=/ react-scripts build",
     "build-prod": "node configure.js prod && PUBLIC_URL=/dataset-service/web react-scripts build",
+    "build-prod-eucaim": "node configure.js prod-eucaim && PUBLIC_URL=/dataset-service/web react-scripts build",
     "build-prod-test": "node configure.js prod-test && DISABLE_ESLINT_PLUGIN=true  PUBLIC_URL=/dataset-service/web react-scripts build",
+    "build-prod-test-eucaim": "node configure.js prod-test-eucaim && DISABLE_ESLINT_PLUGIN=true  PUBLIC_URL=/dataset-service/web react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
