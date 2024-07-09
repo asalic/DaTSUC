@@ -5,6 +5,8 @@ export default class Util {
 
   static RELEASE_DEV = "dev";
   static RELEASE_PROD = "prod";
+  static RELEASE_PROD_EUCAIM = "prod-eucaim";
+  static RELEASE_PROD_TEST_EUCAIM = "prod-test-eucaim";
   static RELEASE_PROD_TEST= "prod-test";
   static RELEASE_UNDEFINED = undefined;
 
@@ -76,6 +78,8 @@ export default class Util {
       case Util.RELEASE_PROD: return Util.RELEASE_PROD;
       case Util.RELEASE_DEV: return Util.RELEASE_DEV;
       case Util.RELEASE_PROD_TEST: return Util.RELEASE_PROD_TEST;
+      case Util.RELEASE_PROD_TEST_EUCAIM: return Util.RELEASE_PROD_TEST_EUCAIM;
+      case Util.RELEASE_PROD_EUCAIM: return Util.RELEASE_PROD_EUCAIM;
       default: return Util.RELEASE_UNDEFINED;
     }
   }
