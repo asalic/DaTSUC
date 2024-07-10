@@ -10,11 +10,11 @@
   "defaultLimitTraces": 4,
   "defaultLimitAccess": 4,
   "kubeAppsUrl": "http://asaserver.i3m.upv.es:3005/",
-  "userAccountUrl": "https://asaserver.i3m.upv.es:20000/auth/realms/CHAIMELEON/account",
+  "userAccountUrl": "https://asaserver.i3m.upv.es:20001/auth/realms/CHAIMELEON/account",
   "refreshDatasetCreate": 5000,
   "keycloak": {
     "config": {
-      "url": "https://asaserver.i3m.upv.es:20000/auth",
+      "url": "https://asaserver.i3m.upv.es:20001/auth",
       "realm": "CHAIMELEON",
       "clientId": "dataset-explorer"
     },
