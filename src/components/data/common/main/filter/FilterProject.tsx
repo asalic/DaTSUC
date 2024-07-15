@@ -60,7 +60,7 @@ function FilterProject(props: FilterProjectProps): JSX.Element {
                 },
                 (xhr: XMLHttpRequest) => {
                   const error = Util.getErrFromXhr(xhr);
-                  props.postMessage(new Message(Message.ERROR, error.title, error.text));
+                  props.postMessage(new Message(Message.ERROR, "Error loading projects into the filters", error.text));
                   setData(prev => {
                     return {...prev, loading: false, data: [], error, statusCode: xhr.status }
                   });
