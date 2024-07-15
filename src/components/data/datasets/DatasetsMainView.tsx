@@ -11,7 +11,7 @@ interface DatasetsMainViewProps {
   
 function DatasetsMainView(props: DatasetsMainViewProps) {
 
-  return <MainView  keycloakReady={props.keycloakReady} dataManager={props.dataManager} postMessage={postMessage} activeTab={props.activeTab}/>
+  return <MainView  keycloakReady={props.keycloakReady} dataManager={props.dataManager} postMessage={props.postMessage} activeTab={props.activeTab}/>
 
 }
 

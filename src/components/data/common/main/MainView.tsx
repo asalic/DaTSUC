@@ -138,7 +138,7 @@ function MainView(props: MainViewProps) {
                       },
                       (xhr: XMLHttpRequest) => {
                         const error = Util.getErrFromXhr(xhr);
-                        props.postMessage(new Message(Message.ERROR, error.title, error.text));
+                        props.postMessage(new Message(Message.ERROR, "Error loading datasets", error.text));
                         setAllData(prev => {
                           return {...prev, loading: false, data: null, error, statusCode: xhr.status }
                         });
