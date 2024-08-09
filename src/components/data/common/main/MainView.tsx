@@ -138,7 +138,7 @@ function MainView(props: MainViewProps) {
                       },
                       (xhr: XMLHttpRequest) => {
                         const error = Util.getErrFromXhr(xhr);
-                        props.postMessage(new Message(Message.ERROR, error.title, error.text));
+                        props.postMessage(new Message(Message.ERROR, "Error loading datasets", error.text));
                         setAllData(prev => {
                           return {...prev, loading: false, data: null, error, statusCode: xhr.status }
                         });
@@ -155,7 +155,7 @@ function MainView(props: MainViewProps) {
           <div style={{display: "flex", flexDirection: "row"}}>
             <div>
               <FilteringView filterUpdate={filterUpdate} searchParams={searchParams}  loading={allData.loading} 
-                  keycloakReady={props.keycloakReady} dataManager={props.dataManager} postMessage={postMessage}/>
+                  keycloakReady={props.keycloakReady} dataManager={props.dataManager} postMessage={props.postMessage}/>
             </div>
             <div style={{flexGrow: "1"}}>
               <MainTable data={allData.data && allData.data?.list ? allData.data.list.slice(0, limit) : []}

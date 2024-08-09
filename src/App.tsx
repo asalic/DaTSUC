@@ -58,7 +58,7 @@ function App({keycloakReady}: AppProps) {
   const [message, setMessage] = useState<Message | null>(null);
   const postMessage = useCallback((message: Message | null) => {
     setMessage(message);
-  }, []);
+  }, [setMessage]);
   const showDialog = (dlgProps: DialogSettings) => {
     setDlgState({
       ...dlgState,

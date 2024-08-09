@@ -1,0 +1,35 @@
+{
+    "appVersion": "<replace_me>",
+    "release": "prod-test-eucaim",
+    "datasetService": "https://chaimeleon-test.grycap.i3m.upv.es/dataset-service/api",
+    "tracerService": "https://chaimeleon-test.grycap.i3m.upv.es/tracer-service/tracer/api/v1",
+    "caseExplorerService": "https://chaimeleon-test.grycap.i3m.upv.es/omni/",
+    "basename": "/dataset-service",
+    "defaultLimitDatasets": 30,
+    "defaultLimitStudies": 30,
+    "defaultLimitTraces": 15,
+    "defaultLimitAccess": 30,
+    "kubeAppsUrl": "https://chaimeleon-eu.i3m.upv.es/apps/",
+    "userAccountUrl": "https://chaimeleon-eu.i3m.upv.es/auth/realms/CHAIMELEON/account",
+    "refreshDatasetCreate": 5000,
+    "keycloak": {
+      "config": {
+        "url": "https://chaimeleon-eu.i3m.upv.es/auth/",
+        "realm": "CHAIMELEON",
+        "clientId": "dataset-explorer-test"
+      }, 
+      "initOptions": {
+        "responseMode": "fragment",
+        "checkLoginIframe": true,
+        "onLoad": "check-sso"
+      }
+    },
+    "project": {
+      "name": "EUCAIM",
+      "doi": null,
+      "termsConditions": null,
+      "privacyPolicy": null,
+      "favicon": "/eucaim-logo.jpg"
+    }
+  }
+  

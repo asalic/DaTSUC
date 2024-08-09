@@ -10,11 +10,11 @@
   "defaultLimitTraces": 4,
   "defaultLimitAccess": 4,
   "kubeAppsUrl": "http://asaserver.i3m.upv.es:3005/",
-  "userAccountUrl": "https://asaserver.i3m.upv.es:20000/auth/realms/CHAIMELEON/account",
+  "userAccountUrl": "https://asaserver.i3m.upv.es:20001/auth/realms/CHAIMELEON/account",
   "refreshDatasetCreate": 5000,
   "keycloak": {
     "config": {
-      "url": "https://asaserver.i3m.upv.es:20000/auth",
+      "url": "https://asaserver.i3m.upv.es:20001/auth",
       "realm": "CHAIMELEON",
       "clientId": "dataset-explorer"
     },
@@ -23,5 +23,12 @@
       "checkLoginIframe": true,
       "onLoad": "check-sso"
     }
+  },
+  "project": {
+    "name": "CHAIMELEON",
+    "doi": "10.3030/952172",
+    "termsConditions": "/terms-and-conditions.pdf",
+    "privacyPolicy": "/privacy-policy.pdf",
+    "favicon": "/chaimeleon-logo.svg"
   }
 }
