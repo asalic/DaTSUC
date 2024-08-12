@@ -81,7 +81,7 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
             <div className="pt-2 pb-2 ps-1 pe-1 bg-light bg-gradient">
               <p>
               { pidUrl.length > 0 ?
-                <Fragment><i>Cite this dataset as </i><b><a href={pidUrl}>{pidUrl}</a></b></Fragment> : 
+                <Fragment><i>Cite this dataset as </i><b><a target="_blank" href={pidUrl}>{pidUrl}</a></b></Fragment> : 
                   (dataset.editablePropertiesByTheUser.includes("pids") ? <i>Add a PID URL to allow citations </i> : <Fragment/> ) }
 
               { dataset.editablePropertiesByTheUser.includes("pids") ?
@@ -102,7 +102,7 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
                     : 
                     <Fragment>
                       <i>This dataset is offered under the following license: </i>
-                      <b><a href={dataset.license.url}>{dataset.license.title}</a></b>
+                      <b><a target="_blank" href={dataset.license.url}>{dataset.license.title}</a></b>
                     </Fragment>
                 }
                 

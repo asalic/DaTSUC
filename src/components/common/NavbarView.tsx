@@ -50,7 +50,7 @@ function NavbarView() {
               <NavDropdown.Divider />
               <NavDropdown.Item title="Fair Principles" href={Config.basename + "/fair"}>Fair Principles</NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link title="Support" href={Config.basename + "/support"}>Support</Nav.Link>
+            <Nav.Link target="_blank" title="Support" href={Config.basename + "/support"}>Support</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         {/* keycloak.authenticated ? <Button className="me-1" variant="warning" onClick={() => window.open("https://forms.gle/bDmJC3cHog2CixMB8", '_blank').focus()}>Internal Validation</Button> : <Fragment/> */}
