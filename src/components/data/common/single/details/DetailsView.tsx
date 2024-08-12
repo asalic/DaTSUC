@@ -117,7 +117,7 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
                 {
                   dataset.lastIntegrityCheck ? 
                     <i>Last integrity check performed on <b>{new Intl.DateTimeFormat('en-GB', { dateStyle: 'short', timeStyle: 'long' }).format(Date.parse(dataset.lastIntegrityCheck))}</b>.</i>
-                    : <i>The interity of the dataset has not been checked yet.</i>
+                    : <i>The integrity of the dataset has not been checked yet.</i>
                   }
               </p>
             </div>
