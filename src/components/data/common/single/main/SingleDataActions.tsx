@@ -7,15 +7,11 @@ import SingleDataView from "./SingleDataView";
 import Dialog from "../../../../common/Dialog";
 import DialogSize from "../../../../../model/DialogSize";
 
-function getAction(condition: boolean, actionCb: Function, txt: string, keyName: string): JSX.Element {
-    if (condition) {
+function getAction(actionCb: Function, txt: string, keyName: string): JSX.Element {
       return <Dropdown.Item eventKey={keyName} key={keyName} href="#"
               onClick={() => {
                 actionCb();
-              }}>{txt}</Dropdown.Item>
-    } else {
-      return <></>;
-    }
+              }}>{txt}</Dropdown.Item>;
   }
 
 function showDialogPublishDs<T extends SingleData>(token: string | null | undefined, patchDatasetCb: Function, showDialog: Function,  data: T): void {
@@ -65,40 +61,43 @@ function SingleDataActions<T extends SingleData>({data, patchDatasetCb, showDial
     const navigate = useNavigate();
     const location = useLocation();
     let entries = [];
-    if (!data["creating"] && !data["invalidated"]) {
-        entries.push(
-            getAction(!data["creating"] && !data["invalidated"] ,
-                () => {
-                const path = location.pathname;
-                // if (keycloak.authenticated) {
-                //   navigate(`${path}/${SingleDataView.SHOW_DLG_APP_DASHBOARD}`);
-                //   showDialogAppDashhboard(data["id"], showDialog, () => {
-                //     navigate(popPath(path));
-                //   })
-                // } else {
-                    if (path.endsWith(SingleDataView.SHOW_DLG_APP_DASHBOARD))
-                    keycloak.login();
-                    else {
-                    navigate(`${path}/${SingleDataView.SHOW_DLG_APP_DASHBOARD}`);
-                    keycloak.login();
-                    }
-                //}
-                }, "Use on Apps Dashboard", "action-use-dashboard")
-              );
-    }
-        //console.log(`data.editablePropertiesByTheUser ${data.editablePropertiesByTheUser}`);
-        if (keycloak.authenticated) {
-            entries.push(
-            getAction(data.editablePropertiesByTheUser.includes("invalidated"),
-                () => {patchDatasetCb(keycloak.token, data["id"], "invalidated", 
-                    !data.invalidated)}, data.invalidated ? "Validate" : "Invalidate", "action-invalidate"),
-            getAction(data.editablePropertiesByTheUser.includes("public"),
-                () => showDialogPublishDs(keycloak.token, patchDatasetCb, showDialog,  data), 
-                    data.public ? "Unpublish" : "Publish", "action-publish"),
-            getAction(data.editablePropertiesByTheUser.includes("draft"),
-                    () => {patchDatasetCb(keycloak.token, data["id"], "draft", false)}, "Release", "action-release")
+    if (keycloak.authenticated) {
+      if (!data["creating"] && !data["invalidated"] 
+        && data.allowedActionsForTheUser.includes("use")) {
+          entries.push(getAction(() => {
+            const path = location.pathname;
+            // if (keycloak.authenticated) {
+            //   navigate(`${path}/${SingleDataView.SHOW_DLG_APP_DASHBOARD}`);
+            //   showDialogAppDashhboard(data["id"], showDialog, () => {
+            //     navigate(popPath(path));
+            //   })
+            // } else {
+                if (path.endsWith(SingleDataView.SHOW_DLG_APP_DASHBOARD))
+                keycloak.login();
+                else {
+                navigate(`${path}/${SingleDataView.SHOW_DLG_APP_DASHBOARD}`);
+                keycloak.login();
+                }
+            //}
+            }, "Use on Apps Dashboard", "action-use-dashboard"));
+        }
+        if  (data.editablePropertiesByTheUser.includes("invalidated")) {
+          entries.push(
+            getAction(() => {patchDatasetCb(keycloak.token, data["id"], "invalidated", 
+              !data.invalidated)}, data.invalidated ? "Validate" : "Invalidate", "action-invalidate")
+          );
+        }
+        if (data.editablePropertiesByTheUser.includes("public")) {
+          entries.push( 
+            getAction(() => showDialogPublishDs(keycloak.token, patchDatasetCb, showDialog,  data), 
+                    data.public ? "Unpublish" : "Publish", "action-publish"));
+        }
+        if (data.editablePropertiesByTheUser.includes("draft")) {
+          entries.push( 
+            getAction(() => {patchDatasetCb(keycloak.token, data["id"], "draft", false)}, "Release", "action-release")
             );
         }
+      }
     //}
     if (entries.length !== 0) {
         return  <DropdownButton key="actions-drop" title="Actions">
