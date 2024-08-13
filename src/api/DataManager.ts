@@ -59,4 +59,8 @@ export default class DataManager {
     return WebClient.getLicenses(token);
   }
 
+  postCheckIntegrity(token: string, singleDataId: string): Promise<XMLHttpRequest> {
+    return WebClient.postCheckIntegrity(token, singleDataId);
+  }
+
 }

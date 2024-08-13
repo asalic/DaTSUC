@@ -6,6 +6,12 @@ import { Button, Dropdown, DropdownButton } from "react-bootstrap";
 import SingleDataView from "./SingleDataView";
 import Dialog from "../../../../common/Dialog";
 import DialogSize from "../../../../../model/DialogSize";
+import { useCallback } from "react";
+import DataManager from "../../../../../api/DataManager";
+import Message from "../../../../../model/Message";
+import LoadingError from "../../../../../model/LoadingError";
+import Util from "../../../../../Util";
+import CheckIntegrity from "../../../../../model/CheckIntegrity";
 
 function getAction(actionCb: Function, txt: string, keyName: string): JSX.Element {
       return <Dropdown.Item eventKey={keyName} key={keyName} href="#"
@@ -51,17 +57,47 @@ function showDialogPublishDs<T extends SingleData>(token: string | null | undefi
   interface SingleDataActionsProps<T extends SingleData> {
       data: T;
       patchDatasetCb: Function;
-      showDialog: Function; 
+      showDialog: Function;
+      keycloakReady: boolean;
+      dataManager: DataManager;
+      postMessage: Function;
   }
   
 
-function SingleDataActions<T extends SingleData>({data, patchDatasetCb, showDialog}: SingleDataActionsProps<T>) {
+function SingleDataActions<T extends SingleData>({data, patchDatasetCb, showDialog, keycloakReady, dataManager, postMessage}: SingleDataActionsProps<T>) {
 
     let { keycloak } = useKeycloak();
     const navigate = useNavigate();
     const location = useLocation();
+
+    const checkIntegrity = useCallback(() => {
+      if (keycloakReady && keycloak.authenticated && keycloak.token) {
+  
+          dataManager.postCheckIntegrity(keycloak.token, data.id)
+            .then(
+              (xhr: XMLHttpRequest) => {
+                const res: CheckIntegrity = Object.assign(new CheckIntegrity(), JSON.parse(xhr.response));
+                if (res.success) {
+                  postMessage(new Message(Message.SUCCESS, "Integrity check process", res.msg));
+                } else {
+                  postMessage(new Message(Message.WARN, "Integrity check process", res.msg));
+                }
+              },
+              (xhr: XMLHttpRequest) => {
+                const error: LoadingError = Util.getErrFromXhr(xhr);
+                postMessage(new Message(Message.ERROR, error.title, error.text));
+              });
+      }
+  
+    }, [data.id, keycloakReady, keycloak.authenticated, keycloak.token, dataManager, postMessage]);
+
     let entries = [];
     if (keycloak.authenticated) {
+      if (data.allowedActionsForTheUser.includes("checkIntegrity")) {
+        entries.push( 
+          getAction(() => checkIntegrity(), 
+                  "Check Integrity", "action-checkintegrity"));
+      }
       if (!data["creating"] && !data["invalidated"] 
         && data.allowedActionsForTheUser.includes("use")) {
           entries.push(getAction(() => {

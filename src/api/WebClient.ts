@@ -117,6 +117,14 @@ export default class WebClient {
                 null, "text", null );
 
   }
+
+  static postCheckIntegrity(token:  string, singleDataId: string): Promise<XMLHttpRequest> {
+    let headers = new Map();
+    headers.set("Authorization", "Bearer " + token);
+    return WebClient._call("POST", Config.datasetService + "/datasets/" + singleDataId + "/checkIntegrity", headers,
+                null, "text", null );
+
+  }
   
   static _prepQueryParams(qTmp: QueryParamsType): object | null {
     const entr = Object.entries(qTmp);

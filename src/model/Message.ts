@@ -4,6 +4,7 @@ export default class Message {
   public static WARN = "warning";
   public static ERROR = "danger";
   public static INFO = "info";
+  public static SUCCESS = "success";
   
   public static UNK_ERROR_TITLE = "Unknown error";
   public static UNK_ERROR_MSG = "An unknown error has occured, please check the browser console for more details."

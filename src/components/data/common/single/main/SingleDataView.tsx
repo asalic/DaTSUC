@@ -106,7 +106,10 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>) {
             </Col>
             <Col md={1}>
               <div className="float-end">
-                <SingleDataActions data={props.singleData.data} patchDatasetCb={props.patchSingleData} showDialog={props.showDialog}/>
+                <SingleDataActions data={props.singleData.data} patchDatasetCb={props.patchSingleData} 
+                  showDialog={props.showDialog} postMessage={props.postMessage} dataManager={props.dataManager}
+                  keycloakReady={props.keycloakReady}
+                  />
               </div>
             </Col>
           </Row>
