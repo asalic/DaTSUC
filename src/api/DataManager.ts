@@ -63,4 +63,8 @@ export default class DataManager {
     return WebClient.postCheckIntegrity(token, singleDataId);
   }
 
+  deleteCancelDataset(token: string, singleDataId: string): Promise<XMLHttpRequest> {
+    return WebClient.deleteCancelDataset(token, singleDataId);
+  }
+
 }

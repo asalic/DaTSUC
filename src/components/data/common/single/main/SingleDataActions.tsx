@@ -12,6 +12,7 @@ import Message from "../../../../../model/Message";
 import LoadingError from "../../../../../model/LoadingError";
 import Util from "../../../../../Util";
 import CheckIntegrity from "../../../../../model/CheckIntegrity";
+import Config from "../../../../../config.json";
 
 function getAction(actionCb: Function, txt: string, keyName: string): JSX.Element {
       return <Dropdown.Item eventKey={keyName} key={keyName} href="#"
@@ -91,6 +92,34 @@ function SingleDataActions<T extends SingleData>({data, patchDatasetCb, showDial
   
     }, [data.id, keycloakReady, keycloak.authenticated, keycloak.token, dataManager, postMessage]);
 
+    const deleteCancelDataset = useCallback(() => {
+      if (keycloakReady && keycloak.authenticated && keycloak.token) {
+  
+        dataManager.deleteCancelDataset(keycloak.token, data.id)
+          .then(
+            (xhr: XMLHttpRequest) => {
+                navigate("/" + Config.basename);
+                postMessage(new Message(Message.SUCCESS, "Dataset creation canceled successfully", 
+                  `Dataset '${data.name} (${data.id})' creation process has been canceled and its data has been removed.`
+                ));
+            },
+            (xhr: XMLHttpRequest) => {
+              if (xhr.status === 400) {
+                postMessage(new Message(Message.ERROR, "Bad Request", "The dataset cannot be removed"));
+              } else if (xhr.status === 404) {
+                postMessage(new Message(Message.ERROR, "Not found", `The dataset with ID '${data.id}' not found`));
+              } else if (xhr.status === 401) {
+                postMessage(new Message(Message.ERROR, "Unauthorized", `You are not authorized to remove dataset with ID '${data.id}'`));
+              } else {
+                const error: LoadingError = Util.getErrFromXhr(xhr);
+                postMessage(new Message(Message.ERROR, error.title, error.text));
+              }
+            });
+
+      }
+  
+    }, [data.id, keycloakReady, keycloak.authenticated, keycloak.token, dataManager, postMessage]);
+
     let entries = [];
     if (keycloak.authenticated) {
       if (data.allowedActionsForTheUser.includes("checkIntegrity")) {
@@ -133,6 +162,14 @@ function SingleDataActions<T extends SingleData>({data, patchDatasetCb, showDial
             getAction(() => {patchDatasetCb(keycloak.token, data["id"], "draft", false)}, "Release", "action-release")
             );
         }
+
+        if (data.allowedActionsForTheUser.includes("delete")) {
+          entries.push( 
+            getAction(() => deleteCancelDataset(), 
+              "Cancel & Delete", "action-cancel-delete")
+            );
+        }
+
       }
     //}
     if (entries.length !== 0) {

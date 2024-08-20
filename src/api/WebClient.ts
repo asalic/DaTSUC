@@ -125,6 +125,14 @@ export default class WebClient {
                 null, "text", null );
 
   }
+
+  static deleteCancelDataset(token:  string, singleDataId: string): Promise<XMLHttpRequest> {
+    let headers = new Map();
+    headers.set("Authorization", "Bearer " + token);
+    return WebClient._call("DELETE", Config.datasetService + "/datasets/" + singleDataId, headers,
+                null, "text", null );
+
+  }
   
   static _prepQueryParams(qTmp: QueryParamsType): object | null {
     const entr = Object.entries(qTmp);
