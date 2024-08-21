@@ -1,6 +1,6 @@
 import { useKeycloak } from "@react-keycloak/web";
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert, Container } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import DataManager from "../../../../../api/DataManager";
 import AclUser from "../../../../../model/AclUser";
 import Dataset from "../../../../../model/Dataset";
@@ -17,6 +17,26 @@ interface AccessControlListViewProps {
     postMessage: Function;
     dataset: Dataset;
     singleDataId: string;
+}
+
+function getWhoCanSee(dataset: Dataset): string {
+  if (dataset.draft) {
+    return "The metadata of a draft dataset is visible only to its creator."
+  } else if (dataset.public === false) {
+    return "The metadata of a dataset that is not public is visible only to registered users that are also part of the dataset's project."
+  } else {
+    return "The metadata of a public dataset is visible to anyone (including users without an account)."
+  }
+}
+
+function getWhoCanUse(dataset: Dataset): string {
+  if (dataset.draft) {
+    return "A draft dataset can be used only by its creator."
+  } else if (dataset.public === false) {
+    return "A dataset that is not public can be used only by registered users that are also part of the dataset's project."
+  } else {
+    return "A public dataset can be used by registered users that either have joined the project or are added to the dataset's ACL."
+  }
 }
 
 
@@ -85,15 +105,26 @@ export default function AccessControlListView(props: AccessControlListViewProps)
 
     }, [props.keycloakReady, keycloak.authenticated, setData, data, props.postMessage]);
     return <Container>
+      <p>
+        {
+          getWhoCanSee(props.dataset)
+        }
+        <br></br>
+        {
+          getWhoCanUse(props.dataset)
+        }
+      </p>
+      <p>
+      </p>
       {
-        props.dataset && !props.dataset.public ? 
-        <Alert variant="warning">
-          <p>
-            This dataset is not public, therefore the access control list is ignored.
-            Right now, this dataset is visible and accessible only to those users that are members of the same project that this dataset is part of.
-          </p>
-        </Alert>
-        : <></>
+        // props.dataset && !props.dataset.public ? 
+        // <Alert variant="warning">
+        //   <p>
+        //     This dataset is not public, therefore the access control list is ignored.
+        //     Right now, this dataset is visible and accessible only to those users that are members of the same project that this dataset is part of.
+        //   </p>
+        // </Alert>
+        // : <></>
       }
         <UserAdd dataManager={props.dataManager} postMessage={props.postMessage}  addAclUser={addAclUserCb} keycloakReady={props.keycloakReady}></UserAdd>
         <UserList currentUserName={keycloak.tokenParsed?.['preferred_username']} deleteAcl={deleteAcl} data={data} />
