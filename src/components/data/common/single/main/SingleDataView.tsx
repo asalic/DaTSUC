@@ -15,6 +15,7 @@ import ErrorView from "../../../../common/ErrorView";
 import { useKeycloak } from "@react-keycloak/web";
 
 
+
 SingleDataView.TAB_DETAILS = "details";
 SingleDataView.TAB_HISTORY = "history";
 SingleDataView.TAB_ACCESS_HISTORY = "access";

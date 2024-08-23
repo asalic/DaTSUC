@@ -1,19 +1,20 @@
-import React, {useState, useEffect, useCallback }from 'react';
+import React, { useEffect, useCallback }from 'react';
 import { Container} from 'react-bootstrap';
 import { useKeycloak } from '@react-keycloak/web';
 import { useSearchParams } from "react-router-dom";
 
-import Message from "../../../../model/Message";
+//import Message from "../../../../model/Message";
 import SearchComponent from  "../../../common/SearchComponent";
 import MainTable from "./MainTable";
 import Config from "../../../../config.json";
 import FilteringView from '../../../data/common/main/filter/FilteringView';
 import PaginationFooter from '../../../common/PaginationFooter';
-import type LoadingData from '../../../../model/LoadingData';
+//import type LoadingData from '../../../../model/LoadingData';
 import DataManager from '../../../../api/DataManager';
-import ItemPage from '../../../../model/ItemPage';
-import Dataset from '../../../../model/Dataset';
+//import ItemPage from '../../../../model/ItemPage';
+//import Dataset from '../../../../model/Dataset';
 import Util from '../../../../Util';
+import { useGetDatasetsQuery } from "../../../../service/api";
 
 function getSortDirectionDesc(searchParam?: string | null, sortBy?: string | null): string {
   if (!sortBy) {
@@ -49,12 +50,12 @@ function MainView(props: MainViewProps) {
   //const searchStringParam = search.get('searchString') === null ? "" : search.get('searchString');
   //console.log(`searchStringParam is ${searchStringParam}`);
 
-  const [allData, setAllData] = useState<LoadingData<ItemPage<Dataset>>>({
-    data: null,
-    error: null,
-    loading: false,
-    statusCode: -1
-  });
+  // const [allData, setAllData] = useState<LoadingData<ItemPage<Dataset>>>({
+  //   data: null,
+  //   error: null,
+  //   loading: false,
+  //   statusCode: -1
+  // });
 
   const updSearchParams = useCallback((params: Object) => Util.updSearchParams(params, searchParams, setSearchParams), 
     [searchParams, setSearchParams]);
@@ -105,48 +106,63 @@ function MainView(props: MainViewProps) {
 
       const invalidated = searchParams.get("invalidated") === "" ? null : searchParams.get("invalidated");
 
-        useEffect(() => {
-            //setTimeout(function() {
-            //console.log(keycloak.authenticated);
-            //if (props.keycloakReady) {
-                // let modLimit = limit;
-                // if (allData.data?.list?.length === limit+1) {
-                //   modLimit += 1;
-                // }
-                //console.log(searchString);
-                
-                setAllData(prev => {
-                  return {...prev, loading: true, data: null, error: null }
-                });
-                  props.dataManager.getDatasets(keycloak.token, 
-                      {
-                        skip, limit, searchString, sortBy, sortDirection, //v2: true,
-                        ...(searchParams.get("project") !== null) && {project: searchParams.get("project")},
-                        ...(searchParams.get("draft") !== null) && {draft: searchParams.get("draft")},
-                        ...(searchParams.get("public") !== null) && {public: searchParams.get("public")},
-                        ...(invalidated !== null) && {invalidated}
-                        //...(searchParams.get("invalidated") !== null) && {invalidated: searchParams.get("invalidated")}                        
-                      })
-                    .then(
-                      (xhr: XMLHttpRequest) => {
-                        //setIsLoaded(true);
-                        const data = JSON.parse(xhr.response);
-                        //setData(d);
-                        setAllData(prev => {
-                          return {...prev, loading: false, data, error: null, statusCode: xhr.status}
-                        })
-                      },
-                      (xhr: XMLHttpRequest) => {
-                        const error = Util.getErrFromXhr(xhr);
-                        props.postMessage(new Message(Message.ERROR, "Error loading datasets", error.text));
-                        setAllData(prev => {
-                          return {...prev, loading: false, data: null, error, statusCode: xhr.status }
-                        });
-                      });
-                //}
+      const {data, isError, error, isLoading} = useGetDatasetsQuery({token: keycloak.token, 
+                      qParams: {
+                          skip, limit, searchString, sortBy, sortDirection, //v2: true,
+                          ...(searchParams.get("project") !== null) && {project: searchParams.get("project")},
+                          ...(searchParams.get("draft") !== null) && {draft: searchParams.get("draft")},
+                          ...(searchParams.get("public") !== null) && {public: searchParams.get("public")},
+                          ...(invalidated !== null) && {invalidated}
+                          //...(searchParams.get("invalidated") !== null) && {invalidated: searchParams.get("invalidated")}                        
+                        }
+                      }
+        );
+        console.log(data);
+        console.log(isError);
+        console.log(error);
 
-        }, //1000);},
-        [props.keycloakReady, searchParams, sortBy, sortDirection, skip, limit, searchString]);
+        // useEffect(() => {
+        //     //setTimeout(function() {
+        //     //console.log(keycloak.authenticated);
+        //     //if (props.keycloakReady) {
+        //         // let modLimit = limit;
+        //         // if (allData.data?.list?.length === limit+1) {
+        //         //   modLimit += 1;
+        //         // }
+        //         //console.log(searchString);
+                
+        //         setAllData(prev => {
+        //           return {...prev, loading: true, data: null, error: null }
+        //         });
+        //           props.dataManager.getDatasets(keycloak.token, 
+        //               {
+        //                 skip, limit, searchString, sortBy, sortDirection, //v2: true,
+        //                 ...(searchParams.get("project") !== null) && {project: searchParams.get("project")},
+        //                 ...(searchParams.get("draft") !== null) && {draft: searchParams.get("draft")},
+        //                 ...(searchParams.get("public") !== null) && {public: searchParams.get("public")},
+        //                 ...(invalidated !== null) && {invalidated}
+        //                 //...(searchParams.get("invalidated") !== null) && {invalidated: searchParams.get("invalidated")}                        
+        //               })
+        //             .then(
+        //               (xhr: XMLHttpRequest) => {
+        //                 //setIsLoaded(true);
+        //                 const data = JSON.parse(xhr.response);
+        //                 //setData(d);
+        //                 setAllData(prev => {
+        //                   return {...prev, loading: false, data, error: null, statusCode: xhr.status}
+        //                 })
+        //               },
+        //               (xhr: XMLHttpRequest) => {
+        //                 const error = Util.getErrFromXhr(xhr);
+        //                 props.postMessage(new Message(Message.ERROR, "Error loading datasets", error.text));
+        //                 setAllData(prev => {
+        //                   return {...prev, loading: false, data: null, error, statusCode: xhr.status }
+        //                 });
+        //               });
+        //         //}
+
+        // }, //1000);},
+        // [props.keycloakReady, searchParams, sortBy, sortDirection, skip, limit, searchString]);
       return (
         <Container fluid>
           <div>
@@ -154,11 +170,11 @@ function MainView(props: MainViewProps) {
           </div>
           <div style={{display: "flex", flexDirection: "row"}}>
             <div>
-              <FilteringView filterUpdate={filterUpdate} searchParams={searchParams}  loading={allData.loading} 
+              <FilteringView filterUpdate={filterUpdate} searchParams={searchParams}  loading={isLoading} 
                   keycloakReady={props.keycloakReady} dataManager={props.dataManager} postMessage={props.postMessage}/>
             </div>
             <div style={{flexGrow: "1"}}>
-              <MainTable data={allData.data && allData.data?.list ? allData.data.list.slice(0, limit) : []}
+              <MainTable data={data && data?.list ? data.list.slice(0, limit) : []}
                 dataManager={props.dataManager}
                 postMessage={props.postMessage}
                 currentSort={{
@@ -172,7 +188,7 @@ function MainView(props: MainViewProps) {
                   <Button variant="link" className="position-relative start-50 me-4" disabled={skip === 0 ? true : false} onClick={(e) => updSearchParams({skip: skip - limit})}>&lt; Previous</Button>
                   <Button variant="link" className="position-relative start-50"  disabled={data?.list?.length <= limit ? true : false} onClick={(e) => updSearchParams({skip: skip + limit})}>Next &gt;</Button>
                   TableNavigationPages skip={skip} limit={limit} total={data} */}
-                  <PaginationFooter skip={skip} limit={limit} total={allData.data?.total ?? 0} onSkipChange={onSkipChange} />
+                  <PaginationFooter skip={skip} limit={limit} total={data?.total ?? 0} onSkipChange={onSkipChange} />
                 </div>
               </div>
           </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
 
 // Careful with the order of CSS loading, if you want to modify Bootstrap's settings
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -7,6 +8,7 @@ import './index.css';
 import AppKeycloak from './AppKeycloak';
 import reportWebVitals from './reportWebVitals';
 import Config from "./config.json";
+import {store} from "./store";
 
 //const Loading = () => <div>Loading, please wait...</div>
 
@@ -26,7 +28,9 @@ const domNode: HTMLElement | null = document.getElementById('root');
 if (domNode) {
       const root = createRoot(domNode);
       root.render(
-            <AppKeycloak />
+            <Provider store={store}>
+                  <AppKeycloak />
+            </Provider>
       );
 }
 
