@@ -429,31 +429,40 @@ function Table({ columns, data, sortBy, updSearchParams//, showDialog, dataManag
   return (
     <BTable striped bordered hover size="sm" {...getTableProps()} >
       <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column: any) => (
-              <th 
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  onClick={() => 
-                    {
-                      column.toggleSortBy(!column.isSortedDesc);
-                      updSearchParams({sortBy: column.id, sortDirection: column.isSortedDesc ? "ascending" : "descending"});
-                      //setSortBy(sortBy);
-                    }} //column.toggleSortBy(!column.isSortedDesc)}
-              >
-                {column.render('Header')}
-                <span>
-                    { column.canSort ? (column.isSorted
-                      ? (column.isSortedDesc
-                        ? <CaretDownFill className="text-primary"/>
-                        :  <CaretUpFill className="text-primary"/>)
-                      : <ArrowDownUp className="ms-1 text-primary" size="0.75em"/> ) 
-                    : ""}
-                  </span>
-              </th>
-            ))}
-          </tr>
-        ))}
+        {headerGroups.map(headerGroup => {
+            const { key, ...hProps } = headerGroup.getHeaderGroupProps();
+            return (
+                <tr {...hProps} key="Header">
+                  {headerGroup.headers.map((column: any) =>  {
+                      const { key, ...restProps } = column.getHeaderProps(column.getSortByToggleProps());
+                      return (
+                            <th 
+                                key={`tr-${Math.random().toString(16).slice(2)}`}
+                                {...restProps}
+                                onClick={() => 
+                                  {
+                                    column.toggleSortBy(!column.isSortedDesc);
+                                    updSearchParams({sortBy: column.id, sortDirection: column.isSortedDesc ? "ascending" : "descending"});
+                                    //setSortBy(sortBy);
+                                  }} //column.toggleSortBy(!column.isSortedDesc)}
+                            >
+                              {column.render('Header')}
+                              <span>
+                                  { column.canSort ? (column.isSorted
+                                    ? (column.isSortedDesc
+                                      ? <CaretDownFill className="text-primary"/>
+                                      :  <CaretUpFill className="text-primary"/>)
+                                    : <ArrowDownUp className="ms-1 text-primary" size="0.75em"/> ) 
+                                  : ""}
+                                </span>
+                            </th>
+                          )
+                    }
+                  )}
+                </tr>
+              )
+          }
+        )}
         <tr>
           <th
             colSpan={visibleColumns.length}
@@ -475,9 +484,10 @@ function Table({ columns, data, sortBy, updSearchParams//, showDialog, dataManag
         {
           ( 
             rows.length > 0 && rows.map(row => {
-            prepareRow(row)
+            prepareRow(row);
+            const { key, ...restRowProps } = row.getRowProps();
             return (
-              <tr {...row.getRowProps()} key={`tr-${Math.random().toString(16).slice(2)}`} >
+              <tr {...restRowProps} key={`tr-${Math.random().toString(16).slice(2)}`} >
                 {row.cells.map(cell => {
                   return (
                     <td  {...cell.getCellProps()} key={`td-${Math.random().toString(16).slice(2)}`}>
