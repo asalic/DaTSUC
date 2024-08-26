@@ -6,10 +6,6 @@
   "dependencies": {
     "@reduxjs/toolkit":"^2.2.7",
     "react-redux": "^9.1.2",
-    "typescript": "^5.3.3",
-    "@types/react-table": "^7.7.19",
-    "@types/react": "18.2.58",
-    "@types/react-dom": "^18.2.19",
     "@react-keycloak/web": ">=3.4.0",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",
@@ -65,6 +61,10 @@
   },
   "devDependencies": {
     "cypress": "^12.3.0",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "typescript": "^5.3.3",
+    "@types/react-table": "^7.7.19",
+    "@types/react": "18.2.58",
+    "@types/react-dom": "^18.2.19"
   }
 }
