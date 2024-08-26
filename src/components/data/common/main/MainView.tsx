@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback }from 'react';
-import { Container} from 'react-bootstrap';
+import { Container,  Alert} from 'react-bootstrap';
 import { useKeycloak } from '@react-keycloak/web';
 import { useSearchParams } from "react-router-dom";
 
@@ -168,6 +168,15 @@ function MainView(props: MainViewProps) {
           <div>
             <SearchComponent initValue={searchString} updSearchParams={updSearchParams} />
           </div>
+
+          {
+            isError ? 
+            <Alert variant="danger">
+              <Alert.Heading>Error loading data</Alert.Heading>
+              {"message" in error ? error.message : error.data}
+            </Alert>
+              : <></>
+          }
           <div style={{display: "flex", flexDirection: "row"}}>
             <div>
               <FilteringView filterUpdate={filterUpdate} searchParams={searchParams}  loading={isLoading} 
