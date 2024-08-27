@@ -14,7 +14,7 @@
   "refreshDatasetCreate": 5000,
   "keycloak": {
     "config": {
-      "url": "https://asaserver.i3m.upv.es:20001/auth",
+      "url": "https://asaserver.i3m.upv.es:20000/auth",
       "realm": "CHAIMELEON",
       "clientId": "dataset-explorer"
     },
