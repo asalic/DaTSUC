@@ -13,6 +13,7 @@ import SingleDataActions from "./SingleDataActions";
 import LoadingView from "../../../../common/LoadingView";
 import ErrorView from "../../../../common/ErrorView";
 import { useKeycloak } from "@react-keycloak/web";
+import SingleDataType from "../../../../../model/SingleDataType";
 
 
 
@@ -54,6 +55,7 @@ SingleDataView.SHOW_DLG_APP_DASHBOARD = "dlg-app-dashboard"
 
 
 interface SingleDataViewProps<T extends SingleData> {
+  singleDataType: SingleDataType;
   dataManager: DataManager;
   postMessage: Function;
   showDialog: Function;

@@ -1,5 +1,7 @@
+import InvalidArgumentError from "./error/InvalidArgumentError";
 import ConfigJson from "./model/ConfigJson";
 import type LoadingError from "./model/LoadingError";
+import SingleDataType from "./model/SingleDataType";
 
 export default class Util {
 
@@ -124,6 +126,15 @@ export default class Util {
     let pS = path.split("/");
     pS.pop();
     return pS.join("/");
+  }
+
+  public static singleDataPath(type: SingleDataType) {
+    switch (type) {
+      case SingleDataType.DATASET: return "datasets";
+      case SingleDataType.MODEL: return "models";
+      default: throw new InvalidArgumentError(`Single data type '${type}' not supported when determining the path.`);
+    }
+
   }
 
 }

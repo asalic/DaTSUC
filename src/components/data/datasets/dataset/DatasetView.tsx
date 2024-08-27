@@ -16,6 +16,7 @@ import LoadingError from "../../../../model/LoadingError";
 import { showDialogAppDashhboard } from "../../common/single/common/Operations";
 import Dataset from "../../../../model/Dataset";
 import ResourceNotFoundView from "../../../common/ResourceNotFoundView";
+import SingleDataType from "../../../../model/SingleDataType";
 
 
 DatasetView.TAB_STUDIES = "studies";
@@ -132,7 +133,7 @@ function DatasetView(props: DatasetViewProps) {
         const result: SingleItemTab[] = [{
             eventKey: "details",
             title: "Details",
-            view: <DetailsView patchDataset={patchDataset} showDialog={props.showDialog} getDataset={getDataset}
+            view: <DetailsView  patchDataset={patchDataset} showDialog={props.showDialog} getDataset={getDataset}
                 data={allValues} keycloakReady={props.keycloakReady} postMessage={props.postMessage} 
                 dataManager={props.dataManager}/>
         }]
@@ -177,7 +178,7 @@ function DatasetView(props: DatasetViewProps) {
       console.error("Dataset ID cannot be empty");
       return <ResourceNotFoundView id={"<datasetId_empty_string>"} />;
     } else {
-      return <SingleDataView dataManager={props.dataManager} postMessage={props.postMessage} 
+      return <SingleDataView singleDataType={SingleDataType.DATASET} dataManager={props.dataManager} postMessage={props.postMessage} 
           showDialog={props.showDialog} keycloakReady={props.keycloakReady}
           showdDlgOpt={props.showdDlgOpt} activeTab={props.activeTab}
           tabs={tabs} patchSingleData={patchDataset} singleData={allValues}

@@ -14,7 +14,8 @@ import DataManager from '../../../../api/DataManager';
 //import ItemPage from '../../../../model/ItemPage';
 //import Dataset from '../../../../model/Dataset';
 import Util from '../../../../Util';
-import { useGetDatasetsQuery } from "../../../../service/api";
+import { useGetSingleDataPageQuery } from "../../../../service/singledata-api";
+import SingleDataType from '../../../../model/SingleDataType';
 
 function getSortDirectionDesc(searchParam?: string | null, sortBy?: string | null): string {
   if (!sortBy) {
@@ -35,6 +36,7 @@ function getSortDirectionDesc(searchParam?: string | null, sortBy?: string | nul
 }
 
 interface MainViewProps {
+  singleDataType: SingleDataType;
   keycloakReady: boolean;
   dataManager: DataManager;
   postMessage: Function;
@@ -106,20 +108,19 @@ function MainView(props: MainViewProps) {
 
       const invalidated = searchParams.get("invalidated") === "" ? null : searchParams.get("invalidated");
 
-      const {data, isError, error, isLoading} = useGetDatasetsQuery({token: keycloak.token, 
-                      qParams: {
-                          skip, limit, searchString, sortBy, sortDirection, //v2: true,
-                          ...(searchParams.get("project") !== null) && {project: searchParams.get("project")},
-                          ...(searchParams.get("draft") !== null) && {draft: searchParams.get("draft")},
-                          ...(searchParams.get("public") !== null) && {public: searchParams.get("public")},
-                          ...(invalidated !== null) && {invalidated}
-                          //...(searchParams.get("invalidated") !== null) && {invalidated: searchParams.get("invalidated")}                        
-                        }
-                      }
-        );
-        console.log(data);
-        console.log(isError);
-        console.log(error);
+      const {data, isError, error, isLoading} = useGetSingleDataPageQuery(
+        {
+          token: keycloak.token, 
+          qParams: {
+              skip, limit, searchString, sortBy, sortDirection, //v2: true,
+              ...(searchParams.get("project") !== null) && {project: searchParams.get("project")},
+              ...(searchParams.get("draft") !== null) && {draft: searchParams.get("draft")},
+              ...(searchParams.get("public") !== null) && {public: searchParams.get("public")},
+              ...(invalidated !== null) && {invalidated}
+              //...(searchParams.get("invalidated") !== null) && {invalidated: searchParams.get("invalidated")}                        
+            },
+          singleDataType: props.singleDataType
+        });
 
         // useEffect(() => {
         //     //setTimeout(function() {
@@ -183,7 +184,7 @@ function MainView(props: MainViewProps) {
                   keycloakReady={props.keycloakReady} dataManager={props.dataManager} postMessage={props.postMessage}/>
             </div>
             <div style={{flexGrow: "1"}}>
-              <MainTable data={data && data?.list ? data.list.slice(0, limit) : []}
+              <MainTable singleDataType={props.singleDataType} data={data && data?.list ? data.list.slice(0, limit) : []}
                 dataManager={props.dataManager}
                 postMessage={props.postMessage}
                 currentSort={{
