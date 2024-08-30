@@ -23,7 +23,7 @@ export function isFetchBaseQueryError(
     )
   }
   
-  function genError(errorUnk: any): FetchBaseQueryError |  Error {
+  export function generateError(errorUnk: any): FetchBaseQueryError |  Error {
     let error: any = null;
     if (isFetchBaseQueryError(errorUnk)) {
         // you can access all properties of `FetchBaseQueryError` here
@@ -39,16 +39,16 @@ export function isFetchBaseQueryError(
   }
   
 
-export async function call<T>(method: string, path: string, 
+export async function call(method: string, path: string, 
     headers: Map<string, string> | null,   payload: any,   
     responseType: XMLHttpRequestResponseType, 
-    queryParams: QueryParamsType | null): Promise<T> {
+    queryParams: QueryParamsType | null): Promise<any> {
     try {
       const request = await _call(method, path, headers, payload,  responseType, queryParams);
         // Process the response
         if (request.status >= 200 && request.status < 300) {
             // If successful
-            return JSON.parse(request.response) as T;
+            return JSON.parse(request.response);
         } else { 
           let data = request.responseText;
           const r = JSON.parse(data);
@@ -58,7 +58,7 @@ export async function call<T>(method: string, path: string,
           throw { data, status: request.status} as FetchBaseQueryError;
         }
       
-    } catch(error) { throw genError(error); }
+    } catch(error) { throw generateError(error); }
   }
   
 function _call(method: string, path: string, 

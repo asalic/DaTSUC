@@ -9,4 +9,5 @@ export default class UrlFactory {
     public static singleDataDetails(id: string, singleDataType: SingleDataType): string {
         return `/${Util.singleDataPath(singleDataType)}/${id}/details`
     }
+
 }
