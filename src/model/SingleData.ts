@@ -1,8 +1,10 @@
 import DatasetLicense from "./DatasetLicense";
 import DatasetPids from "./DatasetPids";
+import SingleDataType from "./SingleDataType";
 
 export default class SingleData {
 
+    type: SingleDataType;
     id: string;
     name: string;
     previousId: string | null;
