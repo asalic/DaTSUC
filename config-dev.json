@@ -4,6 +4,8 @@
   "datasetService": "http://asaserver.i3m.upv.es:8000/api/v1",
   "tracerService": "http://asaserver.i3m.upv.es:8000/api/v1/tracer-service",
   "caseExplorerService": "",
+  "appsDashboard": "https://chaimeleon-eu.i3m.upv.es/apps/",
+  "desktopAppAccess": "https://chaimeleon-eu.i3m.upv.es/guacamole/",
   "basename": "",
   "defaultLimitDatasets": 4,
   "defaultLimitStudies": 4,

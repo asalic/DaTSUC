@@ -23,11 +23,12 @@ export default interface ConfigJson {
     "datasetService": string | null | undefined;
     "tracerService": string | null | undefined;
     "caseExplorerService": string | null | undefined;
+    "appsDashboard":  string | null | undefined;
+    "desktopAppAccess":  string | null | undefined;
     "basename": string;
     "defaultLimitDatasets": number;
     "defaultLimitStudies": number;
     "defaultLimitTraces": number;
-    "kubeAppsUrl": string;
     "userAccountUrl": string;
     "refreshDatasetCreate": number;
     "keycloak": KeycloakOpts;
