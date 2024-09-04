@@ -29,8 +29,8 @@
     "project": {
       "name": "EUCAIM",
       "doi": null,
-      "termsConditions": null,
-      "privacyPolicy": null,
+      "termsConditions": "https://dashboard.eucaim.cancerimage.eu/eucaim_usage_policy.pdf",
+      "privacyPolicy": "https://dashboard.eucaim.cancerimage.eu/privacy-policy",
       "favicon": "/eucaim-logo.jpg"
     }
   }

@@ -17,12 +17,12 @@ function Footer() {
             
                 {
                     Config?.project?.termsConditions ?
-                        <> | <a href={process.env["PUBLIC_URL"] + Config.project.termsConditions}>Terms & Conditions</a></>
+                        <> | <a href={Config.project.termsConditions} target="_blank" >Terms & Conditions</a></>
                         : <></>
                 }
                 {
                     Config?.project?.privacyPolicy ?
-                        <> | <a href={process.env["PUBLIC_URL"] + Config.project.privacyPolicy}>Privacy Policy</a></>
+                        <> | <a href={Config.project.privacyPolicy} target="_blank">Privacy Policy</a></>
                         : <></>
                 }
             </span>
