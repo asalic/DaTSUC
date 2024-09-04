@@ -8,11 +8,11 @@ const KUBE_APPS_CLUSTER = "default";
 
 
 function showDialogAppDashhboard(datasetId: string, showDialog: Function, onBeforeClose: Function, uNameKeycloak: string | null | undefined): void {
-  let kubeAppsUrl = Config.kubeAppsUrl;
+  let kubeAppsUrl = Config.appsDashboard;
   if (uNameKeycloak) {
     const uNamespace = Util.getUserKubeNamespace(Util.parseK8sNames(uNameKeycloak, true));
     if (uNamespace) {
-      kubeAppsUrl = `${Config.kubeAppsUrl}/#/c/${KUBE_APPS_CLUSTER}/ns/${uNamespace}/catalog`;
+      kubeAppsUrl = `${Config.appsDashboard}/#/c/${KUBE_APPS_CLUSTER}/ns/${uNamespace}/catalog`;
     }
   }
 
