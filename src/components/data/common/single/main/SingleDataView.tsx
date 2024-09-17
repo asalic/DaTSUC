@@ -1,19 +1,20 @@
-import {Tab, Row, Col, Container, Nav } from "react-bootstrap";
+import {Tab, Row, Col, Container, Nav, Alert } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
-import React, { Fragment } from "react";
-import DataManager from "../../../../../api/DataManager";
+import React, { Fragment, useEffect } from "react";
+import { useKeycloak } from "@react-keycloak/web";
 import SingleData from "../../../../../model/SingleData";
 import SingleItemTab from "../../../../../model/SingleItemTab";
-import LoadingData from "../../../../../model/LoadingData";
-import UnauthorizedView from "../../../../UnauthorizedView";
-import ResourceNotFoundView from "../../../../common/ResourceNotFoundView";
 import Breadcrumbs from "../../../../common/Breadcrumbs";
 import SingleDataTitle from "./SingleDataTitle";
 import SingleDataActions from "./SingleDataActions";
 import LoadingView from "../../../../common/LoadingView";
 import ErrorView from "../../../../common/ErrorView";
-import { useKeycloak } from "@react-keycloak/web";
 import SingleDataType from "../../../../../model/SingleDataType";
+import { useDeleteSingleDataCreatingMutation, useGetSingleDataQuery, usePostSingleDataCheckIntegrityMutation } from "../../../../../service/singledata-api";
+import Util from "../../../../../Util";
+import CheckIntegrity from "../../../../../model/CheckIntegrity";
+import Config from "../../../../../config.json";
+import DelCancelSingleDataMsg from "../../../../common/DelCancelSingleDataMsg";
 
 
 
@@ -52,22 +53,52 @@ SingleDataView.SHOW_DLG_APP_DASHBOARD = "dlg-app-dashboard"
 //     element.dispatchEvent(event);
 // }
 
+interface IntegrityMessageT {
+  integrityError: any;
+  integrityData: CheckIntegrity | undefined;
+  integrityUpdating: boolean;
+}
+
+
+function IntegrityMessage({integrityError, integrityData, integrityUpdating}: IntegrityMessageT): JSX.Element {
+
+  if (integrityError) {
+    return <ErrorView message={`Error checking integrity: ${integrityError.message}`} />
+  } else if (integrityUpdating) {
+    return <></>; 
+  } else if (integrityData) {
+    if (integrityData.success) {
+      return <Alert variant="success" dismissible={true}>
+        <Alert.Heading>
+        Integrity check process started successfully
+        </Alert.Heading>
+        {integrityData.msg}
+      </Alert>
+    } else {
+      return <Alert variant="danger" dismissible={true}>
+        <Alert.Heading>
+        Error starting the integrity check process
+        </Alert.Heading>
+        {integrityData.msg}
+      </Alert>
+    }
+  } else {
+    return <></>;
+  }
+}
+
 
 
 interface SingleDataViewProps<T extends SingleData> {
   singleDataType: SingleDataType;
-  dataManager: DataManager;
-  postMessage: Function;
   showDialog: Function;
   keycloakReady: boolean;
   showdDlgOpt?: string | null | undefined;
   activeTab: string;
   tabs: SingleItemTab[];
-  patchSingleData: Function;
-  singleData: LoadingData<T>
 }
 
-function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>) {
+function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>): JSX.Element {
 
   // const path: string | null | undefined = matchPath( location.pathname, routesTabs )?.path;
 
@@ -75,57 +106,68 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>) {
   let navigate = useNavigate();
   const { keycloak } = useKeycloak();
   //const [activeTab, setActivetab] = useState<string>(props.activeTab);
-  const datasetId: string | undefined = params["singleDataId"];//props.datasetId;
+  const singleDataId: string = params["singleDataId"] ?? "";//props.datasetId;
+
+
+  const [ , { error: integrityError, data: integrityData, isLoading: integrityUpdating }] = usePostSingleDataCheckIntegrityMutation({
+    fixedCacheKey: "postSingleDataCheckIntegrity"
+  });
+  const [ , { error: deleteError, isLoading: deleteIsLoading, data: deleteData } ] = useDeleteSingleDataCreatingMutation({
+    fixedCacheKey: "deleteSingleDataCreating"
+  });
+
+  const { isLoading, error: singleDataError } = useGetSingleDataQuery({
+      token: keycloak.token,
+      id: singleDataId,
+      singleDataType: props.singleDataType
+    }
+  )
+
+  useEffect(() => {
+    console.log(deleteIsLoading);
+    console.log(deleteError);
+    console.log(deleteData);
+    if (deleteIsLoading === false && (deleteError === undefined || deleteError === null) && deleteData) {
+      navigate("/" + Config.basename);
+    } 
+  }, [deleteIsLoading, deleteError, deleteData ])
+
+
     // const handlePostMsg = useCallback((msgType, title, text) => {
     //   props.postMessage(new Message(msgType, title, text));
     // }, []);
-  if (datasetId) {
-    if (props.singleData.error !== null) {
-      if (props.singleData.statusCode === 401) {
-        return <UnauthorizedView loggedIn={props.keycloakReady && keycloak.token !== null && keycloak.token !== undefined}/>
-      } else if (props.singleData.statusCode === 404) {
-        return <ResourceNotFoundView id={datasetId} />;
-      } else {
-        return <ErrorView message={`Error loading resource ID '${datasetId}': ${props.singleData.error["title"]}`} />
-      }
-    } else if (props.singleData.data === null || props.singleData.loading) {
-      return <LoadingView what={`resource ID '${datasetId}'`} />;
-    }
-  } else {
-    if (props.singleData.data === null || props.singleData.loading) {
-      return <LoadingView what={`resource ID '${datasetId}'`} />;
-    } else {    
-      return <div>No dataset ID specified</div>; 
-    }
-  }
-
+  if (singleDataId) {
+    if (singleDataError) {
+        return <ErrorView message={`Error loading resource ID '${singleDataId}': ${singleDataError.message ?? ""}`} />
+    } else if (isLoading) {
+      return <LoadingView what={`resource ID '${singleDataId}'`} />;
+    } else {
       return (
         <Fragment>
           <Breadcrumbs elems={[{text: 'Dataset information', link: "", active: true}]}/>
           <Row className="mb-4 mt-4">
             <Col md={11}>
-              <SingleDataTitle data={props.singleData.data} patchDataset={props.patchSingleData} showDialog={props.showDialog} 
-                keycloakReady={props.keycloakReady} dataManager={props.dataManager} datasetId={datasetId} />
+              <SingleDataTitle showDialog={props.showDialog} 
+                keycloakReady={props.keycloakReady} singleDataId={singleDataId} singleDataType={props.singleDataType} />
             </Col>
             <Col md={1}>
               <div className="float-end">
-                <SingleDataActions data={props.singleData.data} patchDatasetCb={props.patchSingleData} 
-                  showDialog={props.showDialog} postMessage={props.postMessage} dataManager={props.dataManager}
-                  keycloakReady={props.keycloakReady}
-                  />
+                <SingleDataActions singleDataId={singleDataId} singleDataType={props.singleDataType} 
+                    showDialog={props.showDialog} keycloakReady={props.keycloakReady} />
               </div>
             </Col>
           </Row>
           <Container fluid className="w-100 h-75">
-    
+            <DelCancelSingleDataMsg deleteError={deleteError} />
+            <IntegrityMessage integrityError={integrityError} integrityData={integrityData} integrityUpdating={integrityUpdating} />
             <Tab.Container defaultActiveKey="details" activeKey={props.activeTab} 
-                  onSelect={(k) => {console.log(k);navigate(`/datasets/${datasetId}/${k}`)}}>
+                  onSelect={(k) => {console.log(k);navigate(`/${Util.singleDataPath(props.singleDataType)}/${singleDataId}/${k}`)}}>
               <Row>
                 <Col sm={2}>
                   <Nav variant="pills" className="flex-column mb-5">
                     {
                       props.tabs.map(s => 
-                        <Nav.Item>
+                        <Nav.Item  key={`singledata-categories-${s.eventKey}`}>
                           <Nav.Link eventKey={s.eventKey}>{s.title}</Nav.Link>
                         </Nav.Item>
                       )
@@ -148,5 +190,15 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>) {
           </Container>
         </Fragment>
           );
+    }
+  } else {
+    if (isLoading) {
+      return <LoadingView what={`resource ID '${singleDataId}'`} />;
+    } else {    
+      return <div>No dataset ID specified</div>; 
+    }
+  }
+
+      
 }
 export default SingleDataView;

@@ -14,8 +14,10 @@ import DataManager from '../../../../api/DataManager';
 //import ItemPage from '../../../../model/ItemPage';
 //import Dataset from '../../../../model/Dataset';
 import Util from '../../../../Util';
-import { useGetSingleDataPageQuery } from "../../../../service/singledata-api";
+import { useDeleteSingleDataCreatingMutation, useGetSingleDataPageQuery } from "../../../../service/singledata-api";
 import SingleDataType from '../../../../model/SingleDataType';
+import DelCancelSingleDataMsg from '../../../common/DelCancelSingleDataMsg';
+
 
 function getSortDirectionDesc(searchParam?: string | null, sortBy?: string | null): string {
   if (!sortBy) {
@@ -74,6 +76,10 @@ function MainView(props: MainViewProps) {
 
   const filterUpdate = useCallback((params: Object) => updSearchParams({...params, skip: null}),
     [skip, updSearchParams]);
+
+  const [ , { data: deleteData } ] = useDeleteSingleDataCreatingMutation({
+    fixedCacheKey: "deleteSingleDataCreating"
+  });
 
 
   //console.log(`searchString is ${searchString}`);
@@ -169,7 +175,7 @@ function MainView(props: MainViewProps) {
           <div>
             <SearchComponent initValue={searchString} updSearchParams={updSearchParams} />
           </div>
-
+          <DelCancelSingleDataMsg deleteData={deleteData}/>
           {
             isError ? 
             <Alert variant="danger">
