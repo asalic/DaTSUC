@@ -1,5 +1,5 @@
 
-export default interface License {
-    title: string;
-    url: string;
+export default class License {
+    title: string | null = "";
+    url: string | null = "";
 }

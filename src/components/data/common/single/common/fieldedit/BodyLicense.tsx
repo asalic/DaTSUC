@@ -1,40 +1,48 @@
-import { Button, FormControl } from "react-bootstrap";
-import React, { useState, Fragment, FormEvent, useEffect, useCallback } from "react";
+import { FormControl } from "react-bootstrap";
+import React, { Fragment, FormEvent, useCallback, useEffect } from "react";
+import { useKeycloak } from "@react-keycloak/web";
 
 //import licenses from "../../../../../../licenses.json";
-import LoadingData from "../../../../../../model/LoadingData";
 import License from "../../../../../../model/License";
-import { useKeycloak } from "@react-keycloak/web";
-import DataManager from "../../../../../../api/DataManager";
-import Util from "../../../../../../Util";
 import ErrorView from "../../../../../common/ErrorView";
 import LoadingView from "../../../../../common/LoadingView";
+import { useGetLicensesQuery } from "../../../../../../service/singledata-api";
+import { useState } from "react";
+import SingleDataType from "../../../../../../model/SingleDataType";
 
 interface BodyLicenseProps {
+  keycloakReady: boolean;
+  singleDataId: string;
   oldValue: License;
   updValue: Function;
-  keycloakReady: boolean;
-  dataManager: DataManager;
+  singleDataType: SingleDataType;
 }
 
 function BodyLicense(props: BodyLicenseProps) {
+  const { keycloak } = useKeycloak();
+  const [value, setValue] = useState<License>(props.oldValue);
 
-    const [value, setValue] = useState(props.oldValue);
-
-    const isCustomf = useCallback((licenses: Array<License>): boolean => {
-      return licenses.findIndex(el => el["title"] === value["title"] && el["url"] === value["url"]) === -1;
-    }, [value]);
-
-    const [licenses, setLicenses] = useState<LoadingData<License[]>>({
-      statusCode: -1,
-       loading: false,
-       error: null,
-       data: []
-
+    const { data: licenses, error: licensesError, isLoading: licensesIsLoading } = useGetLicensesQuery({
+      token: keycloak.token
     });
-    const isCustom = isCustomf(licenses.data ?? []);
-    const [customValue, setCustomValue] = useState<License>(isCustom ? value : {title: "", url: ""});
-    const {keycloak} = useKeycloak();
+
+    const isCustom = useCallback((): boolean => {
+      if (licenses) {
+        return licenses.findIndex(el => el["title"] === value["title"] 
+          && el["url"] === value["url"]) === -1;
+      } else {
+        return false;
+      }
+      
+    }, [value, licenses]);
+
+    const [customValue, setCustomValue] = useState<License>({title: "", url: ""});
+    useEffect(() => {
+      if (licenses && isCustom()) {
+        setCustomValue(value);
+      }
+    }, [licenses, isCustom, setCustomValue])
+
     const updValue = (newVal: License) => {
       setValue((prev: License) => {
         return {...prev, ...newVal};
@@ -48,64 +56,39 @@ function BodyLicense(props: BodyLicenseProps) {
       updValue({...value, [field]: t.value});
     };
 
-    useEffect(() => {
-      if (props.keycloakReady && keycloak.authenticated) {
-        setLicenses( prevValues => {
-           return { ...prevValues, loading: true, error: null, data: [], statusCode: -1 }
-        });
-        props.dataManager.getLicenses(keycloak.token ?? "")
-          .then(
-            (xhr: XMLHttpRequest) => {
-              let  data: License[] = JSON.parse(xhr.response) as License[];
-              setLicenses( prevValues => {
-                return { ...prevValues, loading: false, error: null, data, statusCode: xhr.status }
-              });
-              const cv = isCustomf(data) ? value : {title: "", url: ""};
-              setCustomValue(cv);
-            },
-            (xhr: XMLHttpRequest) => {
-                const error = Util.getErrFromXhr(xhr);
-                setLicenses( prevValues => {
-                    return { ...prevValues, loading: false, error, data: [], statusCode: xhr.status}
-                });
-            });
-        }
-  }, [props.keycloakReady, props.dataManager, setLicenses, keycloak.token, setCustomValue]);
-
-    if (licenses.error) {
-      return <ErrorView message={`Error loading licenses: ${licenses.error.title}`}/>;
+    if (licensesError) {
+      return <ErrorView message={`Error loading licenses: ${licensesError.message ?? ""}`}/>;
     } else {
-      if (licenses.loading) {
-        return <LoadingView fullMessage="Loading licenses, please wait" />
-      } else {
-        return  <div className="mb-3">
-        <Button title="Restore Initial value" variant="link" onClick={(e) => updValue(props.oldValue)}>Restore original</Button><br />
-        <select onChange={(e) => {e.preventDefault();updValue(JSON.parse(e.target.value));}} 
-            value={isCustom ? JSON.stringify(customValue) :  JSON.stringify(value) }>
-          <option key="-1" value={JSON.stringify(customValue)}>Custom License</option>
-          {licenses.data?.map((el, idx) => <option key={btoa(el.title)} value={JSON.stringify(el)}>{el.title}</option>)}
-        </select>
-        {
-          isCustom ?
-              <div className="mt-4">
-                <FormControl className="w-100"
-                  placeholder="Title"
-                  aria-label="License title"
-                  title="Set the custom license's title"
-                  value={customValue.title} onInput={(e: FormEvent<HTMLInputElement>) => updCustomValue(e, "title")}
+    if (licensesIsLoading) {
+      return <LoadingView fullMessage="Loading licenses, please wait" />
+    } else {
+      return  <div className="mb-3">
+      <select onChange={(e) => {e.preventDefault();updValue(JSON.parse(e.target.value));}} 
+          value={isCustom() ? JSON.stringify(customValue) :  JSON.stringify(value) }>
+        <option key="-1" value={JSON.stringify(customValue)}>Custom License</option>
+        {licenses?.map((el: License) => <option key={btoa(el.title ?? crypto.randomUUID())} value={JSON.stringify(el)}>{el.title}</option>)}
+      </select>
+      {
+        isCustom() ?
+            <div className="mt-4">
+              <FormControl className="w-100"
+                placeholder="Title"
+                aria-label="License title"
+                title="Set the custom license's title"
+                value={customValue.title ?? ""} onInput={(e: FormEvent<HTMLInputElement>) => updCustomValue(e, "title")}
+              />
+                <FormControl className="mt-2 w-100"
+                  placeholder="URL"
+                  aria-label="License url"
+                  title="Set the custom license's URL"
+                  value={customValue.url ?? ""} onInput={(e: FormEvent<HTMLInputElement>) => updCustomValue(e, "url")}
                 />
-                  <FormControl className="mt-2 w-100"
-                    placeholder="URL"
-                    aria-label="License url"
-                    title="Set the custom license's URL"
-                    value={customValue.url} onInput={(e: FormEvent<HTMLInputElement>) => updCustomValue(e, "url")}
-                  />
-              </div>
-            : <Fragment />
-        }
-      </div>;
+            </div>
+          : <Fragment />
       }
+    </div>;
     }
+  }
 
     
 }
