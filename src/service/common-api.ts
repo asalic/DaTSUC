@@ -1,6 +1,7 @@
 import QueryParamsType from "../model/QueryParamsType";
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import Config from "../config.json";
+import Util from "../Util";
 
 
 export function isFetchBaseQueryError(
@@ -30,7 +31,7 @@ export function isFetchBaseQueryError(
         //errMsg = 'error' in error ? error.error : JSON.stringify(error.data)
         error = errorUnk;
     } else if (isErrorWithMessage(errorUnk)) {
-      error = new Error(error.message);
+      error = new Error(errorUnk.message);
     } else {
       error = new Error(JSON.stringify(errorUnk));
     }
@@ -48,12 +49,24 @@ export async function call(method: string, path: string,
         // Process the response
         if (request.status >= 200 && request.status < 300) {
             // If successful
-            return JSON.parse(request.response);
+            if (request.response !== undefined && request.response !== null) {
+              if (Util.isJson(request.response)) {
+                return JSON.parse(request.response);
+              } else {
+                return request.responseText;
+              }
+            } else {
+              return null;
+            }
         } else { 
           let data = request.responseText;
-          const r = JSON.parse(data);
-          if ("message" in r)   {
-            data = r.message;
+          if (Util.isJson(data)) {
+            const r = JSON.parse(data);
+            if ("message" in r)   {
+              data = r.message;
+            }
+          } else {
+            data = request.responseText;
           }
           throw { data, status: request.status} as FetchBaseQueryError;
         }
