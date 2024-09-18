@@ -143,4 +143,19 @@ export default class Util {
 
   }
 
+  public static isJson(input: any): boolean {
+    try {
+        //check if the string exists
+        if (input) {
+            JSON.parse(input);
+            return true;
+        } else {
+          return false;
+        }
+    }
+    catch (e: any) {
+      return false;
+    }
+  };
+
 }
