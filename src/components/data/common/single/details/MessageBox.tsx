@@ -1,10 +1,10 @@
 import { useKeycloak } from "@react-keycloak/web";
 import React, { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
-import DataManager from "../../../../../api/DataManager";
+import { useAppDispatch } from "../../../../../store";
 
 import SingleData from "../../../../../model/SingleData";
-import { useGetDatasetCreationStatusQuery } from "../../../../../service/singledata-api";
+import { api, useGetDatasetCreationStatusQuery } from "../../../../../service/singledata-api";
 import UrlFactory from "../../../../../service/UrlFactory";
 import SingleDataType from "../../../../../model/SingleDataType";
 import Config from "../../../../../config.json";
@@ -14,16 +14,14 @@ import Config from "../../../../../config.json";
 //const MSG_CREATION_STAT = 3;
 
 interface MessageBox<T extends SingleData> {
-    postMessage: Function;
     keycloakReady: boolean;
-    dataManager: DataManager;
     dataset: T;
-    getDataset: Function;
 }
 
-function MessageBox<T extends SingleData>({postMessage, keycloakReady, dataManager, dataset, getDataset}: MessageBox<T>) {
+function MessageBox<T extends SingleData>({keycloakReady, dataset}: MessageBox<T>) {
     //const [msgs, setMsgs] = useState<object>({});
-    const [pollingInterval, setPollingInterval] = useState(Config.refreshDatasetCreate);
+    const dispatch = useAppDispatch();
+    const [pollingInterval, setPollingInterval] = useState(Config.refreshDatasetCreate); 
     const { keycloak } = useKeycloak();
 
     const { data, isLoading, error, isError } = useGetDatasetCreationStatusQuery({
@@ -42,21 +40,29 @@ function MessageBox<T extends SingleData>({postMessage, keycloakReady, dataManag
             <a href="${path}">${dataset.nextId}</a>`);
 
     }
-    const creationFinished: boolean = !isLoading && ((data?.status === "finished" || data?.status === "error") && !dataset.creating);
-    if (!isLoading && ! error && data ) {
-        if (creationFinished) {
+    if (!isLoading && !error && data ) {
+        if (data.status === "finished") {
             msgs.push(`Dataset creation finished with last message: ${data.lastMessage}`);
         } else {
             msgs.push(`Dataset creation in progress with last message: ${data.lastMessage}`);
         }
     }
 
-    const cancelPolling: boolean = ( error !== undefined && error !== null ) || creationFinished;
-    console.log(isError);
+    const cancelPolling: boolean = ( error !== undefined && error !== null ) || isError || data?.status === "finished";
 
     useEffect(() => {
         if (cancelPolling){
             setPollingInterval(0);
+            // dispatch(
+            //     api.endpoints.getSingleDataPage.initiate(
+            //         {
+            //             token: keycloak.token,
+            //             singleDataType: SingleDataType.DATASET
+            //         },
+            //         { subscribe: false, forceRefetch: true }
+            //     )
+            // )
+            dispatch( api.util.invalidateTags(["Dataset", {type: "Dataset", id: dataset.id}]) );
         } else {
             setPollingInterval(Config.refreshDatasetCreate);
         }
