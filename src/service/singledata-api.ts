@@ -8,6 +8,11 @@ import SingleDataType from "../model/SingleDataType";
 import SingleData from '../model/SingleData';
 import Util from '../Util';
 import DatasetCreationStatus from '../model/DatasetCreationStatus';
+import License from '../model/License';
+import UpgradableDataset from '../model/UpgradableDataset';
+import CheckIntegrity from '../model/CheckIntegrity';
+import AclUser from '../model/AclUser';
+import DeletedSingleData from '../model/DeletedSingleData';
 
 export const api = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '' }),
@@ -40,6 +45,26 @@ export const api = createApi({
 
       },
     }),
+
+
+
+    getUpgradableDatasets: build.query<UpgradableDataset[], GetUpgradableDatasetsT>({
+      keepUnusedDataFor: 0,
+      queryFn: async ({token}: GetDatasetCreationStatusT)  => 
+        {
+          try {
+              if (!token) {
+                  return { error: generateError("Invalid token.") } 
+              }
+              return { data: await call("GET", 
+                `${BASE_URL_API}/upgradableDatasets`, 
+                token ? new  Map([["Authorization", "Bearer " + token]]) : null,
+                null, "text", null) as UpgradableDataset[] };
+          } catch(error) { return { error: generateError(error) }; }
+
+        },
+    }),
+    
     getDatasetCreationStatus: build.query<DatasetCreationStatus, GetDatasetCreationStatusT>({
       keepUnusedDataFor: 0,
       queryFn: async ({token, id}: GetDatasetCreationStatusT/*, queryApi, extraOptions, baseQuery*/)  => {
@@ -71,12 +96,71 @@ interface GetSingleDataT {
   singleDataType: SingleDataType;
 }
 
+interface GetSingleDataAclT {
+  token: string  | null |undefined;
+  id:  string;
+  singleDataType: SingleDataType;
+}
+
+interface DeleteSingleDataAclT {
+  token: string  | null |undefined;
+  id:  string;
+  singleDataType: SingleDataType;
+  username: string;
+}
+
+interface PutSingleDataAclT {
+  token: string  | null |undefined;
+  id:  string;
+  singleDataType: SingleDataType;
+  username: string;
+}
+
+interface PostSingleDataCheckIntegrityT {
+  token: string  | null |undefined;
+  id:  string;
+  singleDataType: SingleDataType;
+
+}
+interface DeleteSingleDataCreatingT {
+  token: string  | null |undefined;
+  id:  string;
+  singleDataType: SingleDataType;
+  name: string;
+}
+
 interface GetDatasetCreationStatusT {
   token: string  | null |undefined;
   id:  string;
 
 }
 
-export const { useGetSingleDataPageQuery, 
+interface PatchSingleDataT {
+  token: string | null | undefined;
+  id: string;
+  property: string;
+  value: string | null;
+  singleDataType: SingleDataType;
+}
+
+interface GetUpgradableDatasetsT {
+  token: string | null | undefined;
+}
+
+interface GetLicensesT {
+  token: string | null | undefined;
+}
+
+
+export const { 
+  useGetSingleDataPageQuery, 
   useGetSingleDataQuery, 
-  useGetDatasetCreationStatusQuery } = api
+  useGetSingleDataAclQuery,
+  useDeleteSingleDataAclMutation,
+  usePutSingleDataAclMutation,
+  usePostSingleDataCheckIntegrityMutation,
+  useDeleteSingleDataCreatingMutation,
+  usePatchSingleDataMutation,
+  useGetDatasetCreationStatusQuery,
+  useGetUpgradableDatasetsQuery,
+  useGetLicensesQuery } = api
