@@ -1,11 +1,16 @@
 import { Container, Badge } from "react-bootstrap";
 import React, { Fragment }from "react";
+import { useKeycloak } from "@react-keycloak/web";
 
 import DatasetFieldEdit from "../common/DatasetFieldEdit";
 import RouteFactory from "../../../../../api/RouteFactory";
-import DataManager from "../../../../../api/DataManager";
 import Util from "../../../../../Util";
 import SingleData from "../../../../../model/SingleData";
+import SingleDataType from "../../../../../model/SingleDataType";
+import { useGetSingleDataQuery } from "../../../../../service/singledata-api";
+import LoadingView from "../../../../common/LoadingView";
+import ErrorView from "../../../../common/ErrorView";
+import ProgrammaticError from "../../../../common/ProgrammaticError";
 
 const PREVIOUS_ID = "Previous version";
 const NEXT_ID = "Next version";
@@ -15,10 +20,13 @@ interface EntryWithStudyResult {
   show: boolean;
 }
 
-function getIdEdit<T extends SingleData> (text: string, ds?: T, showDialog?: Function, patchDataset?: Function, keycloakReady?: boolean, dataManager?: DataManager) {
-  if (text === PREVIOUS_ID && ds && ds.editablePropertiesByTheUser.includes("previousId") && showDialog && patchDataset && keycloakReady && dataManager) {
-    return <DatasetFieldEdit datasetId={ds.id} showDialog={showDialog} field="previousId" fieldDisplay="previous version"
-      oldValue={ds.previousId} patchDataset={patchDataset} keycloakReady={keycloakReady} dataManager={dataManager}/>;
+function getIdEdit<T extends SingleData | undefined> (singleDataId: string, singleDataType: SingleDataType, 
+    text: string, ds: T, showDialog?: Function, keycloakReady?: boolean) {
+  if (text === PREVIOUS_ID && ds && ds.editablePropertiesByTheUser.includes("previousId") 
+      && showDialog && keycloakReady) {
+    return <DatasetFieldEdit singleDataId={singleDataId} singleDataType={singleDataType} 
+      showDialog={showDialog} field="previousId" fieldDisplay="previous version"
+      oldValue={ds.previousId} keycloakReady={keycloakReady}/>;
   } else if (text === NEXT_ID){
     return <Fragment />;
   } else {
@@ -27,11 +35,12 @@ function getIdEdit<T extends SingleData> (text: string, ds?: T, showDialog?: Fun
   return <Fragment />;
 }
 
-function getIDLink<T extends SingleData>(text: string, id: string | null, canEdit: boolean, data?: T, 
-      showDialog?: Function, patchDataset?: Function, keycloakReady?: boolean, dataManager?: DataManager) {
+function getIDLink<T extends SingleData>(singleDataId: string, singleDataType: SingleDataType, 
+      text: string, id: string | null, canEdit: boolean, data?: T, 
+      showDialog?: Function, keycloakReady?: boolean) {
   if (id || canEdit) {
     return <p title={`ID of the ${text} version of this dataset`}><b>{text}</b>
-          { getIdEdit(text, data, showDialog, patchDataset, keycloakReady, dataManager) }<br />
+          { getIdEdit(singleDataId, singleDataType, text, data, showDialog, keycloakReady) }<br />
           <span className="ms-3">{ id ? <a href={RouteFactory.getPath(RouteFactory.DATASET_DETAILS, { datasetId: id } )}>{id}</a> : "-" }</span>
         </p>;
   } else {
@@ -74,31 +83,47 @@ function getYearLowHigh(ageLow: number | null, ageHigh: number | null, ageUnit: 
   return ageLstItemTxt;
 }
 
-interface DatasetDetailsBoxProps<T extends SingleData> {
-  dataset: T;
+interface DatasetDetailsBoxProps {
   showDialog: Function;
-  patchDataset: Function;
   keycloakReady: boolean;
-  dataManager: DataManager;
+  singleDataId: string;
+  singleDataType: SingleDataType;
 }
 
-function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps<T>) {
-    //const [bgCopyId]
-    const dataset = props.dataset;
-    const ageLstItemTxt: string = getYearLowHigh(dataset.ageLow, dataset.ageHigh, dataset.ageUnit, dataset.ageNullCount, "age");
-    const diagnosisLstItemTxt: string = getYearLowHigh(dataset.diagnosisYearLow, dataset.diagnosisYearHigh, [], dataset.diagnosisYearNullCount, "diagnosis year");
+function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps) {
+    const { keycloak } = useKeycloak();
 
-    const sex = getEntryWithStudyCnt(dataset.sex, dataset.sexCount);
-    const modality = getEntryWithStudyCnt(dataset.modality, dataset.modalityCount);
-    const bodyPart = getEntryWithStudyCnt(dataset.bodyPart, dataset.bodyPartCount);
-    const manufacturer = getEntryWithStudyCnt(dataset.manufacturer, dataset.manufacturerCount);
+
+  const { data, isLoading, error, isError } = useGetSingleDataQuery({
+      token: keycloak.token,
+      id: props.singleDataId,
+      singleDataType: props.singleDataType
+    },
+    {
+      skip: !(props.keycloakReady)
+    }
+  )
+
+  if (isLoading) {
+    return <LoadingView what="data" />
+  } else if (isError) {
+    return <ErrorView message={`Error loading data: ${error.message ?? JSON.stringify(error.data) ?? ""}`} />;
+  } else if (data) {
+
+    const ageLstItemTxt: string = getYearLowHigh(data.ageLow, data.ageHigh, data.ageUnit, data.ageNullCount, "age");
+    const diagnosisLstItemTxt: string = getYearLowHigh(data.diagnosisYearLow, data.diagnosisYearHigh, [], data.diagnosisYearNullCount, "diagnosis year");
+
+    const sex = getEntryWithStudyCnt(data.sex, data.sexCount);
+    const modality = getEntryWithStudyCnt(data.modality, data.modalityCount);
+    const bodyPart = getEntryWithStudyCnt(data.bodyPart, data.bodyPartCount);
+    const manufacturer = getEntryWithStudyCnt(data.manufacturer, data.manufacturerCount);
 
     return(
       <Container fluid className="pt-3 pb-1 bg-light bg-gradient border border-secondary rounded">
-        <p title="The ID of the dataset"><b>ID</b><br /><span className="ms-3">{dataset.id}</span>
+        <p title="The ID of the dataset or model"><b>ID</b><br /><span className="ms-3">{data.id}</span>
               {
               //   <Button variant="link" className="m-0 p-0 ps-1 pe-1 ms-1 bg-warning" onClick={(e) =>
-              //     {navigator.clipboard.writeText(dataset.id).then(function() {
+              //     {navigator.clipboard.writeText(data.id).then(function() {
               //       console.log('Async: Copying to clipboard was successful!');
               //     }, function(err) {
               //       console.error('Async: Could not copy text: ', err);
@@ -107,13 +132,13 @@ function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps<T
               // </Button>
 }
         </p>        
-        <p title="The project that this dataset is part of"><b>Project</b><br /><span className="ms-3">{dataset.project}</span></p>
-        { getIDLink(PREVIOUS_ID, dataset.previousId, 
-            dataset.editablePropertiesByTheUser.includes("previousId"),
-            dataset, props.showDialog, props.patchDataset, props.keycloakReady, props.dataManager) }
-        { getIDLink(NEXT_ID, dataset.nextId, false) }
+        <p title="The project that this dataset is part of"><b>Project</b><br /><span className="ms-3">{data.project}</span></p>
+        { getIDLink(props.singleDataId, props.singleDataType, PREVIOUS_ID, data.previousId, 
+            data.editablePropertiesByTheUser.includes("previousId"),
+            data, props.showDialog, props.keycloakReady) }
+        { getIDLink(props.singleDataId, props.singleDataType, NEXT_ID, data.nextId, false) }
         <p title="The number of studies followed by number of all subjects in this dataset"><b>Studies/Subjects count</b><br />
-          <span className="ms-3">{dataset.studiesCount}/{dataset.subjectsCount}</span></p>
+          <span className="ms-3">{data.studiesCount}/{data.subjectsCount}</span></p>
         <p title="The range of the ages of all subjects in this dataset, DICOM tag (0010, 1010) or subject clinical data"><b>Age range</b><br />
           <span className="ms-3">{ageLstItemTxt}</span></p>
         <p title="The range of the diagnosis years for all subjects in this dataset, subject clinical data"><b>Year of diagnosis range</b><br />
@@ -127,12 +152,15 @@ function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps<T
         <p title="The various body parts represented by the underlying studies, DICOM tag (0018, 0015)"><b>Body part{bodyPart.show ? " (#studies)" : ""}</b><br />
           <span className="ms-3">{bodyPart.txt}</span></p>
         <p title="The list of tags set on the series that compose this dataset"><b>Series tags</b><br />
-          <span className="ms-3">{dataset.seriesTags !== null && dataset.seriesTags !== undefined && dataset.seriesTags.length > 0 ? 
-          dataset.seriesTags.map(t => <Badge pill key={t} bg="light" text="dark" className="ms-1 me-1">{t}</Badge>) : "-"}</span></p>
+          <span className="ms-3">{data.seriesTags !== null && data.seriesTags !== undefined && data.seriesTags.length > 0 ? 
+          data.seriesTags.map(t => <Badge pill key={t} bg="light" text="dark" className="ms-1 me-1">{t}</Badge>) : "-"}</span></p>
         <p title="The size occupied by the dataset on the platform' storage"><b>Size</b><br />
-          <span className="ms-3">{dataset.sizeInBytes !== null && dataset.sizeInBytes !== undefined ? Util.formatBytes(dataset.sizeInBytes) : "unknown"}</span></p>
+          <span className="ms-3">{data.sizeInBytes !== null && data.sizeInBytes !== undefined ? Util.formatBytes(data.sizeInBytes) : "unknown"}</span></p>
       </Container>
     );
+  } else {
+    return <ProgrammaticError msg="Data is null or undefined, please contact the " />
+  }
 }
 
 export default DatasetDetailsBox;
