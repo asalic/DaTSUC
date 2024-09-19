@@ -1,54 +1,79 @@
 import React from "react";
-import DataManager from "../../../../../api/DataManager";
 import DatasetFieldEdit from "../common/DatasetFieldEdit";
 import { Badge } from "react-bootstrap";
 import { useKeycloak } from "@react-keycloak/web";
 import { EnvelopeFill } from "react-bootstrap-icons";
 import SingleData from "../../../../../model/SingleData";
+import { useGetSingleDataQuery } from "../../../../../service/singledata-api";
+import LoadingView from "../../../../common/LoadingView";
+import ErrorView from "../../../../common/ErrorView";
+import SingleDataType from "../../../../../model/SingleDataType";
 
 interface SingleDataTitleProps<T extends SingleData> {
     keycloakReady: boolean;
-    dataManager: DataManager;
-    datasetId: string;
+    singleDataId: string;
     showDialog: Function;
-    patchDataset: Function;
-    data: T;
+    singleDataType: SingleDataType;
 }
 
 function SingleDataTitle<T extends SingleData>(props: SingleDataTitleProps<T>) {
     const { keycloak } = useKeycloak();
+
+    const { data, isLoading, error, isError } = useGetSingleDataQuery({
+      token: keycloak.token,
+      id: props.singleDataId,
+      singleDataType: props.singleDataType
+    }
+  )
+
+  if (isLoading) {
+    return <LoadingView what={`resource ID '${props.singleDataId}'`} />;
+  } else if (isError) {
+    return <ErrorView message={`Error loading resource ID '${props.singleDataId}': ${error.message ?? ""}`} />
+  } else {
+
     return <>
         <span className="h3">
-              <b className="me-1">{props.data.name}
+              <b className="me-1">{data?.name}
               {
-                props.data.editablePropertiesByTheUser.includes("draft")
-                ? <DatasetFieldEdit keycloakReady={props.keycloakReady} dataManager={props.dataManager} 
-                        datasetId={props.datasetId} showDialog={props.showDialog} field="name" fieldDisplay="Dataset name" 
-                        oldValue={props.data.name} patchDataset={props.patchDataset}/>
+                data?.editablePropertiesByTheUser.includes("draft")
+                ? <DatasetFieldEdit keycloakReady={props.keycloakReady} 
+                        singleDataId={props.singleDataId} showDialog={props.showDialog} field="name" fieldDisplay="Dataset name" 
+                        oldValue={data?.name} singleDataType={props.singleDataType}/>
                 : <></>
               }
               </b>
           </span>
             <sup  className="container-fluid ms-0" style={{fontSize: "0.9rem"}}>
-              {( props.data.invalidated ? <Badge pill className="me-2" bg="secondary">Invalidated</Badge>: <></> )}
-              {( props.data.public ? <Badge pill bg="dark">Published</Badge> : <></> )}
-              {( props.data.draft ? <Badge pill bg="light" text="dark">Draft</Badge> : <></> )}
+              {( data?.invalidated ? <Badge pill className="me-2" bg="secondary">Invalidated</Badge>: <></> )}
+              {( data?.public ? <Badge pill bg="dark">Published</Badge> : <></> )}
+              {( data?.draft ? <Badge pill bg="light" text="dark">Draft</Badge> : <></> )}
             </sup>
             <div>
-              <i>Created on </i> 
-                {new Intl.DateTimeFormat('en-GB', { dateStyle: 'short', timeStyle: 'long' })
-                    .format(Date.parse(props.data.creationDate))}
-                {keycloak.authenticated ? (
+              {
+                data?.creationDate ?
                 <>
-                  <i> by </i>
-                    {props.data.authorName}
-                    <a className="ms-1" title="Send an email to the dataset author" href={"mailto:" + props.data.authorEmail }>
-                      <EnvelopeFill />
-                    </a>
+                  <i>Created on </i> 
+                  {new Intl.DateTimeFormat('en-GB', { dateStyle: 'short', timeStyle: 'long' })
+                    .format(Date.parse(data?.creationDate))}
+                </>
+                : <></>
+              }
+              
+                {
+                  keycloak.authenticated && data?.authorName ? 
+                    <>
+                      <i> by </i>
+                        {data?.authorName}
+                        <a className="ms-1" title="Send an email to the dataset author" href={"mailto:" + data?.authorEmail }>
+                          <EnvelopeFill />
+                        </a>
                     </>
-                ) : (<></>)}
+                  : (<></>)
+                }
               </div>
     </>
+  }
 }
 
 export default SingleDataTitle;

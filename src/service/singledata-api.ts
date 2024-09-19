@@ -17,27 +17,45 @@ import DeletedSingleData from '../model/DeletedSingleData';
 export const api = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '' }),
   reducerPath: 'singleDataApi',
-  tagTypes: ['Model', "Dataset"],
+  refetchOnMountOrArgChange: true,
+  tagTypes: ["Model", "Dataset", "ModelAcl", "DatasetAcl"],
   endpoints: (build:  EndpointBuilder<any, any, any>) => ({
     getSingleDataPage: build.query<ItemPage<SingleData>, GetSingleDataPageT>({
-      queryFn: async ({token, qParams, singleDataType}: GetSingleDataPageT/*, queryApi, extraOptions, baseQuery*/)  => {
-        try {
-          const dt: any = await call("GET", 
-            `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}`, 
-            token ? new  Map([["Authorization", "Bearer " + token]]) : null,
-            null, "text", qParams);
-            if (dt.list) {
-              dt.list.forEach((d: any) => d.type = singleDataType);
-            }
-            return { data: dt as ItemPage<SingleData> };
-        } catch(error) { return { error: generateError(error) }; }
-
-      },
+      queryFn: async ({token, qParams, singleDataType}: GetSingleDataPageT
+        /*, queryApi, extraOptions, baseQuery*/)  => 
+        {
+            try {
+              const dt: any = await call("GET", 
+                `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}`, 
+                token ? new  Map([["Authorization", "Bearer " + token]]) : null,
+                null, "text", qParams);
+                if (dt.list) {
+                  dt.list.forEach((d: any) => d.type = singleDataType);
+                }
+                return { data: dt as ItemPage<SingleData> };
+            } catch(error) { return { error: generateError(error) }; }
+        },
+        providesTags: ["Model", "Dataset"],
+        // (result: ItemPage<SingleData> |undefined, error, arg) => {
+        //   const type: string = Util.singleDataClass(arg.singleDataType).constructor.name;
+        //   return result && result.list
+        //     ? [...result.list.map(({ id }) => ({ type, id })), type]
+        //     : [type];
+        // }
     }),
     getSingleData: build.query<SingleData, GetSingleDataT>({
-      queryFn: async ({token, id, singleDataType}: GetSingleDataT/*, queryApi, extraOptions, baseQuery*/)  => {
-        try {
-            return { data: {...await call("GET", 
+      queryFn: async ({token, id, singleDataType}: GetSingleDataT)  => 
+        {
+          try {
+              return { data: {...await call("GET", 
+                `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}/${id}`, 
+                token ? new  Map([["Authorization", "Bearer " + token]]) : null,
+                null, "text", null), type:  singleDataType } as SingleData };
+          } catch(error) { return { error: generateError(error) }; }
+
+        },
+      providesTags: ["Model", "Dataset"],
+    }),
     patchSingleData: build.mutation<boolean, PatchSingleDataT>({
       queryFn: async ({ token, id, property, value, singleDataType }: PatchSingleDataT)  => 
         {
@@ -98,12 +116,32 @@ export const api = createApi({
         },
         invalidatesTags: ["ModelAcl", "DatasetAcl"],
     }),
+    postSingleDataCheckIntegrity: build.mutation<CheckIntegrity, PostSingleDataCheckIntegrityT>({
+      queryFn: async ({token, id, singleDataType }: PostSingleDataCheckIntegrityT)  => 
+        {
+          try {
+              return { data: await call("POST", 
+                `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}/${id}/checkIntegrity`, 
+                token ? new  Map([["Authorization", "Bearer " + token]]) : null,
+                null, "text", null) };
+          } catch(error) { return { error: generateError(error) }; }
+
+        },
+        invalidatesTags: ["Model", "Dataset"],
+    }),
+    deleteSingleDataCreating: build.mutation<DeletedSingleData, DeleteSingleDataCreatingT>({
+      queryFn: async ({token, id, singleDataType, name }: DeleteSingleDataCreatingT)  => 
+        {
+          try {
+            await call("DELETE", 
               `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}/${id}`, 
               token ? new  Map([["Authorization", "Bearer " + token]]) : null,
-              null, "text", null), type:  singleDataType } as SingleData };
-        } catch(error) { return { error: generateError(error) }; }
+              null, "text", null)
+              return { data: { name, id, type: singleDataType} as DeletedSingleData };
+          } catch(error) { return { error: generateError(error) }; }
 
-      },
+        },
+        invalidatesTags: ["Model", "Dataset"],
     }),
 
 
@@ -127,19 +165,36 @@ export const api = createApi({
     
     getDatasetCreationStatus: build.query<DatasetCreationStatus, GetDatasetCreationStatusT>({
       keepUnusedDataFor: 0,
-      queryFn: async ({token, id}: GetDatasetCreationStatusT/*, queryApi, extraOptions, baseQuery*/)  => {
-        try {
+      queryFn: async ({token, id}: GetDatasetCreationStatusT)  => 
+        {
+          try {
+              if (!token) {
+                  return { error: generateError("Invalid token.") } 
+              }
+              return { data: await call("GET", 
+                `${BASE_URL_API}/datasets/${id}/creationStatus`, 
+                token ? new  Map([["Authorization", "Bearer " + token]]) : null,
+                null, "text", null) as DatasetCreationStatus };
+          } catch(error) { return { error: generateError(error) }; }
+
+        },
+    }),
+
+    getLicenses: build.query<Array<License>, GetLicensesT>({
+      queryFn: async ({token}: GetLicensesT)  => 
+        {
+          try {
             if (!token) {
                 return { error: generateError("Invalid token.") } 
             }
-            return { data: await call("GET", 
-              `${BASE_URL_API}/datasets/${id}/creationStatus`, 
-              token ? new  Map([["Authorization", "Bearer " + token]]) : null,
-              null, "text", null) as DatasetCreationStatus };
-        } catch(error) { return { error: generateError(error) }; }
+              return { data: await call("GET", 
+                `${BASE_URL_API}/licenses`, new  Map([["Authorization", "Bearer " + token]]),
+                null, "text", null) as Array<License> };
+          } catch(error) { return { error: generateError(error) }; }
 
-      },
-    })
+        },
+    }),
+    
   }),
 })
 
