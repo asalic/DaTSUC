@@ -38,6 +38,24 @@ export const api = createApi({
       queryFn: async ({token, id, singleDataType}: GetSingleDataT/*, queryApi, extraOptions, baseQuery*/)  => {
         try {
             return { data: {...await call("GET", 
+    patchSingleData: build.mutation<boolean, PatchSingleDataT>({
+      queryFn: async ({ token, id, property, value, singleDataType }: PatchSingleDataT)  => 
+        {
+          try {
+              if (!token) {
+                  return { error: generateError("Invalid token.") } 
+              }
+              console.log("here");
+              await call("PATCH", 
+                `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}/${id}`, 
+                token ? new  Map([["Authorization", "Bearer " + token], ["Content-Type", "application/json"]]) : null,
+                JSON.stringify({ property, value}), "text", null)
+              return { data: true };
+          } catch(error) { return { error: generateError(error) }; }
+
+        },
+      invalidatesTags: ["Model", "Dataset"],
+    }),
     getSingleDataAcl: build.query<AclUser[], GetSingleDataAclT>({
       queryFn: async ({token, id, singleDataType}: GetSingleDataAclT)  => 
         {
