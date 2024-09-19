@@ -38,6 +38,48 @@ export const api = createApi({
       queryFn: async ({token, id, singleDataType}: GetSingleDataT/*, queryApi, extraOptions, baseQuery*/)  => {
         try {
             return { data: {...await call("GET", 
+    getSingleDataAcl: build.query<AclUser[], GetSingleDataAclT>({
+      queryFn: async ({token, id, singleDataType}: GetSingleDataAclT)  => 
+        {
+          try {
+            const data: AclUser[] =  await call("GET", 
+                `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}/${id}/acl`, 
+                token ? new  Map([["Authorization", "Bearer " + token]]) : null,
+                null, "text", null) as AclUser[];
+              return { data};
+          } catch(error) { return { error: generateError(error) }; }
+
+        },
+      providesTags: ["ModelAcl", "DatasetAcl"],
+    }),
+    deleteSingleDataAcl: build.mutation<null, DeleteSingleDataAclT>({
+      queryFn: async ({token, id, singleDataType, username}: DeleteSingleDataAclT)  => 
+        {
+          try {
+              await call("DELETE", 
+                `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}/${id}/acl/${username}`, 
+                token ? new  Map([["Authorization", "Bearer " + token]]) : null,
+                null, "text", null);
+              return { data: null };
+          } catch(error) { return { error: generateError(error) }; }
+
+        },
+        invalidatesTags: ["ModelAcl", "DatasetAcl"],
+    }),
+    putSingleDataAcl: build.mutation<boolean, PutSingleDataAclT>({
+      queryFn: async ({token, id, singleDataType, username}: DeleteSingleDataAclT)  => 
+        {
+          try {
+              await call("PUT", 
+                `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}/${id}/acl/${username}`, 
+                token ? new  Map([["Authorization", "Bearer " + token]]) : null,
+                null, "text", null);
+              return { data: true };
+          } catch(error) { return { error: generateError(error) }; }
+
+        },
+        invalidatesTags: ["ModelAcl", "DatasetAcl"],
+    }),
               `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}/${id}`, 
               token ? new  Map([["Authorization", "Bearer " + token]]) : null,
               null, "text", null), type:  singleDataType } as SingleData };

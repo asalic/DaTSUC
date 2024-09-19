@@ -1,30 +1,46 @@
 import React from "react";
+import { useKeycloak } from "@react-keycloak/web";
 import { ListGroup } from "react-bootstrap";
-import AclUser from "../../../../../model/AclUser";
-import LoadingData from "../../../../../model/LoadingData";
 import UserEntry from "./UserEntry";
 import LoadingView from "../../../../common/LoadingView";
+import { useGetSingleDataAclQuery } from "../../../../../service/singledata-api";
+import SingleDataType from "../../../../../model/SingleDataType";
+import ErrorView from "../../../../common/ErrorView";
 
 
 interface UserListProps {
-    data: LoadingData<AclUser[]>;
-    deleteAcl: Function;
-    currentUserName: string;
+    singleDataId: string;
+    singleDataType: SingleDataType;
+    keycloakReady: boolean;
 }
 
-function UserList(props: UserListProps): JSX.Element {
+function UserList({ singleDataId, singleDataType, keycloakReady }: UserListProps): JSX.Element {
+    let { keycloak } = useKeycloak();
 
-    if (props.data.loading) {
+
+    const { data, isLoading, error, isError } = useGetSingleDataAclQuery({
+        token: keycloak.token,
+        id: singleDataId,
+        singleDataType
+      },
+      {
+        skip: !(keycloakReady && singleDataId)
+      }
+    )
+
+    if (isLoading) {
         return <LoadingView what="users in the access control list (ACL)"></LoadingView>;
+    }  else if (isError) {
+        return <ErrorView message={`Error loading data: ${"message" in error ? error.message : JSON.stringify(error) }`} />
     } else {
-        if (props.data.data === null || props.data.data.length === 0) {
+        if (data === undefined || data === null || data.length === 0) {
             return <p><b>No users found in the access control list (ACL).</b></p>;
         } else {
             return <>    
                 <h5>List of users in the access control list (ACL):</h5>        
                 <ListGroup className="width-auto  d-inline-flex">
                     {
-                        props.data.data.map(u => <UserEntry key={u.uid} deletable={u.username !== props.currentUserName} deleteAcl={props.deleteAcl} user={u}></UserEntry>)
+                        data?.map(u => <UserEntry key={u.uid} singleDataId={singleDataId} singleDataType={singleDataType} user={u}></UserEntry>)
                     }
                 </ListGroup>
             </>
