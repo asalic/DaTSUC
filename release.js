@@ -8,24 +8,29 @@ const fs = require('fs');
 const child_process = require('child_process');
 const { createHttpTerminator } = require('http-terminator');
 
-if (process.argv.length !== 4) {
-    console.error("This script requires two arguments: first either dev (for development execution), prod-test (for production test), or prod (for production release), and second the token");
+if (process.argv.length < 4) {
+    console.error("This script requires two arguments: first either dev (for development execution), prod-test (for production test), or prod (for production release), and third the token. A fourth optional arg is the IP of the selected interface.");
     process.exit(1);
 }
 
 const release = process.argv[2];
 const token = process.argv[3];
+const selectedIp = process.argv[4];
 const dsServer =  require(`./config-${release}.json`).datasetService;
 
 const networkInterfaces = os.networkInterfaces();
 //console.log(networkInterfaces);
 // Connections that use a local address
 const localAddr = new Set(["127", "192"]);
-const interf = Object.values(networkInterfaces).flat().filter(e => e.internal === false 
+let interf = Object.values(networkInterfaces).flat().filter(e => e.internal === false 
     && e.family === 'IPv4' && !localAddr.has(e.address.substring(0, 3)));
+if (selectedIp) {
+    console.log(`Searching for your own provided IP '${selectedIp}'...`);
+    interf = interf.filter(e => e.address === selectedIp);
+}
 if (interf.length !== 1) {
-    console.log(interf);
-    throw "too many or too few interfaces left after filtering";
+    console.error(interf);
+    throw new Error("too many or too few interfaces left after filtering, pass the IP of the network you want to use via the cmd arguments");
 }
 const ip = interf[0].address;
 console.log(`Uploading from IP ${ip}`);
