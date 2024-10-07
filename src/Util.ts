@@ -1,8 +1,6 @@
 import InvalidArgumentError from "./error/InvalidArgumentError";
 import ConfigJson from "./model/ConfigJson";
-import Dataset from "./model/Dataset";
 import type LoadingError from "./model/LoadingError";
-import Model from "./model/Model";
 import SingleDataType from "./model/SingleDataType";
 
 export default class Util {
@@ -136,8 +134,8 @@ export default class Util {
 
   public static singleDataClassName(type: SingleDataType): string {
     switch (type) {
-      case SingleDataType.DATASET: return Dataset.name;
-      case SingleDataType.MODEL: return Model.name;
+      case SingleDataType.DATASET: return "Dataset";//Dataset.name;
+      case SingleDataType.MODEL: return "Model";//Model.name;
       default: throw new InvalidArgumentError(`Single data type '${type}' not supported when determining the path.`);
     }
 
