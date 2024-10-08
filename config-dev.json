@@ -3,7 +3,6 @@
   "release": "dev",
   "datasetService": "http://asaserver.i3m.upv.es:8000/api/v1",
   "tracerService": "http://asaserver.i3m.upv.es:8000/api/v1/tracer-service",
-  "caseExplorerService": "",
   "basename": "",
   "defaultLimitDatasets": 4,
   "defaultLimitStudies": 4,
@@ -30,5 +29,26 @@
     "termsConditions": "/terms-and-conditions.pdf",
     "privacyPolicy": "/privacy-policy.pdf",
     "favicon": "/chaimeleon-logo.svg"
-  }
+  },
+  "externalServices": [
+    {
+      "name": "App Dashboard",
+      "title": "Launch the applications' dashboard (Kubeapps)",
+      "link": "https://chaimeleon-eu.i3m.upv.es/apps/",
+      "icon": "/icons/kubeapps.png"
+    },
+    {
+      "name": "Desktop Apps Access",
+      "title": "Access your desktop cluster applications (Apache Guacamole)",
+      "link": "https://chaimeleon-eu.i3m.upv.es/guacamole/",
+      "icon": "/icons/guacamole.png"
+    },
+    {
+      "name": "Case Explorer",
+      "title": "Launch the case explorer (Quibim Precision)",
+      "link": "https://chaimeleon-eu.i3m.upv.es/omni/",
+      "icon": "/icons/quibim.png"
+    }
+
+  ]
 }

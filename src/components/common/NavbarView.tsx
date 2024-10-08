@@ -3,8 +3,11 @@ import React, { useMemo, useId }from "react";
 import { GridFill } from 'react-bootstrap-icons';
 
 import UserInfo from "./UserInfo";
-import Config from "../../config.json"
+import Config from "../../config.json";
 import Util from "../../Util";
+import ConfigJson from "../../model/ConfigJson";
+
+const conf: ConfigJson = Config;
 
 function getReleaseConf() {
   const release = Util.getReleaseType(Config);
@@ -59,7 +62,16 @@ function NavbarView() {
             <GridFill />
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            <Dropdown.Item title="Launch the applications' dashboard (Kubeapps)" onClick={() => window?.open("https://chaimeleon-eu.i3m.upv.es/apps/", '_blank')?.focus()}>
+            {
+              conf.externalServices?.map(e => {
+                return <Dropdown.Item title={e.title} onClick={() => window?.open(e.link, '_blank')?.focus()}>
+                <img className="apps-logo me-2" src={process.env["PUBLIC_URL"] + e.icon}/>{e.name}
+              </Dropdown.Item>
+              })
+            }
+            
+
+            {/* <Dropdown.Item title="Launch the applications' dashboard (Kubeapps)" onClick={() => window?.open("https://chaimeleon-eu.i3m.upv.es/apps/", '_blank')?.focus()}>
               <img className="apps-logo me-2" src={process.env["PUBLIC_URL"] + "/icons/kubeapps.png"}/>Apps Dashboard
             </Dropdown.Item>
             <Dropdown.Item title="Launch the case explorer (Quibim Precision)" onClick={() => window?.open(Config.caseExplorerService, '_blank')?.focus()}>
@@ -67,7 +79,7 @@ function NavbarView() {
             </Dropdown.Item>
             <Dropdown.Item title="Access your desktop cluster applications (Apache Guacamole)" onClick={() => window?.open("https://chaimeleon-eu.i3m.upv.es/guacamole/", '_blank')?.focus()}>
               <img className="apps-logo me-2" src={process.env["PUBLIC_URL"] + "/icons/guacamole.png"}/>Desktop Apps Access
-            </Dropdown.Item>
+            </Dropdown.Item> */}
           </Dropdown.Menu>
         </Dropdown>
         <div className="float-end">
