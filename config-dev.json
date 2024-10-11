@@ -3,6 +3,7 @@
   "release": "dev",
   "datasetService": "http://asaserver.i3m.upv.es:8000/api/v1",
   "tracerService": "http://asaserver.i3m.upv.es:8000/api/v1/tracer-service",
+  "appsDashboard": "",
   "basename": "",
   "defaultLimitDatasets": 4,
   "defaultLimitStudies": 4,
