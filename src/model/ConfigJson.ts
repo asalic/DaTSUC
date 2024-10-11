@@ -27,7 +27,6 @@ export default interface ConfigJson {
     "defaultLimitDatasets": number;
     "defaultLimitStudies": number;
     "defaultLimitTraces": number;
-    "kubeAppsUrl": string;
     "userAccountUrl": string;
     "refreshDatasetCreate": number;
     "keycloak": KeycloakOpts;

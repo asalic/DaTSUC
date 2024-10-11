@@ -26,8 +26,8 @@
   "project": {
     "name": "CHAIMELEON",
     "doi": "10.3030/952172",
-    "termsConditions": "/terms-and-conditions.pdf",
-    "privacyPolicy": "/privacy-policy.pdf",
+    "termsConditions": "https://chaimeleon-test.grycap.i3m.upv.es/dataset-service/web/terms-and-conditions.pdf",
+    "privacyPolicy": "https://chaimeleon-test.grycap.i3m.upv.es/dataset-service/web/privacy-policy.pdf",
     "favicon": "/chaimeleon-logo.svg"
   },
   "externalServices": [

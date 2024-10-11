@@ -8,13 +8,13 @@
     "defaultLimitStudies": 30,
     "defaultLimitTraces": 15,
     "defaultLimitAccess": 30,
-    "kubeAppsUrl": "https://chaimeleon-eu.i3m.upv.es/apps/",
-    "userAccountUrl": "https://chaimeleon-eu.i3m.upv.es/auth/realms/CHAIMELEON/account",
+    "kubeAppsUrl": "https://eucaim-node.i3m.upv.es/apps/",
+    "userAccountUrl": "https://eucaim-node.i3m.upv.es/auth/realms/CHAIMELEON/account",
     "refreshDatasetCreate": 5000,
     "keycloak": {
       "config": {
-        "url": "https://chaimeleon-eu.i3m.upv.es/auth/",
-        "realm": "CHAIMELEON",
+        "url": "https://eucaim-node.i3m.upv.es/auth/",
+        "realm": "EUCAIM-NODE",
         "clientId": "dataset-explorer-test"
       }, 
       "initOptions": {
@@ -26,8 +26,8 @@
     "project": {
       "name": "EUCAIM",
       "doi": null,
-      "termsConditions": null,
-      "privacyPolicy": null,
+      "termsConditions": "https://dashboard.eucaim.cancerimage.eu/eucaim_usage_policy.pdf",
+      "privacyPolicy": "https://dashboard.eucaim.cancerimage.eu/privacy-policy",
       "favicon": "/eucaim-logo.jpg"
     },
     "externalServices": [
