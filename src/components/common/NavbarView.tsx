@@ -3,8 +3,11 @@ import React, { useMemo, useId }from "react";
 import { GridFill } from 'react-bootstrap-icons';
 
 import UserInfo from "./UserInfo";
-import Config from "../../config.json"
+import Config from "../../config.json";
 import Util from "../../Util";
+import ConfigJson from "../../model/ConfigJson";
+
+const conf: ConfigJson = Config;
 
 function getReleaseConf() {
   const release = Util.getReleaseType(Config);
@@ -50,7 +53,7 @@ function NavbarView() {
               <NavDropdown.Divider />
               <NavDropdown.Item title="Fair Principles" href={Config.basename + "/fair"}>Fair Principles</NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link title="Support" href={Config.basename + "/support"}>Support</Nav.Link>
+            <Nav.Link target="_blank" title="Support" href={Config.basename + "/support"}>Support</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         {/* keycloak.authenticated ? <Button className="me-1" variant="warning" onClick={() => window.open("https://forms.gle/bDmJC3cHog2CixMB8", '_blank').focus()}>Internal Validation</Button> : <Fragment/> */}
@@ -59,7 +62,16 @@ function NavbarView() {
             <GridFill />
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            <Dropdown.Item title="Launch the applications' dashboard (Kubeapps)" onClick={() => window?.open(Config.appsDashboard, '_blank')?.focus()}>
+            {
+              conf.externalServices?.map(e => {
+                return <Dropdown.Item title={e.title} onClick={() => window?.open(e.link, '_blank')?.focus()}>
+                <img className="apps-logo me-2" src={process.env["PUBLIC_URL"] + e.icon}/>{e.name}
+              </Dropdown.Item>
+              })
+            }        
+
+            {/* <Dropdown.Item title="Launch the applications' dashboard (Kubeapps)" onClick={() => window?.open("https://chaimeleon-eu.i3m.upv.es/apps/", '_blank')?.focus()}>
+
               <img className="apps-logo me-2" src={process.env["PUBLIC_URL"] + "/icons/kubeapps.png"}/>Apps Dashboard
             </Dropdown.Item>
             <Dropdown.Item title="Launch the case explorer (Quibim Precision)" onClick={() => window?.open(Config.caseExplorerService, '_blank')?.focus()}>
@@ -67,7 +79,7 @@ function NavbarView() {
             </Dropdown.Item>
             <Dropdown.Item title="Access your desktop cluster applications (Apache Guacamole)" onClick={() => window?.open(Config.desktopAppAccess, '_blank')?.focus()}>
               <img className="apps-logo me-2" src={process.env["PUBLIC_URL"] + "/icons/guacamole.png"}/>Desktop Apps Access
-            </Dropdown.Item>
+            </Dropdown.Item> */}
           </Dropdown.Menu>
         </Dropdown>
         <div className="float-end">

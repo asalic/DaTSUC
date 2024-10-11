@@ -6,9 +6,12 @@ import React, { Fragment, useMemo, useState } from 'react';
 import {matchSorter} from 'match-sorter';
 
 import DataManager from "../../../../api/DataManager";
-import type Dataset from "../../../../model/Dataset";
+import Dataset from "../../../../model/Dataset";
 import MainTableSortBy from "../../../../model/MainTableSortBy"
 import TableNoData from "../../../common/TableNoData";
+import SingleData from "../../../../model/SingleData";
+import SingleDataType from "../../../../model/SingleDataType";
+import UrlFactory from "../../../../service/UrlFactory";
 
 
 // const IndeterminateCheckbox = forwardRef(
@@ -244,12 +247,13 @@ fuzzyTextFilterFn.autoRemove = (val: string) => !val;
 
 interface MoreLinkProps {
   row: Row<Dataset>;
+  singleDataType: SingleDataType;
 }
 
-function MoreLink({row}: MoreLinkProps): JSX.Element {
+function MoreLink({row, singleDataType}: MoreLinkProps): JSX.Element {
   return  (
     <div>
-      <Link className="btn btn-link" to={`/datasets/${row.original["id"]}/details`}>More</Link>
+      <Link className="btn btn-link" to={UrlFactory.singleDataDetails(row.original["id"], singleDataType)}>More</Link>
     </div>
   );
 }
@@ -334,13 +338,14 @@ function ColFlagsRender({row}:ColFlagsRenderProps): JSX.Element {
 
 interface TableProps {
 
+  singleDataType: SingleDataType;
   columns: Array<Column<any>>;
   data: Array<any>;
   sortBy: MainTableSortBy[];
   updSearchParams: Function;
 }
 
-function Table({ columns, data, sortBy, updSearchParams//, showDialog, dataManager, postMessage, onDialogDetailsClose 
+function Table({ singleDataType, columns, data, sortBy, updSearchParams//, showDialog, dataManager, postMessage, onDialogDetailsClose 
     }: TableProps) {
   // const filterTypes = useMemo(
   //   () => ({
@@ -419,7 +424,7 @@ function Table({ columns, data, sortBy, updSearchParams//, showDialog, dataManag
         {
           id: 'operations',
           disableSortBy: true,
-          Cell: ({row}: CellProps<any>) => <MoreLink row={row}/>
+          Cell: ({row}: CellProps<any>) => <MoreLink singleDataType={singleDataType} row={row}/>
         }
       ])
     }
@@ -429,31 +434,40 @@ function Table({ columns, data, sortBy, updSearchParams//, showDialog, dataManag
   return (
     <BTable striped bordered hover size="sm" {...getTableProps()} >
       <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column: any) => (
-              <th 
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  onClick={() => 
-                    {
-                      column.toggleSortBy(!column.isSortedDesc);
-                      updSearchParams({sortBy: column.id, sortDirection: column.isSortedDesc ? "ascending" : "descending"});
-                      //setSortBy(sortBy);
-                    }} //column.toggleSortBy(!column.isSortedDesc)}
-              >
-                {column.render('Header')}
-                <span>
-                    { column.canSort ? (column.isSorted
-                      ? (column.isSortedDesc
-                        ? <CaretDownFill className="text-primary"/>
-                        :  <CaretUpFill className="text-primary"/>)
-                      : <ArrowDownUp className="ms-1 text-primary" size="0.75em"/> ) 
-                    : ""}
-                  </span>
-              </th>
-            ))}
-          </tr>
-        ))}
+        {headerGroups.map(headerGroup => {
+            const { key, ...hProps } = headerGroup.getHeaderGroupProps();
+            return (
+                <tr {...hProps} key="Header">
+                  {headerGroup.headers.map((column: any) =>  {
+                      const { key, ...restProps } = column.getHeaderProps(column.getSortByToggleProps());
+                      return (
+                            <th 
+                                key={`tr-${Math.random().toString(16).slice(2)}`}
+                                {...restProps}
+                                onClick={() => 
+                                  {
+                                    column.toggleSortBy(!column.isSortedDesc);
+                                    updSearchParams({sortBy: column.id, sortDirection: column.isSortedDesc ? "ascending" : "descending"});
+                                    //setSortBy(sortBy);
+                                  }} //column.toggleSortBy(!column.isSortedDesc)}
+                            >
+                              {column.render('Header')}
+                              <span>
+                                  { column.canSort ? (column.isSorted
+                                    ? (column.isSortedDesc
+                                      ? <CaretDownFill className="text-primary"/>
+                                      :  <CaretUpFill className="text-primary"/>)
+                                    : <ArrowDownUp className="ms-1 text-primary" size="0.75em"/> ) 
+                                  : ""}
+                                </span>
+                            </th>
+                          )
+                    }
+                  )}
+                </tr>
+              )
+          }
+        )}
         <tr>
           <th
             colSpan={visibleColumns.length}
@@ -475,9 +489,10 @@ function Table({ columns, data, sortBy, updSearchParams//, showDialog, dataManag
         {
           ( 
             rows.length > 0 && rows.map(row => {
-            prepareRow(row)
+            prepareRow(row);
+            const { key, ...restRowProps } = row.getRowProps();
             return (
-              <tr {...row.getRowProps()} key={`tr-${Math.random().toString(16).slice(2)}`} >
+              <tr {...restRowProps} key={`tr-${Math.random().toString(16).slice(2)}`} >
                 {row.cells.map(cell => {
                   return (
                     <td  {...cell.getCellProps()} key={`td-${Math.random().toString(16).slice(2)}`}>
@@ -496,11 +511,12 @@ function Table({ columns, data, sortBy, updSearchParams//, showDialog, dataManag
 }
 
 interface DatasetsMainTableProps {
-  data: Dataset[],
+  data: SingleData[],
   dataManager: DataManager,
   postMessage: Function;
   currentSort: MainTableSortBy;
   updSearchParams: Function;
+  singleDataType: SingleDataType;
 }
 
 function DatasetsMainTable(props: DatasetsMainTableProps): JSX.Element {
@@ -553,7 +569,7 @@ function DatasetsMainTable(props: DatasetsMainTableProps): JSX.Element {
       accessor: 'subjectsCount'
     }
   ], [props]);
-    return <Table columns={columns} data={props.data}
+    return <Table singleDataType={props.singleDataType} columns={columns} data={props.data}
       sortBy={sortBy}
       updSearchParams={props.updSearchParams}
       />

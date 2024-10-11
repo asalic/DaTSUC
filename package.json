@@ -1,13 +1,11 @@
 {
   "name": "dataset-explorer",
-  "version": "2.0.3-BETA",
+  "version": "3.0.0-BETA",
   "private": true,
   "homepage": ".",
   "dependencies": {
-    "typescript": "^5.3.3",
-    "@types/react-table": "^7.7.19",
-    "@types/react": "18.2.58",
-    "@types/react-dom": "^18.2.19",
+    "@reduxjs/toolkit":"^2.2.7",
+    "react-redux": "^9.1.2",
     "@react-keycloak/web": ">=3.4.0",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",
@@ -27,6 +25,7 @@
     "react-select": "^5.7.2",
     "react-table": "^7.8.0",
     "web-vitals": "^1.1.1"
+
   },
   "overrides": {
     "react-scripts": {
@@ -63,6 +62,10 @@
   },
   "devDependencies": {
     "cypress": "^12.3.0",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "typescript": "^5.3.3",
+    "@types/react-table": "^7.7.19",
+    "@types/react": "18.2.58",
+    "@types/react-dom": "^18.2.19"
   }
 }

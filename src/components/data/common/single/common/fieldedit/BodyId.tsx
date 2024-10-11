@@ -2,9 +2,9 @@ import { useKeycloak } from "@react-keycloak/web";
 import React, { useState, useEffect, Fragment, useCallback } from "react";
 import { Button, Placeholder } from "react-bootstrap";
 import Select, { ActionMeta, Props, GroupBase, SingleValue } from 'react-select';
-import DataManager from "../../../../../../api/DataManager";
-import LoadingData from "../../../../../../model/LoadingData";
-import Util from "../../../../../../Util";
+import UpgradableDataset from "../../../../../../model/UpgradableDataset";
+import { useGetUpgradableDatasetsQuery } from "../../../../../../service/singledata-api";
+import ErrorView from "../../../../../common/ErrorView";
 
 interface SelOpt {
     value: string;
@@ -12,17 +12,17 @@ interface SelOpt {
 
 }
 
-interface DatasetId {
-    id: string;
-    name: string;
-}
+// interface UpgradableDataset {
+//     id: string;
+//     name: string;
+// }
 
-interface DataState extends LoadingData<DatasetId[] | null | undefined> {
-    oldValue: DatasetId | null | undefined;
+// interface DataState extends LoadingData<UpgradableDataset[] | null | undefined> {
+//     oldValue: UpgradableDataset | null | undefined;
 
-}
+// }
 
-function toSelId(val: DatasetId): SelOpt {
+function toSelId(val: UpgradableDataset): SelOpt {
     return {value: val.id, label: `${val.name} (${val.id})`}
 }
 
@@ -39,21 +39,23 @@ function CustomSelect<
 interface BodyIdProps {
     updValue: Function;
     keycloakReady: boolean;
-    dataManager: DataManager;
     oldValue: string | null;
 }
 
 function BodyId(props: BodyIdProps) {
-    const [dataState, setDataState] = useState<DataState>({
-        oldValue: null,
-        loading: true,
-         error: null,
-         data: null,
-         statusCode: null
-      });
+    // const [dataState, setDataState] = useState<DataState>({
+    //     oldValue: null,
+    //     loading: true,
+    //      error: null,
+    //      data: null,
+    //      statusCode: null
+    //   });
+    const [oldValue, setOldValue] = useState(props.oldValue);
       
     const [selectedOption, setSelectedOption] = useState<SelOpt | null>(null);
     const { keycloak } = useKeycloak();
+
+    const { data, isLoading, error, isError } = useGetUpgradableDatasetsQuery({token: keycloak.token});
 
     const updSelectedOption = useCallback((newVal: SingleValue<SelOpt>, action?:  ActionMeta<SelOpt> | null) => {
         console.log(action);
@@ -68,30 +70,47 @@ function BodyId(props: BodyIdProps) {
       }, [setSelectedOption, props.updValue]);
 
     useEffect(() => {
-        if (props.keycloakReady && keycloak.authenticated) { 
-            props.dataManager.getUpgradableDatasets(keycloak.token)
-                .then((xhr: XMLHttpRequest) => {
-                        const data: DatasetId[] = JSON.parse(xhr.response) as DatasetId[];
-                        let oldValue: DatasetId | null | undefined = null;
-                        if (props.oldValue) {
-                            const sel = data.find((e: DatasetId) => e.id === props.oldValue);
-                            if (sel) {
-                                setSelectedOption(toSelId(sel));
-                            }
-                            oldValue = sel;
-                        }
-                        setDataState( prevValues => {
-                            return { ...prevValues, data, oldValue, loading: false, error: null, statusCode: xhr.status}
-                        });
-                    }, 
-                (xhr: XMLHttpRequest) => setDataState( prevValues => {
-                    return { ...prevValues, data: null, loading: false, error: Util.getErrFromXhr(xhr), oldValue: null, statusCode: xhr.status}
-                }))
-
+        if (data && !isError) {
+            let ov: UpgradableDataset | null | undefined = null;
+            if (props.oldValue) {
+                const sel = data.find((e: UpgradableDataset) => e.id === props.oldValue);
+                if (sel) {
+                    setSelectedOption(toSelId(sel));
+                }
+                ov = sel;
+            }
+            setOldValue(JSON.stringify(ov));
         }
+        
+    }, [data, isError, error, setOldValue]);
 
-    }, [props.keycloakReady, keycloak.authenticated]);
-    if (dataState.loading) {
+    // useEffect(() => {
+    //     if (props.keycloakReady && keycloak.authenticated) { 
+    //         props.dataManager.getUpgradableDatasets(keycloak.token)
+    //             .then((xhr: XMLHttpRequest) => {
+    //                     const data: UpgradableDataset[] = JSON.parse(xhr.response) as UpgradableDataset[];
+    //                     let oldValue: UpgradableDataset | null | undefined = null;
+    //                     if (props.oldValue) {
+    //                         const sel = data.find((e: UpgradableDataset) => e.id === props.oldValue);
+    //                         if (sel) {
+    //                             setSelectedOption(toSelId(sel));
+    //                         }
+    //                         oldValue = sel;
+    //                     }
+    //                     setDataState( prevValues => {
+    //                         return { ...prevValues, data, oldValue, loading: false, error: null, statusCode: xhr.status}
+    //                     });
+    //                 }, 
+    //             (xhr: XMLHttpRequest) => setDataState( prevValues => {
+    //                 return { ...prevValues, data: null, loading: false, error: Util.getErrFromXhr(xhr), oldValue: null, statusCode: xhr.status}
+    //             }))
+
+    //     }
+
+    // }, [props.keycloakReady, keycloak.authenticated]);
+    if (isError) {
+        return <ErrorView message={`Error loading upgradable datasets: ${error.message ?? ""}`} />
+    } else if (isLoading) {
         return <Placeholder className="mb-3" as="div" animation="glow">
             <Placeholder as="a" xs={2}/> <br />
             <Placeholder as="select" className="w-100" />
@@ -101,15 +120,17 @@ function BodyId(props: BodyIdProps) {
                 Select from datasets created and released by you (chosen dataset's next version is updated automatically when you release this dataset). 
                 <br /> 
                 {   
-                    dataState.oldValue ?
-                        <Button title="Restore Initial value" variant="link" onClick={(e) => dataState.oldValue ? updSelectedOption(toSelId(dataState.oldValue)) : console.log("none")}>Restore original</Button> : <Fragment />
+                    oldValue ?
+                        <Button title="Restore Initial value" variant="link" 
+                                onClick={(e) => oldValue ? updSelectedOption(toSelId(oldValue ? JSON.parse(oldValue) : null)) : console.log("none")}>
+                            Restore original</Button> : <Fragment />
                 }<br />
                     <CustomSelect
                     isClearable
                         isSearchable
                         value={selectedOption}
                         onChange={updSelectedOption}
-                        options={dataState.data?.map(e => {return toSelId(e);} ) ?? []}
+                        options={data?.map(e => {return toSelId(e);} ) ?? []}
                     />
             </div>);
     }

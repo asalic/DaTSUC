@@ -3,14 +3,15 @@ import { PencilFill } from 'react-bootstrap-icons';
 import React, { ReactNode, useState, useEffect } from "react";
 import { useKeycloak } from '@react-keycloak/web';
 
-import StaticValues from "../../../../../api/StaticValues";
 import Footer from "./fieldedit/Footer";
 import Body from "./fieldedit/Body";
 import BodyPid from "./fieldedit/BodyPid";
 import BodyId from "./fieldedit/BodyId";
 import BodyLicense from "./fieldedit/BodyLicense";
-import DataManager from "../../../../../api/DataManager";
 import DialogSize from "../../../../../model/DialogSize";
+import { usePatchSingleDataMutation } from "../../../../../service/singledata-api";
+import SingleDataType from "../../../../../model/SingleDataType";
+import StaticValues from "../../../../../api/StaticValues";
 
 function transformValue(field: string, value: any) {
   if (field === "pids") {
@@ -25,15 +26,15 @@ function transformValue(field: string, value: any) {
     return value;
 }
 
+
 interface DatasetFieldEditProps {
-  datasetId: string;
+  singleDataId: string;
   oldValue: any;
   field: string;
-  patchDataset: Function;
   keycloakReady: boolean;
-  dataManager: DataManager;
   fieldDisplay: string;
   showDialog: Function;
+  singleDataType: SingleDataType;
 }
 
 
@@ -41,6 +42,9 @@ function DatasetFieldEdit(props: DatasetFieldEditProps) {
   let [value, setValue] = useState<any>(props.oldValue);
   useEffect(() => setValue(props.oldValue), [props.oldValue]);
   let { keycloak } = useKeycloak();
+
+
+  const [patchSingleData] = usePatchSingleDataMutation();
   //console.log(`props.oldValue is ${JSON.stringify(props.oldValue)}`);
   //console.log(`dfe value is ${JSON.stringify(value)}`);
   const [isPatchValue, setIsPatchValue] = useState(false);
@@ -48,22 +52,31 @@ function DatasetFieldEdit(props: DatasetFieldEditProps) {
   const patchDataset = () => setIsPatchValue(true);
   useEffect(() => {
     if (isPatchValue) {
+      console.log(isPatchValue);
       let sVal = transformValue(props.field, value);
-      props.patchDataset(keycloak.token, props.datasetId, props.field, sVal);
+      patchSingleData({
+        token: keycloak.token,
+        id: props.singleDataId, 
+        property: props.field, 
+        value: sVal, 
+        singleDataType: props.singleDataType
+      });
+      //props.patchDataset(keycloak.token, props.datasetId, props.field, sVal);
       setIsPatchValue(false);
     }
-  }, [isPatchValue]);
+  }, [isPatchValue, setIsPatchValue, patchSingleData]);
   // const patchDatasetCb = (newData) => setData( prevValues => {
   //    return { ...prevValues, data: newData.data, isLoading: newData.isLoading, isLoaded: newData.isLoaded, error: newData.error, status: newData.status}}
   //  );
   
   let body: ReactNode | null = null;
   if (props.field === "license" || props.field === "licenseUrl") {
-    body = <BodyLicense updValue={updValue} oldValue={props.oldValue} dataManager={props.dataManager} keycloakReady={props.keycloakReady}/>;
+    body = <BodyLicense updValue={updValue} oldValue={props.oldValue} keycloakReady={props.keycloakReady} 
+            singleDataId={props.singleDataId} singleDataType={props.singleDataType}/>;
   } else if (props.field === "pids") {
     body = <BodyPid updValue={updValue} oldValue={value} />;
   } else if (props.field === "previousId") {
-    body = <BodyId updValue={updValue} oldValue={value} keycloakReady={props.keycloakReady} dataManager={props.dataManager}/>;
+    body = <BodyId updValue={updValue} oldValue={value} keycloakReady={props.keycloakReady}/>;
   } else {
     body = <Body updValue={updValue} oldValue={props.oldValue} />;
   }

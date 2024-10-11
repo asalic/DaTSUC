@@ -1,8 +1,11 @@
-import DatasetLicense from "./DatasetLicense";
+
 import DatasetPids from "./DatasetPids";
+import License from "./License";
+import SingleDataType from "./SingleDataType";
 
 export default class SingleData {
 
+    type: SingleDataType;
     id: string;
     name: string;
     previousId: string | null;
@@ -12,7 +15,7 @@ export default class SingleData {
     authorEmail: string | null;
     creationDate: string;
     description: string;
-    license: DatasetLicense;
+    license: License;
     pids: DatasetPids;
     contactInfo: string | null;
     draft: boolean;

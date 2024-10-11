@@ -3,9 +3,6 @@
   "release": "dev",
   "datasetService": "http://asaserver.i3m.upv.es:8000/api/v1",
   "tracerService": "http://asaserver.i3m.upv.es:8000/api/v1/tracer-service",
-  "caseExplorerService": "",
-  "appsDashboard": "https://chaimeleon-eu.i3m.upv.es/apps/",
-  "desktopAppAccess": "https://chaimeleon-eu.i3m.upv.es/guacamole/",
   "basename": "",
   "defaultLimitDatasets": 4,
   "defaultLimitStudies": 4,
@@ -16,7 +13,7 @@
   "refreshDatasetCreate": 5000,
   "keycloak": {
     "config": {
-      "url": "https://asaserver.i3m.upv.es:20001/auth",
+      "url": "https://asaserver.i3m.upv.es:20000/auth",
       "realm": "CHAIMELEON",
       "clientId": "dataset-explorer"
     },
@@ -32,5 +29,26 @@
     "termsConditions": "/terms-and-conditions.pdf",
     "privacyPolicy": "/privacy-policy.pdf",
     "favicon": "/chaimeleon-logo.svg"
-  }
+  },
+  "externalServices": [
+    {
+      "name": "App Dashboard",
+      "title": "Launch the applications' dashboard (Kubeapps)",
+      "link": "https://chaimeleon-eu.i3m.upv.es/apps/",
+      "icon": "/icons/kubeapps.png"
+    },
+    {
+      "name": "Desktop Apps Access",
+      "title": "Access your desktop cluster applications (Apache Guacamole)",
+      "link": "https://chaimeleon-eu.i3m.upv.es/guacamole/",
+      "icon": "/icons/guacamole.png"
+    },
+    {
+      "name": "Case Explorer",
+      "title": "Launch the case explorer (Quibim Precision)",
+      "link": "https://chaimeleon-eu.i3m.upv.es/omni/",
+      "icon": "/icons/quibim.png"
+    }
+
+  ]
 }

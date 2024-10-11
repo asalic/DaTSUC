@@ -1,5 +1,7 @@
+import InvalidArgumentError from "./error/InvalidArgumentError";
 import ConfigJson from "./model/ConfigJson";
 import type LoadingError from "./model/LoadingError";
+import SingleDataType from "./model/SingleDataType";
 
 export default class Util {
 
@@ -125,5 +127,33 @@ export default class Util {
     pS.pop();
     return pS.join("/");
   }
+
+  public static singleDataPath(type: SingleDataType) {
+   return Util.singleDataClassName(type).toLowerCase() + "s";
+  }
+
+  public static singleDataClassName(type: SingleDataType): string {
+    switch (type) {
+      case SingleDataType.DATASET: return "Dataset";//Dataset.name;
+      case SingleDataType.MODEL: return "Model";//Model.name;
+      default: throw new InvalidArgumentError(`Single data type '${type}' not supported when determining the path.`);
+    }
+
+  }
+
+  public static isJson(input: any): boolean {
+    try {
+        //check if the string exists
+        if (input) {
+            JSON.parse(input);
+            return true;
+        } else {
+          return false;
+        }
+    }
+    catch (e: any) {
+      return false;
+    }
+  };
 
 }

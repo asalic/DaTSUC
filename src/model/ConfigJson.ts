@@ -1,3 +1,4 @@
+import ExternalService from "./ExternalService";
 
 interface KeycloakConfigOptions {
     "responseMode": string;
@@ -22,9 +23,6 @@ export default interface ConfigJson {
     "release": string;
     "datasetService": string | null | undefined;
     "tracerService": string | null | undefined;
-    "caseExplorerService": string | null | undefined;
-    "appsDashboard":  string | null | undefined;
-    "desktopAppAccess":  string | null | undefined;
     "basename": string;
     "defaultLimitDatasets": number;
     "defaultLimitStudies": number;
@@ -32,5 +30,6 @@ export default interface ConfigJson {
     "userAccountUrl": string;
     "refreshDatasetCreate": number;
     "keycloak": KeycloakOpts;
+    externalServices?: ExternalService[];
 
 }

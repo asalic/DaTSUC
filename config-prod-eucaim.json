@@ -3,9 +3,6 @@
     "release": "prod-eucaim",
     "datasetService": "https://eucaim-node.i3m.upv.es/dataset-service/api",
     "tracerService": "https://eucaim-node.i3m.upv.es/tracer-service/tracer/api/v1",
-    "caseExplorerService": "https://qpdiscovery.eucaim-node.i3m.upv.es/",
-    "appsDashboard": "https://eucaim-node.i3m.upv.es/apps/",
-    "desktopAppAccess": "https://eucaim-node.i3m.upv.es/guacamole/",
     "basename": "/dataset-service",
     "defaultLimitDatasets": 30,
     "defaultLimitStudies": 30,
@@ -32,5 +29,26 @@
       "termsConditions": "https://dashboard.eucaim.cancerimage.eu/eucaim_usage_policy.pdf",
       "privacyPolicy": "https://dashboard.eucaim.cancerimage.eu/privacy-policy",
       "favicon": "/eucaim-logo.jpg"
-    }
+    },
+    "externalServices": [
+      {
+        "name": "App Dashboard",
+        "title": "Launch the applications' dashboard (Kubeapps)",
+        "link": "https://eucaim-node.i3m.upv.es/apps/",
+        "icon": "/icons/kubeapps.png"
+      },
+      {
+        "name": "Desktop Apps Access",
+        "title": "Access your desktop cluster applications (Apache Guacamole)",
+        "link": "https://eucaim-node.i3m.upv.es/guacamole/",
+        "icon": "/icons/guacamole.png"
+      },
+      {
+        "name": "Case Explorer",
+        "title": "Launch the case explorer (QP-Insights)",
+        "link": "https://qpinsights.eucaim-node.i3m.upv.es",
+        "icon": "/icons/quibim.png"
+      }
+  
+    ]
   }

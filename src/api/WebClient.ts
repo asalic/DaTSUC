@@ -33,13 +33,13 @@ export default class WebClient {
                   JSON.stringify(payload), "text", null );
   }
 
-  static getStudies(token: string | null | undefined, dsId: string, studiesSkip: number | null | undefined, studiesLimit: number | null | undefined): Promise<XMLHttpRequest>  {
+  static getStudies(token: string | null | undefined, dsId: string, skip: number | null | undefined, limit: number | null | undefined): Promise<XMLHttpRequest>  {
     let headers = new Map();
     if (token) {
       headers.set("Authorization", "Bearer " + token);
     }
     return WebClient._call("GET", Config.datasetService + "/datasets/" + dsId + "/studies", headers,
-                null, "text", { studiesSkip, studiesLimit });
+                null, "text", { skip, limit });
 
   }
 
@@ -114,6 +114,22 @@ export default class WebClient {
       headers.set("Authorization", "Bearer " + token);
     }
     return WebClient._call("GET", Config.datasetService + "/licenses", headers,
+                null, "text", null );
+
+  }
+
+  static postCheckIntegrity(token:  string, singleDataId: string): Promise<XMLHttpRequest> {
+    let headers = new Map();
+    headers.set("Authorization", "Bearer " + token);
+    return WebClient._call("POST", Config.datasetService + "/datasets/" + singleDataId + "/checkIntegrity", headers,
+                null, "text", null );
+
+  }
+
+  static deleteCancelDataset(token:  string, singleDataId: string): Promise<XMLHttpRequest> {
+    let headers = new Map();
+    headers.set("Authorization", "Bearer " + token);
+    return WebClient._call("DELETE", Config.datasetService + "/datasets/" + singleDataId, headers,
                 null, "text", null );
 
   }

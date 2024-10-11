@@ -3,9 +3,6 @@
   "release": "prod",
   "datasetService": "https://chaimeleon-eu.i3m.upv.es/dataset-service/api",
   "tracerService": "https://chaimeleon-eu.i3m.upv.es/tracer-service/tracer/api/v1",
-  "caseExplorerService": "https://chaimeleon-eu.i3m.upv.es/omni/",
-  "appsDashboard": "https://chaimeleon-eu.i3m.upv.es/apps/",
-  "desktopAppAccess": "https://chaimeleon-eu.i3m.upv.es/guacamole/",
   "basename": "/dataset-service",
   "defaultLimitDatasets": 30,
   "defaultLimitStudies": 30,
@@ -32,5 +29,26 @@
     "termsConditions": "https://chaimeleon-eu.i3m.upv.es/dataset-service/web/terms-and-conditions.pdf",
     "privacyPolicy": "https://chaimeleon-eu.i3m.upv.es/dataset-service/web/privacy-policy.pdf",
     "favicon": "/chaimeleon-logo.svg"
-  }
+  },
+  "externalServices": [
+    {
+      "name": "App Dashboard",
+      "title": "Launch the applications' dashboard (Kubeapps)",
+      "link": "https://chaimeleon-eu.i3m.upv.es/apps/",
+      "icon": "/icons/kubeapps.png"
+    },
+    {
+      "name": "Desktop Apps Access",
+      "title": "Access your desktop cluster applications (Apache Guacamole)",
+      "link": "https://chaimeleon-eu.i3m.upv.es/guacamole/",
+      "icon": "/icons/guacamole.png"
+    },
+    {
+      "name": "Case Explorer",
+      "title": "Launch the case explorer (Quibim Precision)",
+      "link": "https://chaimeleon-eu.i3m.upv.es/omni/",
+      "icon": "/icons/quibim.png"
+    }
+
+  ]
 }

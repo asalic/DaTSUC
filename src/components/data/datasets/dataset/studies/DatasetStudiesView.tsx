@@ -111,10 +111,12 @@ function DatasetStudiesView(props: DatasetStudiesViewProps): JSX.Element {
   const skip = searchParams.get("skip") ? Number(searchParams.get("skip")) : 0;
   const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : Config.defaultLimitStudies;
   const onSkipChange = useCallback((skip: number) => {
+    console.log(skip);
     updSearchParams({skip: skip === 0 ? null : skip});
   }, [skip, limit, updSearchParams, searchParams, setSearchParams]);
   useEffect(() => {
     if (props.keycloakReady && keycloak.authenticated && props.datasetId) {
+      console.log("load");
         setData( prevValues => {
            return { ...prevValues, loading: true, error: null, data: null, statusCode: -1 }
         });

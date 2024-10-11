@@ -59,4 +59,12 @@ export default class DataManager {
     return WebClient.getLicenses(token);
   }
 
+  postCheckIntegrity(token: string, singleDataId: string): Promise<XMLHttpRequest> {
+    return WebClient.postCheckIntegrity(token, singleDataId);
+  }
+
+  deleteCancelDataset(token: string, singleDataId: string): Promise<XMLHttpRequest> {
+    return WebClient.deleteCancelDataset(token, singleDataId);
+  }
+
 }

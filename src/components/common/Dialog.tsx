@@ -42,7 +42,7 @@ function Dialog({settings}: DialogProps) {
   if (settings.size === DialogSize.SIZE_XXL) {
     dialogClassName = "modal-xxl";
     //size = "";
-  } if (settings.size === DialogSize.SIZE_XL) {
+  } else if (settings.size === DialogSize.SIZE_XL) {
     dialogClassName = "";
     size = "xl";
   } else if (settings.size === DialogSize.SIZE_LG) {
