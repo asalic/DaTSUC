@@ -46,7 +46,7 @@
       {
         "name": "Case Explorer",
         "title": "Launch the case explorer (QP-Insights)",
-        "link": "qpinsights.eucaim-node.i3m.upv.es",
+        "link": "https://qpinsights.eucaim-node.i3m.upv.es",
         "icon": "/icons/quibim.png"
       }
   
