@@ -85,7 +85,8 @@ function SingleDataActions<T extends SingleData>({ showDialog, keycloakReady, si
 
   const [ patchSingleData ] = usePatchSingleDataMutation();
 
-  const patchDatasetCb = useCallback((token: string | null | undefined, id: string, singleDataType: SingleDataType, property: string, value: string | null) => {
+  const patchDatasetCb = useCallback((token: string | null | undefined, id: string, singleDataType: SingleDataType, property: string, 
+      value: string | boolean | null) => {
     patchSingleData({token, id, singleDataType, property, value});
   }, [patchSingleData])
 
@@ -182,7 +183,7 @@ function SingleDataActions<T extends SingleData>({ showDialog, keycloakReady, si
         }
         if (data.editablePropertiesByTheUser.includes("draft")) {
           entries.push( 
-            getAction(() => {patchDatasetCb(keycloak.token, data["id"], singleDataType, "draft", "false")}, "Release", "action-release")
+            getAction(() => {patchDatasetCb(keycloak.token, data["id"], singleDataType, "draft", false)}, "Release", "action-release")
             );
         }
 

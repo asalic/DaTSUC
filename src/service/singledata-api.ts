@@ -254,7 +254,7 @@ interface PatchSingleDataT {
   token: string | null | undefined;
   id: string;
   property: string;
-  value: string | null;
+  value: string | boolean | null;
   singleDataType: SingleDataType;
 }
 
