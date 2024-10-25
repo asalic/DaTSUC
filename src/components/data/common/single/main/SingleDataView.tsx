@@ -164,7 +164,7 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>): JS
                   <Nav variant="pills" className="flex-column mb-5">
                     {
                       props.tabs.map(s => 
-                        <Nav.Item  key={`singledata-categories-${s.eventKey}`}>
+                        <Nav.Item key={`singledata-categories-${s.eventKey}`}>
                           <Nav.Link eventKey={s.eventKey}>{s.title}</Nav.Link>
                         </Nav.Item>
                       )
@@ -175,7 +175,7 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>): JS
                   <Tab.Content>
                     {
                       props.tabs.filter(s => s.eventKey === props.activeTab).map(s => 
-                        <Tab.Pane eventKey={s.eventKey}>
+                        <Tab.Pane key={`singledata-categories-tab-${s.eventKey}`} eventKey={s.eventKey}>
                             {s.view}
                         </Tab.Pane>
                       )
