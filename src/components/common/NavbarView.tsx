@@ -44,14 +44,14 @@ function NavbarView() {
             <Nav.Link title="List of datasets" href={Config.basename + "/datasets"}>Datasets</Nav.Link>
             <Nav.Link title="List of models" href={Config.basename + "/models"}>Models</Nav.Link>
             <NavDropdown title="Documentation" id="documentation-dropdown">
-              <NavDropdown.Item title="Dataset Usage Guide" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/ubuntu-python/rootfs/home/chaimeleon/application-examples/dataset-access-guide.ipynb" target="_blank">Dataset Usage</NavDropdown.Item>
-              <NavDropdown.Item title="Workstation Usage Guide " href="https://github.com/chaimeleon-eu/workstation-images/blob/main/usage-guide.md" target="_blank">Workstation Usage</NavDropdown.Item>
+              <NavDropdown.Item key="Dataset_Usage_Guide" title="Dataset Usage Guide" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/ubuntu-python/rootfs/home/chaimeleon/application-examples/dataset-access-guide.ipynb" target="_blank">Dataset Usage</NavDropdown.Item>
+              <NavDropdown.Item key="Workstation_Usage_Guide" title="Workstation Usage Guide" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/usage-guide.md" target="_blank">Workstation Usage</NavDropdown.Item>
               <NavDropdown title="Developer" id="developer-dropdown" drop="end" className="w-100 ps-2">
-                <NavDropdown.Item title="How to integrate your application in CHAIMELEON platform" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/README.md#how-to-integrate-your-application-in-chaimeleon-platform" target="_blank">App Integration</NavDropdown.Item>
-                <NavDropdown.Item title="Dataset Service API Specs" href="https://github.com/chaimeleon-eu/dataset-service#api-usage" target="_blank">API Specs</NavDropdown.Item>
+                <NavDropdown.Item key="How to integrate your application in CHAIMELEON platform" title="How to integrate your application in CHAIMELEON platform" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/README.md#how-to-integrate-your-application-in-chaimeleon-platform" target="_blank">App Integration</NavDropdown.Item>
+                <NavDropdown.Item key="Dataset Service API Specs" title="Dataset Service API Specs" href="https://github.com/chaimeleon-eu/dataset-service#api-usage" target="_blank">API Specs</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown.Divider />
-              <NavDropdown.Item title="Fair Principles" href={Config.basename + "/fair"}>Fair Principles</NavDropdown.Item>
+              <NavDropdown.Item key="Fair Principles"  title="Fair Principles" href={Config.basename + "/fair"}>Fair Principles</NavDropdown.Item>
             </NavDropdown>
             <Nav.Link target="_blank" title="Support" href={Config.basename + "/support"}>Support</Nav.Link>
           </Nav>
@@ -64,7 +64,7 @@ function NavbarView() {
           <Dropdown.Menu>
             {
               conf.externalServices?.map(e => {
-                return <Dropdown.Item title={e.title} onClick={() => window?.open(e.link, '_blank')?.focus()}>
+                return <Dropdown.Item key={e.title} title={e.title} onClick={() => window?.open(e.link, '_blank')?.focus()}>
                 <img className="apps-logo me-2" src={process.env["PUBLIC_URL"] + e.icon}/>{e.name}
               </Dropdown.Item>
               })
