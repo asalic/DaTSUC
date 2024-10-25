@@ -124,9 +124,6 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>): JS
   )
 
   useEffect(() => {
-    console.log(deleteIsLoading);
-    console.log(deleteError);
-    console.log(deleteData);
     if (deleteIsLoading === false && (deleteError === undefined || deleteError === null) && deleteData) {
       navigate("/" + Config.basename);
     } 
