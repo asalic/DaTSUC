@@ -16,13 +16,14 @@ function getAction(actionCb: Function, txt: string, keyName: string): JSX.Elemen
               }}>{txt}</Dropdown.Item>;
   }
 
-function showDialogPublishDs<T extends SingleData>(token: string | null | undefined, patchDatasetCb: Function, showDialog: Function,  data: T): void {
+function showDialogPublishDs<T extends SingleData>(token: string | null | undefined, 
+      patchDatasetCb: Function, showDialog: Function,  data: T): void {
     if (!data["public"]) {
       const  showZenodo = data["pids"]["preferred"] == null;
       showDialog({
         show: true,
         footer: <div>
-            <Button className="m-2" onClick={() => {patchDatasetCb(token, data["id"], data.type, "public", (!data.public).toString());Dialog.HANDLE_CLOSE();}}>Publish</Button>
+            <Button className="m-2" onClick={() => {patchDatasetCb(token, data["id"], data.type, "public", !data.public);Dialog.HANDLE_CLOSE();}}>Publish</Button>
             <Button className="m-2" onClick={() => Dialog.HANDLE_CLOSE()}>Cancel</Button>
           </div>,
         body: <div>
@@ -44,7 +45,7 @@ function showDialogPublishDs<T extends SingleData>(token: string | null | undefi
         onBeforeClose: null
       });
     } else {
-      patchDatasetCb(token, data["id"], "public", !data.public);
+      patchDatasetCb(token, data["id"], data.type, "public", !data.public);
     }
   }
 
@@ -173,7 +174,7 @@ function SingleDataActions<T extends SingleData>({ showDialog, keycloakReady, si
         if  (data.editablePropertiesByTheUser.includes("invalidated")) {
           entries.push(
             getAction(() => {patchDatasetCb(keycloak.token, data["id"], singleDataType, "invalidated", 
-              (!data.invalidated).toString())}, data.invalidated ? "Validate" : "Invalidate", "action-invalidate")
+              !data.invalidated)}, data.invalidated ? "Validate" : "Invalidate", "action-invalidate")
           );
         }
         if (data.editablePropertiesByTheUser.includes("public")) {
