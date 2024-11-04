@@ -63,7 +63,6 @@ export const api = createApi({
               if (!token) {
                   return { error: generateError("Invalid token.") } 
               }
-              console.log("here");
               await call("PATCH", 
                 `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}/${id}`, 
                 token ? new  Map([["Authorization", "Bearer " + token], ["Content-Type", "application/json"]]) : null,

@@ -9,6 +9,7 @@ import LoadingView from "../../../../../common/LoadingView";
 import { useGetLicensesQuery } from "../../../../../../service/singledata-api";
 import { useState } from "react";
 import SingleDataType from "../../../../../../model/SingleDataType";
+// import PatchMessage from "../../../../../common/PatchMessage";
 
 interface BodyLicenseProps {
   keycloakReady: boolean;
@@ -16,15 +17,20 @@ interface BodyLicenseProps {
   oldValue: License;
   updValue: Function;
   singleDataType: SingleDataType;
+  //patchStatus:any;
+
 }
 
 function BodyLicense(props: BodyLicenseProps) {
+
+
   const { keycloak } = useKeycloak();
   const [value, setValue] = useState<License>(props.oldValue);
 
     const { data: licenses, error: licensesError, isLoading: licensesIsLoading } = useGetLicensesQuery({
       token: keycloak.token
     });
+    // const [patchSingleData, {isError: isPatchError, isLoading: isPatchLoading, error: patchError } ] = usePatchSingleDataMutation();
 
     const isCustom = useCallback((): boolean => {
       if (licenses) {
@@ -48,6 +54,13 @@ function BodyLicense(props: BodyLicenseProps) {
         return {...prev, ...newVal};
       });
       props.updValue(newVal);
+      // patchSingleData({
+      //   token: keycloak.token,
+      //   id: props.singleDataId, 
+      //   property: "license", 
+      //   value: JSON.stringify(value), 
+      //   singleDataType: props.singleDataType
+      // })
     }
     const updCustomValue = (e: FormEvent<HTMLInputElement>, field: string) => {
       e.preventDefault();
@@ -59,35 +72,36 @@ function BodyLicense(props: BodyLicenseProps) {
     if (licensesError) {
       return <ErrorView message={`Error loading licenses: ${licensesError.message ?? ""}`}/>;
     } else {
-    if (licensesIsLoading) {
-      return <LoadingView fullMessage="Loading licenses, please wait" />
-    } else {
-      return  <div className="mb-3">
-      <select onChange={(e) => {e.preventDefault();updValue(JSON.parse(e.target.value));}} 
-          value={isCustom() ? JSON.stringify(customValue) :  JSON.stringify(value) }>
-        <option key="-1" value={JSON.stringify(customValue)}>Custom License</option>
-        {licenses?.map((el: License) => <option key={btoa(el.title ?? crypto.randomUUID())} value={JSON.stringify(el)}>{el.title}</option>)}
-      </select>
-      {
-        isCustom() ?
-            <div className="mt-4">
-              <FormControl className="w-100"
-                placeholder="Title"
-                aria-label="License title"
-                title="Set the custom license's title"
-                value={customValue.title ?? ""} onInput={(e: FormEvent<HTMLInputElement>) => updCustomValue(e, "title")}
-              />
-                <FormControl className="mt-2 w-100"
-                  placeholder="URL"
-                  aria-label="License url"
-                  title="Set the custom license's URL"
-                  value={customValue.url ?? ""} onInput={(e: FormEvent<HTMLInputElement>) => updCustomValue(e, "url")}
-                />
-            </div>
-          : <Fragment />
+      if (licensesIsLoading) {
+        return <LoadingView fullMessage="Loading licenses, please wait" />
+      } else {
+        return  <div className="mb-3">
+
+          <select onChange={(e) => {e.preventDefault();updValue(JSON.parse(e.target.value));}} 
+              value={isCustom() ? JSON.stringify(customValue) :  JSON.stringify(value) }>
+            <option key="-1" value={JSON.stringify(customValue)}>Custom License</option>
+            {licenses?.map((el: License) => <option key={btoa(el.title ?? crypto.randomUUID())} value={JSON.stringify(el)}>{el.title}</option>)}
+          </select>
+          {
+            isCustom() ?
+                <div className="mt-4">
+                  <FormControl className="w-100"
+                    placeholder="Title"
+                    aria-label="License title"
+                    title="Set the custom license's title"
+                    value={customValue.title ?? ""} onInput={(e: FormEvent<HTMLInputElement>) => updCustomValue(e, "title")}
+                  />
+                    <FormControl className="mt-2 w-100"
+                      placeholder="URL"
+                      aria-label="License url"
+                      title="Set the custom license's URL"
+                      value={customValue.url ?? ""} onInput={(e: FormEvent<HTMLInputElement>) => updCustomValue(e, "url")}
+                    />
+                </div>
+              : <Fragment />
+          }
+        </div>;
       }
-    </div>;
-    }
   }
 
     
