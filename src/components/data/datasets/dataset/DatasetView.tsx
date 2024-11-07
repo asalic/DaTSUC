@@ -118,7 +118,6 @@ function DatasetView(props: DatasetViewProps) {
 
   useEffect(() => {
     if (props.keycloakReady && datasetId) {
-      console.log(datasetId);
       //console.log(`props.showdDlgOpt ${props.showdDlgOpt}`);
       //getDataset(keycloak.token, datasetId);
       if (props.showdDlgOpt === SingleDataView.SHOW_DLG_APP_DASHBOARD) {

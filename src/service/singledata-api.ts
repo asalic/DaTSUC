@@ -63,7 +63,6 @@ export const api = createApi({
               if (!token) {
                   return { error: generateError("Invalid token.") } 
               }
-              console.log("here");
               await call("PATCH", 
                 `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}/${id}`, 
                 token ? new  Map([["Authorization", "Bearer " + token], ["Content-Type", "application/json"]]) : null,
@@ -254,7 +253,7 @@ interface PatchSingleDataT {
   token: string | null | undefined;
   id: string;
   property: string;
-  value: string | null;
+  value: string | boolean | null;
   singleDataType: SingleDataType;
 }
 

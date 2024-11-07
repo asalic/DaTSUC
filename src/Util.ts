@@ -12,6 +12,26 @@ export default class Util {
   static RELEASE_PROD_TEST= "prod-test";
   static RELEASE_UNDEFINED = undefined;
 
+  static  isError(e: any): boolean {
+    return e && 
+           e.stack && 
+           e.message && 
+           typeof e.stack === 'string' && 
+           typeof e.message === 'string';
+   };
+
+  static getError(error: any): Error  {
+    if (Util.isError(error)) {
+      return error;
+    } else if (error.message) {
+      return new Error(error.message, { cause: error });
+    } else if (error.data) {
+      return new Error(String(error.data), { cause: error });
+    } else {
+      return new Error("An unknown error has occured", { cause: error })
+    }
+  }
+
   static getErrFromXhr(xhr: XMLHttpRequest): LoadingError {
     let title: string | null = null;
     let text: string | null = null;
