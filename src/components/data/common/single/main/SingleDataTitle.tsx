@@ -2,12 +2,13 @@ import React from "react";
 import DatasetFieldEdit from "../common/DatasetFieldEdit";
 import { Badge } from "react-bootstrap";
 import { useKeycloak } from "@react-keycloak/web";
-import { EnvelopeFill } from "react-bootstrap-icons";
+import { Envelope } from "react-bootstrap-icons";
 import SingleData from "../../../../../model/SingleData";
 import { useGetSingleDataQuery } from "../../../../../service/singledata-api";
 import LoadingView from "../../../../common/LoadingView";
 import ErrorView from "../../../../common/ErrorView";
 import SingleDataType from "../../../../../model/SingleDataType";
+import CopiableFieldEntryProps from "../../../../common/CopiableFieldEntry";
 
 interface SingleDataTitleProps<T extends SingleData> {
     keycloakReady: boolean;
@@ -30,7 +31,7 @@ function SingleDataTitle<T extends SingleData>(props: SingleDataTitleProps<T>) {
     return <LoadingView what={`resource ID '${props.singleDataId}'`} />;
   } else if (isError) {
     return <ErrorView message={`Error loading resource ID '${props.singleDataId}': ${error.message ?? ""}`} />
-  } else {
+  } else if (data) {
 
     return <>
         <span className="h3">
@@ -49,13 +50,16 @@ function SingleDataTitle<T extends SingleData>(props: SingleDataTitleProps<T>) {
               {( data?.public ? <Badge pill bg="dark">Published</Badge> : <></> )}
               {( data?.draft ? <Badge pill bg="light" text="dark">Draft</Badge> : <></> )}
             </sup>
+
             <div>
+              {/* <i>Version </i><b>{data?.version}</b> */}
+              <i> with  ID </i><b><CopiableFieldEntryProps text={data.id} boldText={true} /></b>
               {
                 data?.creationDate ?
                 <>
-                  <i>Created on </i> 
-                  {new Intl.DateTimeFormat('en-GB', { dateStyle: 'short', timeStyle: 'long' })
-                    .format(Date.parse(data?.creationDate))}
+                  <i> created on </i> 
+                  <b>{new Intl.DateTimeFormat('en-GB', { dateStyle: 'short', timeStyle: 'long' })
+                    .format(Date.parse(data?.creationDate))}</b>
                 </>
                 : <></>
               }
@@ -64,15 +68,17 @@ function SingleDataTitle<T extends SingleData>(props: SingleDataTitleProps<T>) {
                   keycloak.authenticated && data?.authorName ? 
                     <>
                       <i> by </i>
-                        {data?.authorName}
+                        <b>{data?.authorName}</b>
                         <a className="ms-1" title="Send an email to the dataset author" href={"mailto:" + data?.authorEmail }>
-                          <EnvelopeFill />
+                          <Envelope />
                         </a>
                     </>
                   : (<></>)
                 }
               </div>
     </>
+  } else {
+    return <ErrorView message={`Error loading resource ID '${props.singleDataId}'`} />
   }
 }
 

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { Badge, Button, Table as BTable } from 'react-bootstrap';
-import { ClipboardPlus, ArrowDownUp, CaretDownFill, CaretUpFill, CheckCircleFill, XCircleFill } from "react-bootstrap-icons";
+import { Badge, Table as BTable } from 'react-bootstrap';
+import { ArrowDownUp, CaretDownFill, CaretUpFill } from "react-bootstrap-icons";
 import { useTable, useRowSelect, useFilters, useGlobalFilter, useSortBy, Row, Column, CellProps } from 'react-table';
-import React, { Fragment, useMemo, useState } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import {matchSorter} from 'match-sorter';
 
 import DataManager from "../../../../api/DataManager";
@@ -12,6 +12,7 @@ import TableNoData from "../../../common/TableNoData";
 import SingleData from "../../../../model/SingleData";
 import SingleDataType from "../../../../model/SingleDataType";
 import UrlFactory from "../../../../service/UrlFactory";
+import CopiableFieldEntryProps from "../../../common/CopiableFieldEntry";
 
 
 // const IndeterminateCheckbox = forwardRef(
@@ -289,34 +290,14 @@ interface ColNameIdRenderProps {
 }
 
 function ColNameIdRender({row}: ColNameIdRenderProps): JSX.Element {
-  const [copySuc, setCopySuc] = useState<boolean | null>(null);
-  const txtIdClass = "text-secondary" + (copySuc !== null ? (copySuc ? " copy-success " : " copy-error ") : "");
   
   return (
     <Fragment>
     {row.original["name"]}
+    {/* <br />
+    <span style={{fontSize: "80%" }}>version <i>{row.original["version"]}</i></span> */}
     <br />
-    (<i className={txtIdClass} onAnimationEnd={() => setCopySuc(null)}>{row.original["id"]}</i>
-    <Button variant="link" className="m-0 p-0 ms-1" onClick={(e) =>
-            {
-              if (navigator.clipboard) { 
-                navigator.clipboard.writeText(row.original["id"]).then(function() {
-                    console.log('Async: Copying to clipboard was successful!');
-                    setCopySuc(true);
-                  }, function(err) {
-                    console.error('Async: Could not copy text: ', err);
-                    setCopySuc(false);
-                  })
-              } else {
-                  console.error('Async: Could not copy text'); 
-                  setCopySuc(false);
-              }
-            }
-        } >
-
-        {copySuc !== null ? (copySuc ? <CheckCircleFill color="green"/> : <XCircleFill color="red"/>) : <ClipboardPlus />}
-        
-      </Button>)
+      (<CopiableFieldEntryProps text={row.original["id"]} italicText={true}/>)
       </Fragment>
   );
 }

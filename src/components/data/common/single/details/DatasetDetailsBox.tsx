@@ -120,7 +120,7 @@ function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps) 
 
     return(
       <Container fluid className="pt-3 pb-1 bg-light bg-gradient border border-secondary rounded">
-        <p title="The ID of the dataset or model"><b>ID</b><br /><span className="ms-3">{data.id}</span>
+        {/* <p title="The ID of the dataset or model"><b>ID</b><br /><span className="ms-3">{data.id}</span>
               {
               //   <Button variant="link" className="m-0 p-0 ps-1 pe-1 ms-1 bg-warning" onClick={(e) =>
               //     {navigator.clipboard.writeText(data.id).then(function() {
@@ -131,7 +131,7 @@ function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps) 
               //   <ClipboardPlus />
               // </Button>
 }
-        </p>        
+        </p>         */}
         <p title="The project that this dataset is part of"><b>Project</b><br /><span className="ms-3">{data.project}</span></p>
         { getIDLink(props.singleDataId, props.singleDataType, PREVIOUS_ID, data.previousId, 
             data.editablePropertiesByTheUser.includes("previousId"),
