@@ -18,7 +18,7 @@ import SingleDataFactory from '../api/SingleDataFactory';
 export const api = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '' }),
   reducerPath: 'singleDataApi',
-  refetchOnMountOrArgChange: true,
+  refetchOnMountOrArgChange: false,
   tagTypes: ["Model", "Dataset", "ModelAcl", "DatasetAcl"],
   endpoints: (build:  EndpointBuilder<any, any, any>) => ({
     getSingleDataPage: build.query<ItemPage<SingleData>, GetSingleDataPageT>({
