@@ -13,11 +13,12 @@ import UpgradableDataset from '../model/UpgradableDataset';
 import CheckIntegrity from '../model/CheckIntegrity';
 import AclUser from '../model/AclUser';
 import DeletedSingleData from '../model/DeletedSingleData';
+import SingleDataFactory from '../api/SingleDataFactory';
 
 export const api = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '' }),
   reducerPath: 'singleDataApi',
-  refetchOnMountOrArgChange: true,
+  refetchOnMountOrArgChange: false,
   tagTypes: ["Model", "Dataset", "ModelAcl", "DatasetAcl"],
   endpoints: (build:  EndpointBuilder<any, any, any>) => ({
     getSingleDataPage: build.query<ItemPage<SingleData>, GetSingleDataPageT>({
@@ -30,7 +31,11 @@ export const api = createApi({
                 token ? new  Map([["Authorization", "Bearer " + token]]) : null,
                 null, "text", qParams);
                 if (dt.list) {
-                  dt.list.forEach((d: any) => d.type = singleDataType);
+                  dt.list.forEach((d: any) => {
+                    d["typeApi"] = d.type;
+                    d.type = singleDataType;
+                    
+                });
                 }
                 return { data: dt as ItemPage<SingleData> };
             } catch(error) { return { error: generateError(error) }; }
@@ -47,10 +52,11 @@ export const api = createApi({
       queryFn: async ({token, id, singleDataType}: GetSingleDataT)  => 
         {
           try {
-              return { data: {...await call("GET", 
+            const data = SingleDataFactory.fromObj(await call("GET", 
                 `${BASE_URL_API}/${Util.singleDataPath(singleDataType)}/${id}`, 
                 token ? new  Map([["Authorization", "Bearer " + token]]) : null,
-                null, "text", null), type:  singleDataType } as SingleData };
+                null, "text", null), singleDataType);
+              return { data };
           } catch(error) { return { error: generateError(error) }; }
 
         },

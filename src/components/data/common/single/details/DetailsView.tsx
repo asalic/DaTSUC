@@ -12,6 +12,7 @@ import NoDataView from "../../../../common/NoDataView";
 import { useGetSingleDataQuery } from "../../../../../service/singledata-api";
 import SingleDataType from "../../../../../model/SingleDataType";
 import License from "../../../../../model/License";
+import Util from "../../../../../Util";
 
 interface DetailsViewProps<T extends SingleData> {
   showDialog: Function;
@@ -62,7 +63,20 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
         <Row>
           <Col md={8}>
             <p>
-              <b className="h5">Description:</b>
+              <b className="h5">Purpose</b>
+              {
+                keycloak.authenticated &&  dataset.editablePropertiesByTheUser.includes("purpose")
+                ? <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={props.singleDataType}
+                    showDialog={props.showDialog} field="purpose" fieldDisplay="Dataset purpose"
+                    oldValue={dataset.purpose} keycloakReady={props.keycloakReady}/>
+                : <Fragment />
+              }
+              <br></br>
+              <span className="ms-4" dangerouslySetInnerHTML={{ __html: dataset.purpose }}></span>
+
+            </p>
+            <p>
+              <b className="h5">Description</b>
               {
                 keycloak.authenticated &&  dataset.editablePropertiesByTheUser.includes("description")
                 ? <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={props.singleDataType}
@@ -76,7 +90,7 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
             </p>
 
             <p>
-            <b className="h5">Contact Information: </b>
+            <b className="h5">Contact Information</b>
                   { keycloak.authenticated &&  dataset.editablePropertiesByTheUser.includes("contactInfo") ?
                         <DatasetFieldEdit  singleDataId={props.singleDataId} singleDataType={props.singleDataType}
                           showDialog={props.showDialog} field="contactInfo" fieldDisplay="Contact information" 
@@ -127,6 +141,13 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
                   dataset.lastIntegrityCheck ? 
                     <i>Last integrity check performed on <b>{new Intl.DateTimeFormat('en-GB', { dateStyle: 'short', timeStyle: 'long' }).format(Date.parse(dataset.lastIntegrityCheck))}</b>.</i>
                     : <i>The integrity of the dataset has not been checked yet.</i>
+                  }
+              </p>
+              <p>
+                {
+                  dataset.sizeInBytes ? 
+                    <i>This dataset occupies <b>{Util.formatBytes(dataset.sizeInBytes)}</b> of storage space.</i>
+                    : <i>The amount of storage space that this dataset uses is not currently known.</i>
                   }
               </p>
             </div>

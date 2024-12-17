@@ -15,6 +15,10 @@ import StaticValues from "../../../../../api/StaticValues";
 import Dialog from "../../../../common/Dialog";
 import Message from "../../../../../model/Message";
 import Util from "../../../../../Util";
+import SingleDataFactory from "../../../../../api/SingleDataFactory";
+import BodyEnumSelect from "./fieldedit/BodyEnumSelect";
+import SingleDataTypeApiType from "../../../../../model/SingleDataTypeApiType";
+import CollectionMethodType from "../../../../../model/CollectionMethodType";
 // import PatchMessage from "../../../../common/PatchMessage";
 
 function transformValue(field: string, value: any) {
@@ -62,7 +66,7 @@ function DatasetFieldEdit(props: DatasetFieldEditProps): JSX.Element {
         patchSingleData({
           token: keycloak.token,
           id: props.singleDataId, 
-          property: props.field, 
+          property: SingleDataFactory.apiFieldName(props.field), 
           value: sVal, 
           singleDataType: props.singleDataType
         });
@@ -105,7 +109,12 @@ function DatasetFieldEdit(props: DatasetFieldEditProps): JSX.Element {
         } else if (props.field === "pids") {
           body = <BodyPid updValue={updValue} oldValue={value} />;
         } else if (props.field === "previousId") {
-          body = <BodyId updValue={updValue} oldValue={value} keycloakReady={props.keycloakReady}/>;
+          body = <BodyId updValue={updValue} oldValue={value} keycloakReady={props.keycloakReady}
+            singleDataType={props.singleDataType}/>;
+        } else if (props.field === "typeApi") {
+          body = <BodyEnumSelect updValue={updValue} oldValue={value} allValues={Object.values(SingleDataTypeApiType)}/>;
+        } else if (props.field === "collectionMethod") {
+          body = <BodyEnumSelect updValue={updValue} oldValue={value} allValues={Object.values(CollectionMethodType)}/>;
         } else {
           body = <Body updValue={updValue} oldValue={props.oldValue} />;
         }

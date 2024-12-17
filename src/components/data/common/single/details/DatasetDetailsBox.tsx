@@ -4,13 +4,14 @@ import { useKeycloak } from "@react-keycloak/web";
 
 import DatasetFieldEdit from "../common/DatasetFieldEdit";
 import RouteFactory from "../../../../../api/RouteFactory";
-import Util from "../../../../../Util";
 import SingleData from "../../../../../model/SingleData";
 import SingleDataType from "../../../../../model/SingleDataType";
 import { useGetSingleDataQuery } from "../../../../../service/singledata-api";
 import LoadingView from "../../../../common/LoadingView";
 import ErrorView from "../../../../common/ErrorView";
 import ProgrammaticError from "../../../../common/ProgrammaticError";
+import SingleDataTypeApiType from "../../../../../model/SingleDataTypeApiType";
+import CollectionMethodType from "../../../../../model/CollectionMethodType";
 
 const PREVIOUS_ID = "Previous version";
 const NEXT_ID = "Next version";
@@ -98,10 +99,11 @@ function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps) 
       token: keycloak.token,
       id: props.singleDataId,
       singleDataType: props.singleDataType
-    },
-    {
-      skip: !(props.keycloakReady)
     }
+    // ,
+    // {
+    //   skip: !(props.keycloakReady)
+    // }
   )
 
   if (isLoading) {
@@ -120,7 +122,7 @@ function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps) 
 
     return(
       <Container fluid className="pt-3 pb-1 bg-light bg-gradient border border-secondary rounded">
-        <p title="The ID of the dataset or model"><b>ID</b><br /><span className="ms-3">{data.id}</span>
+        {/* <p title="The ID of the dataset or model"><b>ID</b><br /><span className="ms-3">{data.id}</span>
               {
               //   <Button variant="link" className="m-0 p-0 ps-1 pe-1 ms-1 bg-warning" onClick={(e) =>
               //     {navigator.clipboard.writeText(data.id).then(function() {
@@ -131,7 +133,7 @@ function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps) 
               //   <ClipboardPlus />
               // </Button>
 }
-        </p>        
+        </p>         */}
         <p title="The project that this dataset is part of"><b>Project</b><br /><span className="ms-3">{data.project}</span></p>
         { getIDLink(props.singleDataId, props.singleDataType, PREVIOUS_ID, data.previousId, 
             data.editablePropertiesByTheUser.includes("previousId"),
@@ -154,12 +156,31 @@ function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps) 
         <p title="The list of tags set on the series that compose this dataset"><b>Series tags</b><br />
           <span className="ms-3">{data.seriesTags !== null && data.seriesTags !== undefined && data.seriesTags.length > 0 ? 
           data.seriesTags.map(t => <Badge pill key={t} bg="light" text="dark" className="ms-1 me-1">{t}</Badge>) : "-"}</span></p>
-        <p title="The size occupied by the dataset on the platform' storage"><b>Size</b><br />
-          <span className="ms-3">{data.sizeInBytes !== null && data.sizeInBytes !== undefined ? Util.formatBytes(data.sizeInBytes) : "unknown"}</span></p>
+        <p title={`The type of the dataset (any of the following values: ${Object.values(SingleDataTypeApiType).join(", ")})`}><b>Type</b>
+          {
+            data.editablePropertiesByTheUser.includes("type") ? <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={props.singleDataType} 
+                showDialog={props.showDialog} field="typeApi" fieldDisplay="type"
+                oldValue={data.typeApi} keycloakReady={props.keycloakReady}/>
+            : <></>
+          }
+          <br />
+          <span className="ms-3">{data.typeApi !== null && data.typeApi !== undefined && data.typeApi.length > 0 ? 
+          data.typeApi.map(t => <Badge pill key={t} bg="light" text="dark" className="ms-1 me-1">{t}</Badge>) : "-"}</span></p>
+        <p title={`The collection method used to gather the data for the dataset (any of the following values: ${Object.values(CollectionMethodType).join(", ")})`}>
+          <b>Collection method</b>
+          {
+            data.editablePropertiesByTheUser.includes("collectionMethod") ? <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={props.singleDataType} 
+                showDialog={props.showDialog} field="collectionMethod" fieldDisplay="collection method"
+                oldValue={data.collectionMethod} keycloakReady={props.keycloakReady}/>
+            : <></>
+          }
+          <br />
+          <span className="ms-3">{data.collectionMethod !== null && data.collectionMethod !== undefined && data.collectionMethod.length > 0 ? 
+          data.collectionMethod.map(t => <Badge pill key={t} bg="light" text="dark" className="ms-1 me-1">{t}</Badge>) : "-"}</span></p>
       </Container>
     );
   } else {
-    return <ProgrammaticError msg="Data is null or undefined, please contact the " />
+    return <ProgrammaticError msg="Data is null or undefined, please contact the devaloper" />
   }
 }
 
