@@ -9,6 +9,7 @@ import LoadingView from "../../../../common/LoadingView";
 import ErrorView from "../../../../common/ErrorView";
 import SingleDataType from "../../../../../model/SingleDataType";
 import CopiableFieldEntryProps from "../../../../common/CopiableFieldEntry";
+import SingleDataFactory from "../../../../../api/SingleDataFactory";
 
 interface SingleDataTitleProps<T extends SingleData> {
     keycloakReady: boolean;
@@ -39,7 +40,8 @@ function SingleDataTitle<T extends SingleData>(props: SingleDataTitleProps<T>) {
               {
                 data?.editablePropertiesByTheUser.includes("draft")
                 ? <DatasetFieldEdit keycloakReady={props.keycloakReady} 
-                        singleDataId={props.singleDataId} showDialog={props.showDialog} field="name" fieldDisplay="Dataset name" 
+                        singleDataId={props.singleDataId} showDialog={props.showDialog} field="name" 
+                        fieldDisplay={`${SingleDataFactory.getTypeName(props.singleDataType)} name`} 
                         oldValue={data?.name} singleDataType={props.singleDataType}/>
                 : <></>
               }
@@ -52,8 +54,23 @@ function SingleDataTitle<T extends SingleData>(props: SingleDataTitleProps<T>) {
             </sup>
 
             <div>
-              {/* <i>Version </i><b>{data?.version}</b> */}
-              <i> with  ID </i><b><CopiableFieldEntryProps text={data.id} boldText={true} /></b>
+              <i>Version </i><b>{data?.version}
+              {
+                data?.editablePropertiesByTheUser.includes("version")
+                ? <DatasetFieldEdit keycloakReady={props.keycloakReady} 
+                        singleDataId={props.singleDataId} showDialog={props.showDialog} field="version" 
+                        fieldDisplay={`${SingleDataFactory.getTypeName(props.singleDataType)} version`}
+                        oldValue={data?.version} singleDataType={props.singleDataType}/>
+                : <></>
+                
+              }
+
+              </b>
+              <i> with  ID </i>
+              <b>
+                <CopiableFieldEntryProps text={data.id} boldText={true} 
+                  title={`Copy the ${SingleDataFactory.getTypeName(props.singleDataType)} ID`} />
+              </b>
               {
                 data?.creationDate ?
                 <>

@@ -1,6 +1,6 @@
 import SingleData from "./SingleData";
 
 
-export default class Model extends SingleData {
+export default interface Model extends SingleData {
     
 }

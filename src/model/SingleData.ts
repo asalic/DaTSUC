@@ -3,9 +3,10 @@ import DatasetPids from "./DatasetPids";
 import License from "./License";
 import SingleDataType from "./SingleDataType";
 
-export default class SingleData {
+export default interface SingleData {
 
     type: SingleDataType;
+
     id: string;
     name: string;
     previousId: string | null;
@@ -46,5 +47,11 @@ export default class SingleData {
     sizeInBytes: number | null; 
     lastIntegrityCheck:  string | null;
     project: string;
-
+    version: string;
+    purpose: string;
+    /**
+     * mapped to property type  coming from the server
+     */
+    typeApi:  string[] | null |undefined;
+    collectionMethod: string[];
 }

@@ -13,6 +13,7 @@ import SingleData from "../../../../model/SingleData";
 import SingleDataType from "../../../../model/SingleDataType";
 import UrlFactory from "../../../../service/UrlFactory";
 import CopiableFieldEntryProps from "../../../common/CopiableFieldEntry";
+import SingleDataFactory from "../../../../api/SingleDataFactory";
 
 
 // const IndeterminateCheckbox = forwardRef(
@@ -293,11 +294,15 @@ function ColNameIdRender({row}: ColNameIdRenderProps): JSX.Element {
   
   return (
     <Fragment>
-    {row.original["name"]}
+    <span className="me-1">{row.original["name"]}</span>
+    (<i>{row.original["version"]}</i>)
     {/* <br />
     <span style={{fontSize: "80%" }}>version <i>{row.original["version"]}</i></span> */}
     <br />
-      (<CopiableFieldEntryProps text={row.original["id"]} italicText={true}/>)
+      (<CopiableFieldEntryProps text={row.original["id"]} italicText={true}
+       
+       title={`Copy the ${SingleDataFactory.getTypeName(row.original["type"])} ID`}
+      />)
       </Fragment>
   );
 }
@@ -510,11 +515,17 @@ function DatasetsMainTable(props: DatasetsMainTableProps): JSX.Element {
     //   Cell: ({row}) => <ColIdRender  row={row}/> 
     // },
     {
-      Header: () => <Fragment>Dataset (<i>ID</i>)</Fragment>,
+      Header: () => <Fragment>Dataset (<i>version</i>) (<i>ID</i>)</Fragment>,
       id: "name",
       accessor: 'name',
       Cell: ({row}: CellProps<any>) => <ColNameIdRender  row={row}/>
     },
+    // {
+    //   Header: 'Version',
+    //   id: "version",
+    //   accessor: 'version',
+    //   disableSortBy: true
+    // },
     {
       Header: 'Flags',
       id: "flags",
