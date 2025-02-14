@@ -120,6 +120,9 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>): JS
       token: keycloak.token,
       id: singleDataId,
       singleDataType: props.singleDataType
+    },
+    {
+        skip: !props.keycloakReady
     }
   )
 
@@ -137,7 +140,7 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>): JS
     if (singleDataError) {
         return <ErrorView message={`Error loading resource ID '${singleDataId}': ${singleDataError.message ?? ""}`} />
     } else if (isLoading) {
-      return <LoadingView what={`resource ID '${singleDataId}'`} />;
+      return <LoadingView what={`details for resource ID '${singleDataId}'`} />;
     } else {
       return (
         <Fragment>
@@ -189,7 +192,7 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>): JS
           );
     }
   } else {
-    if (isLoading) {
+    if (isLoading || !props.keycloakReady) {
       return <LoadingView what={`resource ID '${singleDataId}'`} />;
     } else {    
       return <div>No dataset ID specified</div>; 

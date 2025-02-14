@@ -26,10 +26,15 @@ function SingleDataTitle<T extends SingleData>(props: SingleDataTitleProps<T>) {
       token: keycloak.token,
       id: props.singleDataId,
       singleDataType: props.singleDataType
+    },
+    {
+        skip: !props.keycloakReady
     }
   )
 
-  if (isLoading) {
+  if (!props.keycloakReady) {
+    return <></>;
+  }  else if (isLoading) {
     return <LoadingView what={`resource ID '${props.singleDataId}'`} />;
   } else if (isError) {
     return <ErrorView message={`Error loading resource ID '${props.singleDataId}': ${error.message ?? ""}`} />

@@ -16,6 +16,8 @@ import SingleDataType from "../../../../model/SingleDataType";
 import { useGetSingleDataQuery } from "../../../../service/singledata-api";
 import Dataset from "../../../../model/Dataset";
 import DatasetDetailsView from "./details/DatasetDetailsView";
+import LoadingView from "../../../common/LoadingView";
+import ErrorView from "../../../common/ErrorView";
 
 
 DatasetView.TAB_STUDIES = "studies";
@@ -105,7 +107,7 @@ function DatasetView(props: DatasetViewProps) {
     //     });
     //     };
 
-  const { data: dataset } = useGetSingleDataQuery({
+  const { data: dataset, isLoading, isError, error } = useGetSingleDataQuery({
       token: keycloak.token,
       id: datasetId,
       singleDataType: SingleDataType.DATASET
@@ -185,6 +187,10 @@ function DatasetView(props: DatasetViewProps) {
     if (datasetId === "") {
       console.error("Dataset ID cannot be empty");
       return <ResourceNotFoundView id={"<datasetId_empty_string>"} />;
+    } else if (isLoading|| !props.keycloakReady) {
+        return <LoadingView what={`dataset ID '${datasetId}'`} />;
+    } else if (isError) {
+        return <ErrorView message={`Error loading details of dataset ID '${datasetId}': ${Util.getError(error).message}`} />;
     } else {
       return <SingleDataView<Dataset> singleDataType={SingleDataType.DATASET}
           showDialog={props.showDialog} keycloakReady={props.keycloakReady}

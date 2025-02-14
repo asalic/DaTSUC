@@ -28,6 +28,9 @@ function DatasetDetailsView(props: DatasetDetailsViewProps) {
       token: keycloak.token,
       id: props.singleDataId,
       singleDataType: SingleDataType.DATASET
+    },
+    {
+        skip: !props.keycloakReady
     }
   )
 
@@ -217,7 +220,7 @@ function DatasetDetailsView(props: DatasetDetailsViewProps) {
       </Container>
     );
   } else { // data is null
-    if (datasetLoading) {
+    if (datasetLoading || !props.keycloakReady) {
       return <LoadingView what=" the general information"></LoadingView>
     } else {
       if (datasetError) {
