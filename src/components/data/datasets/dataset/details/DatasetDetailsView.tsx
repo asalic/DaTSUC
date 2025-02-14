@@ -2,33 +2,31 @@ import React, { Fragment } from "react";
 import { Container, Row, Col} from 'react-bootstrap';
 import { useKeycloak } from "@react-keycloak/web";
 import StaticValues from "../../../../../api/StaticValues";
-import DatasetFieldEdit from "../common/DatasetFieldEdit";
+import DatasetFieldEdit from "../../../common/single/common/DatasetFieldEdit";
 import DatasetDetailsBox from "./DatasetDetailsBox";
 import MessageBox from "./MessageBox";
-import SingleData from "../../../../../model/SingleData";
 import LoadingView from "../../../../common/LoadingView";
 import ErrorView from "../../../../common/ErrorView";
 import NoDataView from "../../../../common/NoDataView";
 import { useGetSingleDataQuery } from "../../../../../service/singledata-api";
-import SingleDataType from "../../../../../model/SingleDataType";
 import License from "../../../../../model/License";
 import Util from "../../../../../Util";
+import SingleDataType from "../../../../../model/SingleDataType";
 
-interface DetailsViewProps<T extends SingleData> {
+interface DatasetDetailsViewProps {
   showDialog: Function;
   keycloakReady: boolean;
   singleDataId: string;
-  singleDataType: SingleDataType;
 }
 
-function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
+function DatasetDetailsView(props: DatasetDetailsViewProps) {
   const { keycloak } = useKeycloak();
 
 
   const { data: dataset, isLoading: datasetLoading, error: datasetError } = useGetSingleDataQuery({
       token: keycloak.token,
       id: props.singleDataId,
-      singleDataType: props.singleDataType
+      singleDataType: SingleDataType.DATASET
     }
   )
 
@@ -66,7 +64,7 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
               <b className="h5">Purpose</b>
               {
                 keycloak.authenticated &&  dataset.editablePropertiesByTheUser.includes("purpose")
-                ? <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={props.singleDataType}
+                ? <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={SingleDataType.DATASET}
                     showDialog={props.showDialog} field="purpose" fieldDisplay="Dataset purpose"
                     oldValue={dataset.purpose} keycloakReady={props.keycloakReady}/>
                 : <Fragment />
@@ -79,7 +77,7 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
               <b className="h5">Description</b>
               {
                 keycloak.authenticated &&  dataset.editablePropertiesByTheUser.includes("description")
-                ? <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={props.singleDataType}
+                ? <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={SingleDataType.DATASET}
                     showDialog={props.showDialog} field="description" fieldDisplay="Dataset description"
                     oldValue={dataset.description} keycloakReady={props.keycloakReady}/>
                 : <Fragment />
@@ -92,7 +90,7 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
             <p>
             <b className="h5">Contact Information</b>
                   { keycloak.authenticated &&  dataset.editablePropertiesByTheUser.includes("contactInfo") ?
-                        <DatasetFieldEdit  singleDataId={props.singleDataId} singleDataType={props.singleDataType}
+                        <DatasetFieldEdit  singleDataId={props.singleDataId} singleDataType={SingleDataType.DATASET}
                           showDialog={props.showDialog} field="contactInfo" fieldDisplay="Contact information" 
                           oldValue={dataset.contactInfo} keycloakReady={props.keycloakReady}/>
                       : <Fragment /> }
@@ -106,7 +104,7 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
                   (dataset.editablePropertiesByTheUser.includes("pids") ? <i>Add a PID URL to allow citations </i> : <Fragment/> ) }
 
               { keycloak.authenticated &&  dataset.editablePropertiesByTheUser.includes("pids") ?
-                        <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={props.singleDataType} 
+                        <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={SingleDataType.DATASET} 
                             showDialog={props.showDialog} field="pids" 
                             fieldDisplay="Permanent ID (PID) URL"
                             oldValue={pids} keycloakReady={props.keycloakReady}/>
@@ -129,7 +127,7 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
                 }
                 
                 { keycloak.authenticated &&  dataset.editablePropertiesByTheUser.includes("license")  ?
-                            <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={props.singleDataType} 
+                            <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={SingleDataType.DATASET} 
                                 showDialog={props.showDialog} 
                                 field={dataset.editablePropertiesByTheUser.includes("license") ? "license" : "licenseUrl"} 
                                 fieldDisplay="Dataset license" oldValue={dataset.license ?? new License()}
@@ -154,7 +152,7 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
           </Col>
           <Col md={4}>
             <DatasetDetailsBox showDialog={props.showDialog} keycloakReady={props.keycloakReady} 
-              singleDataId={props.singleDataId}  singleDataType={props.singleDataType}
+              singleDataId={props.singleDataId}
             />
           </Col>
         </Row>
@@ -172,4 +170,4 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
   return <NoDataView message="No data found in the details tab."></NoDataView>;
 }
 
-export default DetailsView;
+export default DatasetDetailsView;

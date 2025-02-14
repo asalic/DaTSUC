@@ -1,17 +1,12 @@
-import { Container, Badge } from "react-bootstrap";
-import React, { Fragment }from "react";
-import { useKeycloak } from "@react-keycloak/web";
-
-import DatasetFieldEdit from "../common/DatasetFieldEdit";
 import RouteFactory from "../../../../../api/RouteFactory";
-import SingleData from "../../../../../model/SingleData";
 import SingleDataType from "../../../../../model/SingleDataType";
-import { useGetSingleDataQuery } from "../../../../../service/singledata-api";
-import LoadingView from "../../../../common/LoadingView";
-import ErrorView from "../../../../common/ErrorView";
-import ProgrammaticError from "../../../../common/ProgrammaticError";
+import React, { Fragment } from "react";
+import DatasetFieldEdit from "../common/DatasetFieldEdit";
+import SingleData from "../../../../../model/SingleData";
 import SingleDataTypeApiType from "../../../../../model/SingleDataTypeApiType";
+import { Badge } from "react-bootstrap";
 import CollectionMethodType from "../../../../../model/CollectionMethodType";
+
 
 const PREVIOUS_ID = "Previous version";
 const NEXT_ID = "Next version";
@@ -21,8 +16,8 @@ interface EntryWithStudyResult {
   show: boolean;
 }
 
-function getIdEdit<T extends SingleData | undefined> (singleDataId: string, singleDataType: SingleDataType, 
-    text: string, ds: T, showDialog?: Function, keycloakReady?: boolean) {
+function getIdEdit(singleDataId: string, singleDataType: SingleDataType, 
+    text: string, ds: SingleData | undefined, showDialog?: Function, keycloakReady?: boolean) {
   if (text === PREVIOUS_ID && ds && ds.editablePropertiesByTheUser.includes("previousId") 
       && showDialog && keycloakReady) {
     return <DatasetFieldEdit singleDataId={singleDataId} singleDataType={singleDataType} 
@@ -36,8 +31,8 @@ function getIdEdit<T extends SingleData | undefined> (singleDataId: string, sing
   return <Fragment />;
 }
 
-function getIDLink<T extends SingleData>(singleDataId: string, singleDataType: SingleDataType, 
-      text: string, id: string | null, canEdit: boolean, data?: T, 
+function getIDLink(singleDataId: string, singleDataType: SingleDataType, 
+      text: string, id: string | null, canEdit: boolean, data?: SingleData, 
       showDialog?: Function, keycloakReady?: boolean) {
   if (id || canEdit) {
     return <p title={`ID of the ${text} version of this dataset`}><b>{text}</b>
@@ -84,34 +79,15 @@ function getYearLowHigh(ageLow: number | null, ageHigh: number | null, ageUnit: 
   return ageLstItemTxt;
 }
 
-interface DatasetDetailsBoxProps {
-  showDialog: Function;
-  keycloakReady: boolean;
-  singleDataId: string;
-  singleDataType: SingleDataType;
+interface DetailsBoxProps<T extends SingleData>{
+    data: T;
+    singleDataType: SingleDataType;
+    singleDataId: string;
+    keycloakReady: boolean;
+    showDialog: Function;
 }
 
-function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps) {
-    const { keycloak } = useKeycloak();
-
-
-  const { data, isLoading, error, isError } = useGetSingleDataQuery({
-      token: keycloak.token,
-      id: props.singleDataId,
-      singleDataType: props.singleDataType
-    }
-    // ,
-    // {
-    //   skip: !(props.keycloakReady)
-    // }
-  )
-
-  if (isLoading) {
-    return <LoadingView what="data" />
-  } else if (isError) {
-    return <ErrorView message={`Error loading data: ${error.message ?? JSON.stringify(error.data) ?? ""}`} />;
-  } else if (data) {
-
+function DetailsBox<T extends SingleData>({data, singleDataType, singleDataId, keycloakReady, showDialog}: DetailsBoxProps<T>): JSX.Element {
     const ageLstItemTxt: string = getYearLowHigh(data.ageLow, data.ageHigh, data.ageUnit, data.ageNullCount, "age");
     const diagnosisLstItemTxt: string = getYearLowHigh(data.diagnosisYearLow, data.diagnosisYearHigh, [], data.diagnosisYearNullCount, "diagnosis year");
 
@@ -119,26 +95,12 @@ function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps) 
     const modality = getEntryWithStudyCnt(data.modality, data.modalityCount);
     const bodyPart = getEntryWithStudyCnt(data.bodyPart, data.bodyPartCount);
     const manufacturer = getEntryWithStudyCnt(data.manufacturer, data.manufacturerCount);
-
-    return(
-      <Container fluid className="pt-3 pb-1 bg-light bg-gradient border border-secondary rounded">
-        {/* <p title="The ID of the dataset or model"><b>ID</b><br /><span className="ms-3">{data.id}</span>
-              {
-              //   <Button variant="link" className="m-0 p-0 ps-1 pe-1 ms-1 bg-warning" onClick={(e) =>
-              //     {navigator.clipboard.writeText(data.id).then(function() {
-              //       console.log('Async: Copying to clipboard was successful!');
-              //     }, function(err) {
-              //       console.error('Async: Could not copy text: ', err);
-              //     });}} >
-              //   <ClipboardPlus />
-              // </Button>
-}
-        </p>         */}
+    return <>
         <p title="The project that this dataset is part of"><b>Project</b><br /><span className="ms-3">{data.project}</span></p>
-        { getIDLink(props.singleDataId, props.singleDataType, PREVIOUS_ID, data.previousId, 
+        { getIDLink(singleDataId, singleDataType, PREVIOUS_ID, data.previousId, 
             data.editablePropertiesByTheUser.includes("previousId"),
-            data, props.showDialog, props.keycloakReady) }
-        { getIDLink(props.singleDataId, props.singleDataType, NEXT_ID, data.nextId, false) }
+            data, showDialog, keycloakReady) }
+        { getIDLink(singleDataId, singleDataType, NEXT_ID, data.nextId, false) }
         <p title="The number of studies followed by number of all subjects in this dataset"><b>Studies/Subjects count</b><br />
           <span className="ms-3">{data.studiesCount}/{data.subjectsCount}</span></p>
         <p title="The range of the ages of all subjects in this dataset, DICOM tag (0010, 1010) or subject clinical data"><b>Age range</b><br />
@@ -158,9 +120,9 @@ function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps) 
           data.seriesTags.map(t => <Badge pill key={t} bg="light" text="dark" className="ms-1 me-1">{t}</Badge>) : "-"}</span></p>
         <p title={`The type of the dataset (any of the following values: ${Object.values(SingleDataTypeApiType).join(", ")})`}><b>Type</b>
           {
-            data.editablePropertiesByTheUser.includes("type") ? <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={props.singleDataType} 
-                showDialog={props.showDialog} field="typeApi" fieldDisplay="type"
-                oldValue={data.typeApi} keycloakReady={props.keycloakReady}/>
+            data.editablePropertiesByTheUser.includes("type") ? <DatasetFieldEdit singleDataId={singleDataId} singleDataType={singleDataType} 
+                showDialog={showDialog} field="typeApi" fieldDisplay="type"
+                oldValue={data.typeApi} keycloakReady={keycloakReady}/>
             : <></>
           }
           <br />
@@ -169,19 +131,16 @@ function DatasetDetailsBox<T extends SingleData>(props: DatasetDetailsBoxProps) 
         <p title={`The collection method used to gather the data for the dataset (any of the following values: ${Object.values(CollectionMethodType).join(", ")})`}>
           <b>Collection method</b>
           {
-            data.editablePropertiesByTheUser.includes("collectionMethod") ? <DatasetFieldEdit singleDataId={props.singleDataId} singleDataType={props.singleDataType} 
-                showDialog={props.showDialog} field="collectionMethod" fieldDisplay="collection method"
-                oldValue={data.collectionMethod} keycloakReady={props.keycloakReady}/>
+            data.editablePropertiesByTheUser.includes("collectionMethod") ? <DatasetFieldEdit singleDataId={singleDataId} singleDataType={singleDataType} 
+                showDialog={showDialog} field="collectionMethod" fieldDisplay="collection method"
+                oldValue={data.collectionMethod} keycloakReady={keycloakReady}/>
             : <></>
           }
           <br />
           <span className="ms-3">{data.collectionMethod !== null && data.collectionMethod !== undefined && data.collectionMethod.length > 0 ? 
           data.collectionMethod.map(t => <Badge pill key={t} bg="light" text="dark" className="ms-1 me-1">{t}</Badge>) : "-"}</span></p>
-      </Container>
-    );
-  } else {
-    return <ProgrammaticError msg="Data is null or undefined, please contact the devaloper" />
-  }
+    </>
 }
 
-export default DatasetDetailsBox;
+export default DetailsBox;
+export {getEntryWithStudyCnt};

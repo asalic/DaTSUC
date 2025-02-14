@@ -4,7 +4,6 @@ import SingleDataView from "../../common/single/main/SingleDataView";
 import SingleItemTab from "../../../../model/SingleItemTab";
 import { useKeycloak } from "@react-keycloak/web";
 import DatasetStudiesView from "./studies/DatasetStudiesView";
-import DetailsView from "../../common/single/details/DetailsView";
 import HistoryView from "../../common/single/history/HistoryView";
 import AccessHistoryView from "../../common/single/access/AccessHistoryView";
 import AccessControlListView from "../../common/single/acl/AccessControlListView";
@@ -15,6 +14,8 @@ import { showDialogAppDashhboard } from "../../common/single/common/Operations";
 import ResourceNotFoundView from "../../../common/ResourceNotFoundView";
 import SingleDataType from "../../../../model/SingleDataType";
 import { useGetSingleDataQuery } from "../../../../service/singledata-api";
+import Dataset from "../../../../model/Dataset";
+import DatasetDetailsView from "./details/DatasetDetailsView";
 
 
 DatasetView.TAB_STUDIES = "studies";
@@ -141,8 +142,8 @@ function DatasetView(props: DatasetViewProps) {
         const result: SingleItemTab[] = [{
             eventKey: "details",
             title: "Details",
-            view: <DetailsView  showDialog={props.showDialog}
-               keycloakReady={props.keycloakReady} singleDataId={datasetId} singleDataType={SingleDataType.DATASET}/>
+            view: <DatasetDetailsView  showDialog={props.showDialog}
+               keycloakReady={props.keycloakReady} singleDataId={datasetId}/>
         }]
 
       if (keycloak.authenticated) {
@@ -185,7 +186,7 @@ function DatasetView(props: DatasetViewProps) {
       console.error("Dataset ID cannot be empty");
       return <ResourceNotFoundView id={"<datasetId_empty_string>"} />;
     } else {
-      return <SingleDataView singleDataType={SingleDataType.DATASET}
+      return <SingleDataView<Dataset> singleDataType={SingleDataType.DATASET}
           showDialog={props.showDialog} keycloakReady={props.keycloakReady}
           showdDlgOpt={props.showdDlgOpt} activeTab={props.activeTab}
           tabs={tabs}
