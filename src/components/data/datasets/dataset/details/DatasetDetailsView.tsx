@@ -12,6 +12,7 @@ import { useGetSingleDataQuery } from "../../../../../service/singledata-api";
 import License from "../../../../../model/License";
 import Util from "../../../../../Util";
 import SingleDataType from "../../../../../model/SingleDataType";
+import Dataset from "../../../../../model/Dataset";
 
 interface DatasetDetailsViewProps {
   showDialog: Function;
@@ -23,7 +24,7 @@ function DatasetDetailsView(props: DatasetDetailsViewProps) {
   const { keycloak } = useKeycloak();
 
 
-  const { data: dataset, isLoading: datasetLoading, error: datasetError } = useGetSingleDataQuery({
+  const { data, isLoading: datasetLoading, error: datasetError } = useGetSingleDataQuery({
       token: keycloak.token,
       id: props.singleDataId,
       singleDataType: SingleDataType.DATASET
@@ -39,6 +40,8 @@ function DatasetDetailsView(props: DatasetDetailsViewProps) {
   //   ageLstItem = <span>Less than {dataset.ageHigh} {dataset.ageUnit[1]}</span>
 
   // }
+  const dataset: Dataset = data as Dataset;
+
   if (dataset) {
     let pids = dataset.pids;
     let pidUrl: string = "";
@@ -85,6 +88,16 @@ function DatasetDetailsView(props: DatasetDetailsViewProps) {
               <br></br>
               <span className="ms-4" dangerouslySetInnerHTML={{ __html: dataset.description }}></span>
               
+            </p>
+            <p>
+                <b className="h5">Provenance</b>
+                { keycloak.authenticated &&  dataset.editablePropertiesByTheUser.includes("provenance") ?
+                            <DatasetFieldEdit  singleDataId={props.singleDataId} singleDataType={SingleDataType.DATASET}
+                            showDialog={props.showDialog} field="provenance" fieldDisplay="provenance" 
+                            oldValue={dataset.provenance} keycloakReady={props.keycloakReady}/>
+                        : <Fragment /> }
+                <br></br>
+                <span className="ms-4">{dataset.provenance}</span>
             </p>
 
             <p>

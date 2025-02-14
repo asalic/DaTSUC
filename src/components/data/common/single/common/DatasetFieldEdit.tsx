@@ -115,6 +115,8 @@ function DatasetFieldEdit(props: DatasetFieldEditProps): JSX.Element {
           body = <BodyEnumSelect updValue={updValue} oldValue={value} allValues={Object.values(SingleDataTypeApiType)}/>;
         } else if (props.field === "collectionMethod") {
           body = <BodyEnumSelect updValue={updValue} oldValue={value} allValues={Object.values(CollectionMethodType)}/>;
+        } else if (props.field === "description" || props.field === "provenance") {
+            body = <Body updValue={updValue} oldValue={props.oldValue} inputType="textarea"/>;
         } else {
           body = <Body updValue={updValue} oldValue={props.oldValue} />;
         }
