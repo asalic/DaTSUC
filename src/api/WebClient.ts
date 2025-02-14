@@ -9,7 +9,7 @@ export default class WebClient {
       headers.set("Authorization", "Bearer " + token);
     }
     const qTmp = this._prepQueryParams(qParams);
-    return WebClient._call("GET", Config.datasetService + "/datasets", headers,
+    return WebClient._call("GET", Config.datasetService.api + "/datasets", headers,
                 null, "text", qTmp);
   }
 
@@ -18,7 +18,7 @@ export default class WebClient {
     if (token) {
       headers.set("Authorization", "Bearer " + token);
     }
-    return WebClient._call("GET", Config.datasetService + "/datasets/" + dsId, headers,
+    return WebClient._call("GET", Config.datasetService.api + "/datasets/" + dsId, headers,
                 null, "text", null );
   }
 
@@ -29,7 +29,7 @@ export default class WebClient {
       }
       headers.set("Content-Type", "application/json");
       const payload = { property, value };
-      return WebClient._call("PATCH", Config.datasetService + "/datasets/" + dsId, headers,
+      return WebClient._call("PATCH", Config.datasetService.api + "/datasets/" + dsId, headers,
                   JSON.stringify(payload), "text", null );
   }
 
@@ -38,7 +38,7 @@ export default class WebClient {
     if (token) {
       headers.set("Authorization", "Bearer " + token);
     }
-    return WebClient._call("GET", Config.datasetService + "/datasets/" + dsId + "/studies", headers,
+    return WebClient._call("GET", Config.datasetService.api + "/datasets/" + dsId + "/studies", headers,
                 null, "text", { skip, limit });
 
   }
@@ -63,7 +63,7 @@ export default class WebClient {
     if (token) {
       headers.set("Authorization", "Bearer " + token);
     }
-    return WebClient._call("GET", Config.datasetService + `/datasets/${dsId}/creationStatus`, headers,
+    return WebClient._call("GET", Config.datasetService.api + `/datasets/${dsId}/creationStatus`, headers,
                 null, "text", null);
   }
 
@@ -72,7 +72,7 @@ export default class WebClient {
     if (token) {
       headers.set("Authorization", "Bearer " + token);
     }
-    return WebClient._call("GET", Config.datasetService + `/upgradableDatasets`, headers,
+    return WebClient._call("GET", Config.datasetService.api + `/upgradableDatasets`, headers,
                 null, "text", null);
   }
 
@@ -81,7 +81,7 @@ export default class WebClient {
     if (token) {
       headers.set("Authorization", "Bearer " + token);
     }
-    return WebClient._call("GET", Config.datasetService + "/datasets/" + datasetId + "/accessHistory", headers,
+    return WebClient._call("GET", Config.datasetService.api + "/datasets/" + datasetId + "/accessHistory", headers,
                 null, "text", { skip, limit });
   }
 
@@ -90,21 +90,21 @@ export default class WebClient {
     if (token) {
       headers.set("Authorization", "Bearer " + token);
     }
-    return WebClient._call("GET", Config.datasetService + "/projects", headers,
+    return WebClient._call("GET", Config.datasetService.api + "/projects?purpose=datasetSearchFilter", headers,
                 null, "text", null );
   }
 
   static getAcl(token:  string, datasetId: string): Promise<XMLHttpRequest> {
     let headers = new Map();
     headers.set("Authorization", "Bearer " + token);
-    return WebClient._call("GET", Config.datasetService + "/datasets/" + datasetId + "/acl", headers,
+    return WebClient._call("GET", Config.datasetService.api + "/datasets/" + datasetId + "/acl", headers,
                 null, "text", null );
   }
 
   static updateAcl(token:  string, datasetId: string, username: string, operation: string): Promise<XMLHttpRequest> {
     let headers = new Map();
     headers.set("Authorization", "Bearer " + token);
-    return WebClient._call(operation, Config.datasetService + "/datasets/" + datasetId + "/acl/" + encodeURIComponent(username), headers,
+    return WebClient._call(operation, Config.datasetService.api + "/datasets/" + datasetId + "/acl/" + encodeURIComponent(username), headers,
                 null, "text", null );
   }
 
@@ -113,7 +113,7 @@ export default class WebClient {
     if (token) {
       headers.set("Authorization", "Bearer " + token);
     }
-    return WebClient._call("GET", Config.datasetService + "/licenses", headers,
+    return WebClient._call("GET", Config.datasetService.api + "/licenses", headers,
                 null, "text", null );
 
   }
@@ -121,7 +121,7 @@ export default class WebClient {
   static postCheckIntegrity(token:  string, singleDataId: string): Promise<XMLHttpRequest> {
     let headers = new Map();
     headers.set("Authorization", "Bearer " + token);
-    return WebClient._call("POST", Config.datasetService + "/datasets/" + singleDataId + "/checkIntegrity", headers,
+    return WebClient._call("POST", Config.datasetService.api + "/datasets/" + singleDataId + "/checkIntegrity", headers,
                 null, "text", null );
 
   }
@@ -129,7 +129,7 @@ export default class WebClient {
   static deleteCancelDataset(token:  string, singleDataId: string): Promise<XMLHttpRequest> {
     let headers = new Map();
     headers.set("Authorization", "Bearer " + token);
-    return WebClient._call("DELETE", Config.datasetService + "/datasets/" + singleDataId, headers,
+    return WebClient._call("DELETE", Config.datasetService.api + "/datasets/" + singleDataId, headers,
                 null, "text", null );
 
   }

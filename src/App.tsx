@@ -19,6 +19,11 @@ import DialogSize from "./model/DialogSize";
 import DatasetsMainView from "./components/data/datasets/DatasetsMainView";
 import SingleDataView from "./components/data/common/single/main/SingleDataView";
 import ModelsMainView from "./components/data/models/ModelsMainView";
+import ProjectsMainView from "./components/project/MainView";
+import ProjectDetailsView from "./components/project/DetailsView";
+import UrlFactory from "./service/UrlFactory";
+import NewProjectView from "./components/project/NewProjectView";
+import ConfigEditorView from "./components/project/ConfigEditorView";
 
 interface Dsv {
   tab: string;
@@ -126,6 +131,10 @@ function App({keycloakReady}: AppProps) {
                     <Route path="/datasets/:singleDataId/acl/dlg-app-dashboard" 
                       element={getDSV({...opt, tab: SingleDataView.TAB_ACL, sdo: SingleDataView.SHOW_DLG_APP_DASHBOARD })} />
                     
+                    <Route path={UrlFactory.projectNew()} element={<NewProjectView />} />
+                    <Route path="/projects" element={<ProjectsMainView keycloakReady={keycloakReady} />} />
+                    <Route path="/projects/:code/details" element={<ProjectDetailsView showDialog={showDialog} keycloakReady={keycloakReady} />} />
+                    <Route path="/projects/:code/config-editor" element={<ConfigEditorView />} />
                     <Route path="*" element={
                         <main style={{ padding: "1rem" }}>
                         <p>There is nothing here!</p>

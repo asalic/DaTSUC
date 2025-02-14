@@ -21,6 +21,7 @@ function AppKeycloak() {
           }
           if (error) {
             console.error(error);
+            setKeycloakReady(true);
             //postMessage(new Message(Message.ERROR, "Keycloak provider error", error.error))
           }
           //console.log('keycloak ready', keycloakReady);

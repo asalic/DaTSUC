@@ -3,8 +3,6 @@ import { PencilFill } from 'react-bootstrap-icons';
 import React, { ReactNode, useState, useEffect } from "react";
 import { useKeycloak } from '@react-keycloak/web';
 
-import Footer from "./fieldedit/Footer";
-import Body from "./fieldedit/Body";
 import BodyPid from "./fieldedit/BodyPid";
 import BodyId from "./fieldedit/BodyId";
 import BodyLicense from "./fieldedit/BodyLicense";
@@ -19,6 +17,8 @@ import SingleDataFactory from "../../../../../api/SingleDataFactory";
 import BodyEnumSelect from "./fieldedit/BodyEnumSelect";
 import SingleDataTypeApiType from "../../../../../model/SingleDataTypeApiType";
 import CollectionMethodType from "../../../../../model/CollectionMethodType";
+import Body from "../../../../common/fieldedit/Body";
+import Footer from "../../../../common/fieldedit/Footer";
 // import PatchMessage from "../../../../common/PatchMessage";
 
 function transformValue(field: string, value: any) {
@@ -124,7 +124,7 @@ function DatasetFieldEdit(props: DatasetFieldEditProps): JSX.Element {
           </>;
         props.showDialog({
           show: true,
-          footer: <Footer updValue={updValue} patchDataset={patchDataset} oldValue={props.oldValue} />,
+          footer: <Footer updValue={updValue} patch={patchDataset} oldValue={props.oldValue} />,
           body: bodyFull,
           title: <span>Edit <b>{props.fieldDisplay}</b></span>,
           size: DialogSize.SIZE_LG,

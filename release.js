@@ -22,7 +22,7 @@ const release = process.argv[2];
 const token = process.argv[3];
 const meth = process.argv[4];
 const selectedIp = process.argv[5];
-const dsServer =  require(`./config-${release}.json`).datasetService;
+const dsServer =  require(`./config-${release}.json`).datasetService.api;
 let server = null;
 let ip = null;
 if (meth === "server") {

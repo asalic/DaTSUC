@@ -115,8 +115,8 @@ function DetailsView<T extends SingleData>(props: DetailsViewProps<T>) {
               </p>
               <p>
                 {
-                  dataset.license === null || dataset.license.title === null || dataset.license.title.length === 0
-                    || dataset.license.url === null || dataset.license.url.length === 0 ?
+                  dataset.license === null || dataset.license.title?.length === 0
+                    || dataset.license.url?.length === 0 ?
                     (
                       dataset.editablePropertiesByTheUser.includes("license")  ?
                         <i>Add a license </i> : <i>The dataset license has yet to be set.</i>
