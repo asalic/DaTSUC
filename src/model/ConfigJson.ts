@@ -22,6 +22,10 @@ interface DatasetService {
     projectLogo: string;
 }
 
+interface ExternalLinks {
+    supportReportRequest: string;
+}
+
 export default interface ConfigJson {
 
     appVersion: string;
@@ -35,6 +39,7 @@ export default interface ConfigJson {
     userAccountUrl: string;
     refreshDatasetCreate: number;
     keycloak: KeycloakOpts;
+    externalLinks: ExternalLinks;
     externalServices?: ExternalService[];
     appsDashboard: string;
 

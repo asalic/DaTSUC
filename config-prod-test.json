@@ -33,6 +33,9 @@
     "privacyPolicy": "https://chaimeleon-test.grycap.i3m.upv.es/dataset-service/web/privacy-policy.pdf",
     "favicon": "/chaimeleon-logo.svg"
   },
+  "externalLinks": {
+    "supportReportRequest": "https://github.com/chaimeleon-eu/CHAIMELEON-Platform/issues"
+  },
   "externalServices": [
     {
       "name": "App Dashboard",

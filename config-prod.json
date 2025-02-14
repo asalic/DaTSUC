@@ -26,6 +26,9 @@
       "onLoad": "check-sso"
       }
   },
+  "externalLinks": {
+    "supportReportRequest": "https://github.com/chaimeleon-eu/CHAIMELEON-Platform/issues"
+  },
   "project": {
     "name": "CHAIMELEON",
     "doi": "10.3030/952172",

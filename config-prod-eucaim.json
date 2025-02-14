@@ -33,6 +33,9 @@
       "privacyPolicy": "https://dashboard.eucaim.cancerimage.eu/privacy-policy",
       "favicon": "/eucaim-logo.jpg"
     },
+    "externalLinks": {
+      "supportReportRequest": "https://github.com/EUCAIM/UPV-node/issues"
+    },
     "externalServices": [
       {
         "name": "App Dashboard",
