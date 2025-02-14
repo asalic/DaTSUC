@@ -31,7 +31,8 @@
       "doi": null,
       "termsConditions": "https://dashboard.eucaim.cancerimage.eu/eucaim_usage_policy.pdf",
       "privacyPolicy": "https://dashboard.eucaim.cancerimage.eu/privacy-policy",
-      "favicon": "/eucaim-logo.jpg"
+      "favicon": "/eucaim-logo.jpg",
+      "sla": "https://eucaim-node.i3m.upv.es/dataset-service/web/sla.pdf"
     },
     "externalLinks": {
       "supportReportRequest": "https://github.com/EUCAIM/UPV-node/issues"

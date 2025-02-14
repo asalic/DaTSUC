@@ -32,6 +32,7 @@ interface Project {
     termsConditions?: string;
     privacyPolicy?: string;
     favicon: string;
+    sla?: string;
 }
 
 export default interface ConfigJson {

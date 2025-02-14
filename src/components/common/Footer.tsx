@@ -8,7 +8,7 @@ function Footer() {
             <span className="ms-2 me-2"><img src={process.env["PUBLIC_URL"] + "/icons/eu.svg"} 
                 style={{height:"0.75em"}}/><b className="ms-2">{config.project.name} Project</b>
                 {
-                    config?.project?.doi ?
+                    config?.project.doi ?
                         <>, DOI <a href={`https://doi.org/${config.project.doi}`}>{config.project.doi}</a></>
                         : <></>
                 }
@@ -16,13 +16,18 @@ function Footer() {
             <span className="ms-2 me-2">Copyright© <a href="https://www.upv.es/en">UPV</a> 2020-2025 
             
                 {
-                    config?.project?.termsConditions ?
+                    config?.project.termsConditions ?
                         <> | <a href={config.project.termsConditions} target="_blank" >Terms & Conditions</a></>
                         : <></>
                 }
                 {
-                    config?.project?.privacyPolicy ?
+                    config?.project.privacyPolicy ?
                         <> | <a href={config.project.privacyPolicy} target="_blank">Privacy Policy</a></>
+                        : <></>
+                }
+                {
+                    config?.project.sla ?
+                        <> | <a href={config.project.sla} target="_blank">SLA</a></>
                         : <></>
                 }
             </span>

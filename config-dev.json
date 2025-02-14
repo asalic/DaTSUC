@@ -31,7 +31,8 @@
     "doi": "10.3030/952172",
     "termsConditions": "/terms-and-conditions.pdf",
     "privacyPolicy": "/privacy-policy.pdf",
-    "favicon": "/chaimeleon-logo.svg"
+    "favicon": "/chaimeleon-logo.svg",
+    "sla": "/sla.pdf"
   },
   "externalLinks": {
     "supportReportRequest": "https://github.com/chaimeleon-eu/CHAIMELEON-Platform/issues"
