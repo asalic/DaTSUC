@@ -35,7 +35,8 @@
       "sla": "https://eucaim-node.i3m.upv.es/dataset-service/web/sla.pdf"
     },
     "externalLinks": {
-      "supportReportRequest": "https://github.com/EUCAIM/UPV-node/issues"
+        "supportReportRequest": "https://github.com/EUCAIM/UPV-node/issues",
+        "applicationCatalogue": "https://github.com/EUCAIM/upv-node-application-catalogue/blob/main/README.md"
     },
     "externalServices": [
       {

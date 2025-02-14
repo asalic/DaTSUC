@@ -43,10 +43,19 @@ function NavbarView() {
             <Nav.Link title="List of models" href={config.basename + "/models"}>Models</Nav.Link>
             <Nav.Link title="List of projects" href={config.basename + "/projects"}>Projects</Nav.Link>
             <NavDropdown title="Documentation" id="documentation-dropdown">
+                {
+                    config.externalLinks.applicationCatalogue 
+                        ?  <NavDropdown.Item key="Dataset_Usage_Guide" title="Dataset Usage Guide" 
+                                href={config.externalLinks.applicationCatalogue} 
+                                target="_blank">
+                                    Application Catalogue
+                            </NavDropdown.Item>
+                        : <></>
+                }
               <NavDropdown.Item key="Dataset_Usage_Guide" title="Dataset Usage Guide" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/ubuntu-python/rootfs/home/chaimeleon/application-examples/dataset-access-guide.ipynb" target="_blank">Dataset Usage</NavDropdown.Item>
               <NavDropdown.Item key="Workstation_Usage_Guide" title="Workstation Usage Guide" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/usage-guide.md" target="_blank">Workstation Usage</NavDropdown.Item>
               <NavDropdown title="Developer" id="developer-dropdown" drop="end" className="w-100 ps-2">
-                <NavDropdown.Item key="How to integrate your application in CHAIMELEON platform" title="How to integrate your application in CHAIMELEON platform" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/README.md#how-to-integrate-your-application-in-chaimeleon-platform" target="_blank">App Integration</NavDropdown.Item>
+                <NavDropdown.Item key="How to integrate your application on the platform" title="How to integrate your application on the platform" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/README.md#how-to-integrate-your-application-in-chaimeleon-platform" target="_blank">App Integration</NavDropdown.Item>
                 <NavDropdown.Item key="Dataset Service API Specs" title="Dataset Service API Specs" href="https://github.com/chaimeleon-eu/dataset-service#api-usage" target="_blank">API Specs</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown.Divider />

@@ -27,7 +27,8 @@
       }
   },
   "externalLinks": {
-    "supportReportRequest": "https://github.com/chaimeleon-eu/CHAIMELEON-Platform/issues"
+    "supportReportRequest": "https://github.com/chaimeleon-eu/CHAIMELEON-Platform/issues",
+    "applicationCatalogue": "https://github.com/chaimeleon-eu/application-catalogue/blob/main/README.md"
   },
   "project": {
     "name": "CHAIMELEON",

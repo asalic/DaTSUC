@@ -24,6 +24,7 @@ interface DatasetService {
 
 interface ExternalLinks {
     supportReportRequest: string;
+    applicationCatalogue?: string;
 }
 
 interface Project {
