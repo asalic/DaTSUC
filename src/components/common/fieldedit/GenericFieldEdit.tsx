@@ -11,7 +11,7 @@ import DialogSize from "../../../model/DialogSize";
 import bodyFactory from "./bodyFactory";
 import BodyFactorySpecType from "../../../model/BodyFactorySpecType";
 
-interface GenericFieldEditProps<M> {
+interface GenericFieldEditProps {
   oldValue: any;
   field: string;
   keycloakReady: boolean;
@@ -20,12 +20,12 @@ interface GenericFieldEditProps<M> {
   patchMutation: any;
   patchExternalFields?: object;
   spec: BodyFactorySpecType;
-  additionalBodyProps?: M;
+  additionalBodyProps?: any;
   children?: React.ReactNode;
 }
 
 
-function GenericFieldEdit<M>(props: GenericFieldEditProps<M>): JSX.Element {
+function GenericFieldEdit(props: GenericFieldEditProps): JSX.Element {
   const [patchSingleData, {isError: isPatchError, isLoading: isPatchLoading, error: patchError } ] 
     = props.patchMutation();
   let [value, setValue] = useState<any>(props.oldValue);
@@ -51,13 +51,14 @@ function GenericFieldEdit<M>(props: GenericFieldEditProps<M>): JSX.Element {
           ...(props.patchExternalFields) && {...props.patchExternalFields}
           //singleDataType: props.singleDataType
         });
+        setIsPatchValue(false);
       //props.patchDataset(keycloak.token, props.datasetId, props.field, sVal);
      
     }
   }, [isPatchValue, setIsPatchValue, patchSingleData, value, keycloak, props]);
 
   useEffect(() => {
-    if (isPatchValue) {
+    // if (isPatchValue) {
       // if (!isPatchLoading && !isPatchError) {        
       //   Dialog.HANDLE_CLOSE();
       // }
@@ -73,7 +74,7 @@ function GenericFieldEdit<M>(props: GenericFieldEditProps<M>): JSX.Element {
         Dialog.BODY_MESSAGE(new Message(Message.INFO, "Updating, please wait..."));
       }
       
-    }
+    //}
   }, [isPatchError, isPatchLoading, patchError, Dialog.HANDLE_CLOSE]);
   // console.log(patchStatus);
   // const patchDatasetCb = (newData) => setData( prevValues => {
@@ -86,7 +87,7 @@ function GenericFieldEdit<M>(props: GenericFieldEditProps<M>): JSX.Element {
         props.showDialog({
           show: true,
           footer: <Footer updValue={updValue} patch={patchDataset} oldValue={props.oldValue} />,
-          body: bodyFactory<M>(props.spec, props.field, updValue, 
+          body: bodyFactory(props.spec, props.field, updValue, 
             props.oldValue, props.keycloakReady, props.additionalBodyProps),
           title: <span>Edit <b>{props.fieldDisplay}</b></span>,
           size: DialogSize.SIZE_LG,

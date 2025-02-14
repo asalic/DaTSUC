@@ -8,15 +8,12 @@ import ErrorView from "../../../../../common/ErrorView";
 import LoadingView from "../../../../../common/LoadingView";
 import { useGetLicensesQuery } from "../../../../../../service/singledata-api";
 import { useState } from "react";
-import SingleDataType from "../../../../../../model/SingleDataType";
 // import PatchMessage from "../../../../../common/PatchMessage";
 
 interface BodyLicenseProps {
   keycloakReady: boolean;
-  singleDataId: string;
   oldValue: License;
   updValue: Function;
-  singleDataType: SingleDataType;
   //patchStatus:any;
 
 }
@@ -47,7 +44,7 @@ function BodyLicense(props: BodyLicenseProps) {
       if (licenses && isCustom()) {
         setCustomValue(value);
       }
-    }, [licenses, isCustom, setCustomValue])
+    }, [value, licenses, isCustom, setCustomValue])
 
     const updValue = (newVal: License) => {
       setValue((prev: License) => {

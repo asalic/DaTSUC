@@ -18,11 +18,11 @@ export default class SingleDataFactory {
         }
     }
 
-    public static getTypeName(singleDataType: SingleDataType): string {
+    public static getTypeName(singleDataType: SingleDataType): string | null {
       switch (singleDataType) {
         case SingleDataType.DATASET: return "dataset";
         case SingleDataType.MODEL: return "model";
-        default: throw new Error(`Unhandled type with code '${singleDataType}'`);
+        default: return null;
       }
     }
 }

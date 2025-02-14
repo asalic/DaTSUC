@@ -5,8 +5,8 @@ import Select, { ActionMeta, Props, GroupBase, SingleValue } from 'react-select'
 import UpgradableDataset from "../../../../../../model/UpgradableDataset";
 import { useGetUpgradableDatasetsQuery } from "../../../../../../service/singledata-api";
 import ErrorView from "../../../../../common/ErrorView";
-import SingleDataType from "../../../../../../model/SingleDataType";
 import SingleDataFactory from "../../../../../../api/SingleDataFactory";
+import ProgrammaticError from "../../../../../common/ProgrammaticError";
 
 interface SelOpt {
     value: string;
@@ -42,7 +42,8 @@ interface BodyIdProps {
     updValue: Function;
     keycloakReady: boolean;
     oldValue: string | null;
-    singleDataType: SingleDataType;
+    // singleDataType: SingleDataType;
+    additionalProps?: any;//BodyIdAdditionalProps;
 }
 
 function BodyId(props: BodyIdProps) {
@@ -61,7 +62,6 @@ function BodyId(props: BodyIdProps) {
     const { data, isLoading, error, isError } = useGetUpgradableDatasetsQuery({token: keycloak.token});
 
     const updSelectedOption = useCallback((newVal: SingleValue<SelOpt>, action?:  ActionMeta<SelOpt> | null) => {
-        console.log(action);
         if (action && action.action === "clear") {
             props.updValue(null);
         } else {
@@ -85,7 +85,7 @@ function BodyId(props: BodyIdProps) {
             // setOldValue(JSON.stringify(ov));
         }
         
-    }, [data, isError, error]);
+    }, [data, isError, error, props.oldValue]);
 
     // useEffect(() => {
     //     if (props.keycloakReady && keycloak.authenticated) { 
@@ -111,7 +111,10 @@ function BodyId(props: BodyIdProps) {
     //     }
 
     // }, [props.keycloakReady, keycloak.authenticated]);
-    if (isError) {
+    const singleDataType: string | null = SingleDataFactory.getTypeName(props.additionalProps?.singleDataType ?? "");
+    if (singleDataType === null) {
+        return <ProgrammaticError msg="Single data type not defined, please contact the developers" />;
+    } else if (isError) {
         return <ErrorView message={`Error loading upgradable datasets: ${error.message ?? ""}`} />
     } else if (isLoading) {
         return <Placeholder className="mb-3" as="div" animation="glow">
@@ -129,7 +132,7 @@ function BodyId(props: BodyIdProps) {
                             Restore original</Button> : <Fragment />
                 }<br /> */}
                 <p  className="mt-4">
-                    Available {SingleDataFactory.getTypeName(props.singleDataType)}s list (<b>name (version) (ID)</b>)
+                    Available {SingleDataFactory.getTypeName(props.additionalProps.singleDataType)}s list (<b>name (version) (ID)</b>)
                     <CustomSelect
                     isClearable
                         isSearchable

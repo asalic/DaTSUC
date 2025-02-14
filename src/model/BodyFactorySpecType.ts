@@ -1,6 +1,8 @@
 
 enum BodyFactorySpecType {
     SINGLEDATA,
+    DATASET,
+    MODEL,
     PROJECT
 }
 

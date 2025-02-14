@@ -1,11 +1,14 @@
 import RouteFactory from "../../../../../api/RouteFactory";
 import SingleDataType from "../../../../../model/SingleDataType";
 import React, { Fragment } from "react";
-import DatasetFieldEdit from "../common/DatasetFieldEdit";
+// import DatasetFieldEdit from "../common/DatasetFieldEdit";
 import SingleData from "../../../../../model/SingleData";
 import SingleDataTypeApiType from "../../../../../model/SingleDataTypeApiType";
 import { Badge } from "react-bootstrap";
 import CollectionMethodType from "../../../../../model/CollectionMethodType";
+import GenericFieldEdit from "../../../../common/fieldedit/GenericFieldEdit";
+import { usePatchSingleDataMutation } from "../../../../../service/singledata-api";
+import BodyFactorySpecType from "../../../../../model/BodyFactorySpecType";
 
 
 const PREVIOUS_ID = "Previous version";
@@ -20,9 +23,22 @@ function getIdEdit(singleDataId: string, singleDataType: SingleDataType,
     text: string, ds: SingleData | undefined, showDialog?: Function, keycloakReady?: boolean) {
   if (text === PREVIOUS_ID && ds && ds.editablePropertiesByTheUser.includes("previousId") 
       && showDialog && keycloakReady) {
-    return <DatasetFieldEdit singleDataId={singleDataId} singleDataType={singleDataType} 
-      showDialog={showDialog} field="previousId" fieldDisplay="previous version"
-      oldValue={ds.previousId} keycloakReady={keycloakReady}/>;
+    return <GenericFieldEdit 
+        oldValue={ds.previousId} field="previousId" 
+        keycloakReady={keycloakReady} 
+        fieldDisplay="previous version"
+        showDialog={showDialog}
+        patchMutation={usePatchSingleDataMutation}
+        patchExternalFields={{
+            id: singleDataId,
+            singleDataType
+        }}
+        spec={BodyFactorySpecType.SINGLEDATA}
+        additionalBodyProps={
+            {
+                singleDataType
+            }
+        }/>;
   } else if (text === NEXT_ID){
     return <Fragment />;
   } else {
@@ -120,9 +136,18 @@ function DetailsBox<T extends SingleData>({data, singleDataType, singleDataId, k
           data.seriesTags.map(t => <Badge pill key={t} bg="light" text="dark" className="ms-1 me-1">{t}</Badge>) : "-"}</span></p>
         <p title={`The type of the dataset (any of the following values: ${Object.values(SingleDataTypeApiType).join(", ")})`}><b>Type</b>
           {
-            data.editablePropertiesByTheUser.includes("type") ? <DatasetFieldEdit singleDataId={singleDataId} singleDataType={singleDataType} 
-                showDialog={showDialog} field="typeApi" fieldDisplay="type"
-                oldValue={data.typeApi} keycloakReady={keycloakReady}/>
+            data.editablePropertiesByTheUser.includes("type") 
+                ? <GenericFieldEdit 
+                    oldValue={data.typeApi} field="typeApi" 
+                    keycloakReady={keycloakReady} 
+                    fieldDisplay="type"
+                    showDialog={showDialog}
+                    patchMutation={usePatchSingleDataMutation}
+                    patchExternalFields={{
+                        id: data.id,
+                        singleDataType
+                    }}
+                    spec={BodyFactorySpecType.SINGLEDATA}/>
             : <></>
           }
           <br />
@@ -131,9 +156,18 @@ function DetailsBox<T extends SingleData>({data, singleDataType, singleDataId, k
         <p title={`The collection method used to gather the data for the dataset (any of the following values: ${Object.values(CollectionMethodType).join(", ")})`}>
           <b>Collection method</b>
           {
-            data.editablePropertiesByTheUser.includes("collectionMethod") ? <DatasetFieldEdit singleDataId={singleDataId} singleDataType={singleDataType} 
-                showDialog={showDialog} field="collectionMethod" fieldDisplay="collection method"
-                oldValue={data.collectionMethod} keycloakReady={keycloakReady}/>
+            data.editablePropertiesByTheUser.includes("collectionMethod") 
+                ? <GenericFieldEdit 
+                    oldValue={data.collectionMethod} field="collectionMethod" 
+                    keycloakReady={keycloakReady} 
+                    fieldDisplay="collection method"
+                    showDialog={showDialog}
+                    patchMutation={usePatchSingleDataMutation}
+                    patchExternalFields={{
+                        id: data.id,
+                        singleDataType
+                    }}
+                    spec={BodyFactorySpecType.SINGLEDATA}/>
             : <></>
           }
           <br />
