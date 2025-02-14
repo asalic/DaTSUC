@@ -13,7 +13,7 @@ function Footer() {
                         : <></>
                 }
             </span>
-            <span className="ms-2 me-2">Copyright© <a href="https://www.upv.es/en">UPV</a> 2020-2024 
+            <span className="ms-2 me-2">Copyright© <a href="https://www.upv.es/en">UPV</a> 2020-2025 
             
                 {
                     Config?.project?.termsConditions ?

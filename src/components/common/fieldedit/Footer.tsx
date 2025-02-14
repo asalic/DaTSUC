@@ -1,12 +1,12 @@
 import { Button} from "react-bootstrap";
 import React from "react";
 
-import Dialog from "../../../../../common/Dialog";
+import Dialog from "../Dialog";
 
 interface FooterProps {
   updValue: Function,
   oldValue: any;
-  patchDataset: Function;
+  patch: Function;
 }
 
 function Footer(props: FooterProps) {
@@ -15,7 +15,7 @@ function Footer(props: FooterProps) {
       <Button title="Discard changes and close dialog" className="float-end m-1" 
         onClick={() => {props.updValue(props.oldValue);Dialog.HANDLE_CLOSE();}}>Cancel</Button>
       <Button title="Update field and close dialog" className="float-end m-1" onClick={() => {
-         props.patchDataset();
+         props.patch();
       }}>Update</Button>
     </div>
   }

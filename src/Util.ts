@@ -27,6 +27,12 @@ export default class Util {
       return new Error(error.message, { cause: error });
     } else if (error.data) {
       return new Error(String(error.data), { cause: error });
+    } else if ("error" in error) {
+        if ("error" in error.error) {
+            return new Error(String(error.error.error), { cause: error });
+        } else {
+            return new Error(String(error.error), { cause: error });
+        }
     } else {
       return new Error("An unknown error has occured", { cause: error })
     }

@@ -1,7 +1,10 @@
 {
   "appVersion": "<replace_me>",
   "release": "prod-test",
-  "datasetService": "https://chaimeleon-test.grycap.i3m.upv.es/dataset-service/api",
+  "datasetService": {
+    "api": "https://chaimeleon-test.grycap.i3m.upv.es/dataset-service/api",
+    "projectLogo": "https://chaimeleon-test.grycap.i3m.upv.es/dataset-service"
+  },
   "tracerService": "https://chaimeleon-test.grycap.i3m.upv.es/tracer-service/tracer/api/v1",
   "appsDashboard": "https://chaimeleon-eu.i3m.upv.es/apps",
   "basename": "/dataset-service",

@@ -17,11 +17,16 @@ interface KeycloakOpts {
     initOptions: KeycloakConfigOptions;
 }
 
+interface DatasetService {
+    api:  string;
+    projectLogo: string;
+}
+
 export default interface ConfigJson {
 
     appVersion: string;
     release: string;
-    datasetService: string | null | undefined;
+    datasetService: DatasetService;
     tracerService: string | null | undefined;
     basename: string;
     defaultLimitDatasets: number;

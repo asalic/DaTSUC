@@ -255,7 +255,8 @@ interface MoreLinkProps {
 function MoreLink({row, singleDataType}: MoreLinkProps): JSX.Element {
   return  (
     <div>
-      <Link className="btn btn-link" to={UrlFactory.singleDataDetails(row.original["id"], singleDataType)}>More</Link>
+      <Link className="btn btn-link" 
+        to={UrlFactory.singleDataDetails(row.original["id"], singleDataType)}>More</Link>
     </div>
   );
 }

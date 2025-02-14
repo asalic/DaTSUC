@@ -131,4 +131,4 @@ function _call(method: string, path: string,
     });
   }
   
-  export const BASE_URL_API: string = Config.datasetService;
+  export const BASE_URL_API: string = Config.datasetService.api;

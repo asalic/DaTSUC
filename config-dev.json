@@ -1,7 +1,10 @@
 {
   "appVersion": "dev10000000000",
   "release": "dev",
-  "datasetService": "http://asaserver.i3m.upv.es:8000/api/v1",
+  "datasetService": {
+    "api": "http://asaserver.i3m.upv.es:8000/api/v1",
+    "projectLogo": "http://asaserver.i3m.upv.es:8000/api/v1"
+  },
   "tracerService": "http://asaserver.i3m.upv.es:8000/api/v1/tracer-service",
   "appsDashboard": "",
   "basename": "",
