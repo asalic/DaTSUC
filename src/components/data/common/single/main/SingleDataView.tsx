@@ -13,7 +13,7 @@ import SingleDataType from "../../../../../model/SingleDataType";
 import { useDeleteSingleDataCreatingMutation, useGetSingleDataQuery, usePostSingleDataCheckIntegrityMutation } from "../../../../../service/singledata-api";
 import Util from "../../../../../Util";
 import CheckIntegrity from "../../../../../model/CheckIntegrity";
-import Config from "../../../../../config.json";
+import config from "../../../../../service/config";
 import DelCancelSingleDataMsg from "../../../../common/DelCancelSingleDataMsg";
 
 
@@ -125,7 +125,7 @@ function SingleDataView<T extends SingleData>(props: SingleDataViewProps<T>): JS
 
   useEffect(() => {
     if (deleteIsLoading === false && (deleteError === undefined || deleteError === null) && deleteData) {
-      navigate("/" + Config.basename);
+      navigate("/" + config.basename);
     } 
   }, [deleteIsLoading, deleteError, deleteData ])
 

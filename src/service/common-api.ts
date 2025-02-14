@@ -1,6 +1,6 @@
 import QueryParamsType from "../model/QueryParamsType";
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import Config from "../config.json";
+import config from "../service/config";
 import Util from "../Util";
 
 
@@ -131,4 +131,4 @@ function _call(method: string, path: string,
     });
   }
   
-  export const BASE_URL_API: string = Config.datasetService.api;
+  export const BASE_URL_API: string = config.datasetService.api;

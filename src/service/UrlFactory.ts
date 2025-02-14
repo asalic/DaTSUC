@@ -1,6 +1,6 @@
 import SingleDataType from "../model/SingleDataType";
 import Util from "../Util";
-import Config from "../config.json";
+import config from "../service/config";
 
 /**
  * TO BE USED WITH THE REACT ROUTER (navigate, Link etc.)
@@ -8,7 +8,7 @@ import Config from "../config.json";
  */
 export default class UrlFactory {
 
-    static baseName = Config.basename.endsWith("/") ? Config.basename : Config.basename +  "/";
+    static baseName = config.basename.endsWith("/") ? config.basename : config.basename +  "/";
     static base = `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ""}${UrlFactory.baseName}`;
 
     public static singleDataDetails(id: string, singleDataType: SingleDataType): string {
@@ -32,7 +32,7 @@ export default class UrlFactory {
     }
 
     public static projectLogoFullUrl(logoUrl: string): string {
-        return `${Config.datasetService.projectLogo}${logoUrl}`;
+        return `${config.datasetService.projectLogo}${logoUrl}`;
         // const url: URL | null = URL.parse(Config.datasetService.api);
         // if (url) {
         //     return `${url.protocol}//${url.hostname}${url.port ? `:${url.port}` : ""}${Config.basename}${logoUrl}`

@@ -10,7 +10,7 @@ import MessageView from "./components/common/MessageView";
 import Dialog from "./components/common/Dialog";
 import NavbarView from "./components/common/NavbarView";
 import Footer from "./components/common/Footer";
-import Config from "./config.json";
+import config from "./service/config";
 import FairView from "./components/FairView";
 import SupportView from "./components/SupportView"; 
 import Message from "./model/Message";
@@ -93,7 +93,7 @@ function App({keycloakReady}: AppProps) {
             <div className="flex-grow-1 align-items-stretch ms-3 me-3">
 
               <br />
-              <BrowserRouter basename={Config.basename}>
+              <BrowserRouter basename={config.basename}>
                 <Routes>
                     <Route path="/" element={<Navigate to="/datasets" replace />} />
                     <Route path="/fair" element={<FairView />} />

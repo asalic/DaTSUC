@@ -7,7 +7,7 @@ import SingleData from "../../../../../model/SingleData";
 import { api, useGetDatasetCreationStatusQuery } from "../../../../../service/singledata-api";
 import UrlFactory from "../../../../../service/UrlFactory";
 import SingleDataType from "../../../../../model/SingleDataType";
-import Config from "../../../../../config.json";
+import config from "../../../../../service/config";
 
 // const MSG_INVALIDATED = 1;
 // const MSG_NEXT_ID = 2;
@@ -21,7 +21,7 @@ interface MessageBox<T extends SingleData> {
 function MessageBox<T extends SingleData>({keycloakReady, dataset}: MessageBox<T>) {
     //const [msgs, setMsgs] = useState<object>({});
     const dispatch = useAppDispatch();
-    const [pollingInterval, setPollingInterval] = useState(Config.refreshDatasetCreate); 
+    const [pollingInterval, setPollingInterval] = useState(config.refreshDatasetCreate); 
     const { keycloak } = useKeycloak();
 
     const { data, isLoading, error, isError } = useGetDatasetCreationStatusQuery({
@@ -64,7 +64,7 @@ function MessageBox<T extends SingleData>({keycloakReady, dataset}: MessageBox<T
             // )
             dispatch( api.util.invalidateTags(["Dataset", {type: "Dataset", id: dataset.id}]) );
         } else {
-            setPollingInterval(Config.refreshDatasetCreate);
+            setPollingInterval(config.refreshDatasetCreate);
         }
      }, [setPollingInterval, cancelPolling]);
     // const getCreationStatus = useCallback(() => {

@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import AppKeycloak from './AppKeycloak';
 import reportWebVitals from './reportWebVitals';
-import Config from "./config.json";
+import config from "./service/config";
 import {store} from "./store";
 
 //const Loading = () => <div>Loading, please wait...</div>
@@ -19,9 +19,9 @@ function favicon(rel: string, iconPath: string): void {
       link.href = process.env["PUBLIC_URL"] + iconPath;
       document?.getElementsByTagName('head')[0]?.appendChild(link);
 }
-if (Config.project?.favicon) {
-      favicon("icon", Config.project.favicon);
-      favicon("apple-touch-icon", Config.project.favicon);
+if (config.project?.favicon) {
+      favicon("icon", config.project.favicon);
+      favicon("apple-touch-icon", config.project.favicon);
 }
 
 const domNode: HTMLElement | null = document.getElementById('root');

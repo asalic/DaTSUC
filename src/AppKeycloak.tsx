@@ -5,7 +5,7 @@ import type {
 } from '@react-keycloak/core'
 import keycloakConfig from './keycloak';
 import  React, { useState, useCallback } from "react";
-import Config from "./config.json";
+import config from "./service/config";
 
 import App from "./App";
 
@@ -33,7 +33,7 @@ function AppKeycloak() {
 
     return (
         <ReactKeycloakProvider authClient={keycloakConfig}
-          initOptions={Config.keycloak.initOptions}
+          initOptions={config.keycloak.initOptions}
           onEvent={onEvent}
           onTokens={tokenLogger}
           // initOptions={{

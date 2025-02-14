@@ -1,7 +1,7 @@
 import Keycloak from 'keycloak-js';
-import Config from "./config.json";
+import config from "./service/config";
 
-const keycloak = new Keycloak(Config.keycloak.config);
+const keycloak = new Keycloak(config.keycloak.config);
 
 //keycloak.init(Config.keycloak.initOptions);
 

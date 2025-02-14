@@ -3,14 +3,12 @@ import React, { useMemo, useId }from "react";
 import { GridFill } from 'react-bootstrap-icons';
 
 import UserInfo from "./UserInfo";
-import Config from "../../config.json";
+import config from "../../service/config";
 import Util from "../../Util";
-import ConfigJson from "../../model/ConfigJson";
 
-const conf: ConfigJson = Config;
 
 function getReleaseConf() {
-  const release = Util.getReleaseType(Config);
+  const release = Util.getReleaseType(config);
   switch (release) {
     case Util.RELEASE_DEV: return {t: "Development", bg: "bg-dark", tc: "text-white"};
     case Util.RELEASE_PROD_TEST: 
@@ -32,18 +30,18 @@ function NavbarView() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id={nbCollapseId}>
           <Nav className="me-auto">
-            <Navbar.Brand className={`p-1 ${rc.bg} ${rc.tc}`} href={Config.basename + "/"}>
+            <Navbar.Brand className={`p-1 ${rc.bg} ${rc.tc}`} href={config.basename + "/"}>
               <div className="d-flex flex-row">
                 <b className="fs-4">Dataset Explorer</b>
                 <div className="d-flex flex-column ms-2">
                   <Badge style={{"fontSize": "50%"}} className={`p-1 ${rc.bg} ${rc.tc}`}>{rc.t}</Badge>
-                  <span className="app-version ms-1">{Config.appVersion}</span>
+                  <span className="app-version ms-1">{config.appVersion}</span>
                 </div>
                 </div>
             </Navbar.Brand>
-            <Nav.Link title="List of datasets" href={Config.basename + "/datasets"}>Datasets</Nav.Link>
-            <Nav.Link title="List of models" href={Config.basename + "/models"}>Models</Nav.Link>
-            <Nav.Link title="List of projects" href={Config.basename + "/projects"}>Projects</Nav.Link>
+            <Nav.Link title="List of datasets" href={config.basename + "/datasets"}>Datasets</Nav.Link>
+            <Nav.Link title="List of models" href={config.basename + "/models"}>Models</Nav.Link>
+            <Nav.Link title="List of projects" href={config.basename + "/projects"}>Projects</Nav.Link>
             <NavDropdown title="Documentation" id="documentation-dropdown">
               <NavDropdown.Item key="Dataset_Usage_Guide" title="Dataset Usage Guide" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/ubuntu-python/rootfs/home/chaimeleon/application-examples/dataset-access-guide.ipynb" target="_blank">Dataset Usage</NavDropdown.Item>
               <NavDropdown.Item key="Workstation_Usage_Guide" title="Workstation Usage Guide" href="https://github.com/chaimeleon-eu/workstation-images/blob/main/usage-guide.md" target="_blank">Workstation Usage</NavDropdown.Item>
@@ -52,9 +50,9 @@ function NavbarView() {
                 <NavDropdown.Item key="Dataset Service API Specs" title="Dataset Service API Specs" href="https://github.com/chaimeleon-eu/dataset-service#api-usage" target="_blank">API Specs</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown.Divider />
-              <NavDropdown.Item key="Fair Principles"  title="Fair Principles" href={Config.basename + "/fair"}>Fair Principles</NavDropdown.Item>
+              <NavDropdown.Item key="Fair Principles"  title="Fair Principles" href={config.basename + "/fair"}>Fair Principles</NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link target="_blank" title="Support" href={Config.basename + "/support"}>Support</Nav.Link>
+            <Nav.Link target="_blank" title="Support" href={config.basename + "/support"}>Support</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         {/* keycloak.authenticated ? <Button className="me-1" variant="warning" onClick={() => window.open("https://forms.gle/bDmJC3cHog2CixMB8", '_blank').focus()}>Internal Validation</Button> : <Fragment/> */}
@@ -64,7 +62,7 @@ function NavbarView() {
           </Dropdown.Toggle>
           <Dropdown.Menu>
             {
-              conf.externalServices?.map(e => {
+              config.externalServices?.map(e => {
                 return <Dropdown.Item key={e.title} title={e.title} onClick={() => window?.open(e.link, '_blank')?.focus()}>
                 <img className="apps-logo me-2" src={process.env["PUBLIC_URL"] + e.icon}/>{e.name}
               </Dropdown.Item>

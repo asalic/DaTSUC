@@ -6,7 +6,7 @@ import { useSearchParams } from "react-router-dom";
 //import Message from "../../../../model/Message";
 import SearchComponent from  "../../../common/SearchComponent";
 import MainTable from "./MainTable";
-import Config from "../../../../config.json";
+import config from "../../../../service/config";
 import FilteringView from '../../../data/common/main/filter/FilteringView';
 import PaginationFooter from '../../../common/PaginationFooter';
 //import type LoadingData from '../../../../model/LoadingData';
@@ -68,7 +68,7 @@ function MainView(props: MainViewProps) {
   const sortBy: string = searchParams.get("sortBy") ?? "creationDate";
   const sortDirection: string = getSortDirectionDesc(searchParams.get("sortDirection"), searchParams.get("sortBy") ?? "creationDate");
   const skip: number = searchParams.get("skip") ? Number(searchParams.get("skip")) : 0;
-  const limit: number = searchParams.get("limit") ? Number(searchParams.get("limit")) : Config.defaultLimitDatasets;
+  const limit: number = searchParams.get("limit") ? Number(searchParams.get("limit")) : config.defaultLimitDatasets;
   
   const onSkipChange = useCallback((skip: number) => {
     updSearchParams({skip: skip === 0 ? null : skip});

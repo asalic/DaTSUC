@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 
 import DataFilterView from "./DataFilterView";
-import Config from "../../../../../config.json";
+import config from "../../../../../service/config";
 import LoadingData from "../../../../../model/LoadingData";
 import DataManager from "../../../../../api/DataManager";
 import Util from "../../../../../Util";
@@ -102,7 +102,7 @@ function HistoryView(props: HistoryViewProps) {
   const updSearchParams = useCallback((params: Object) => Util.updSearchParams(params, searchParams, setSearchParams), 
     [searchParams, setSearchParams]);
   const skip = searchParams.get("skip") ? Number(searchParams.get("skip")) : 0;
-  const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : Config.defaultLimitTraces;
+  const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : config.defaultLimitTraces;
   const onSkipChange = useCallback((skip: number) => {
     updSearchParams({skip: skip === 0 ? null : skip});
   }, [skip, limit, updSearchParams, searchParams, setSearchParams]);

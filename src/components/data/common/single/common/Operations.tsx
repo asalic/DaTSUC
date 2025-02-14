@@ -1,6 +1,6 @@
 import React from "react";
 import Util from "../../../../../Util";
-import Config from "../../../../../config.json";
+import config from "../../../../../service/config";
 import DialogSettings from "../../../../../model/DialogSettings";
 import DialogSize from "../../../../../model/DialogSize";
 
@@ -8,11 +8,11 @@ const KUBE_APPS_CLUSTER = "default";
 
 
 function showDialogAppDashhboard(datasetId: string, showDialog: Function, onBeforeClose: Function, uNameKeycloak: string | null | undefined): void {
-  let kubeAppsUrl = Config.appsDashboard;
+  let kubeAppsUrl = config.appsDashboard;
   if (uNameKeycloak) {
     const uNamespace = Util.getUserKubeNamespace(Util.parseK8sNames(uNameKeycloak, true));
     if (uNamespace) {
-      kubeAppsUrl = `${Config.appsDashboard}/#/c/${KUBE_APPS_CLUSTER}/ns/${uNamespace}/catalog`;
+      kubeAppsUrl = `${config.appsDashboard}/#/c/${KUBE_APPS_CLUSTER}/ns/${uNamespace}/catalog`;
     }
   }
 

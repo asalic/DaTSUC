@@ -26,6 +26,14 @@ interface ExternalLinks {
     supportReportRequest: string;
 }
 
+interface Project {
+    name: string;
+    doi?: string;
+    termsConditions?: string;
+    privacyPolicy?: string;
+    favicon: string;
+}
+
 export default interface ConfigJson {
 
     appVersion: string;
@@ -36,10 +44,12 @@ export default interface ConfigJson {
     defaultLimitDatasets: number;
     defaultLimitStudies: number;
     defaultLimitTraces: number;
+    defaultLimitAccess: number;
     userAccountUrl: string;
     refreshDatasetCreate: number;
     keycloak: KeycloakOpts;
     externalLinks: ExternalLinks;
+    project: Project;
     externalServices?: ExternalService[];
     appsDashboard: string;
 

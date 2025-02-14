@@ -4,7 +4,7 @@ import { useKeycloak } from '@react-keycloak/web';
 import { Person } from "react-bootstrap-icons";
 
 
-import Config from "../../config.json";
+import config from "../../service/config";
 
 function UserInfo() {
   let {keycloak} = useKeycloak();
@@ -33,7 +33,7 @@ function UserInfo() {
       
       <Dropdown.Menu style={{"fontSize": "0.9rem", "minWidth": "2rem"}}>
 
-      <Dropdown.Item style={{"fontSize": "0.9rem"}} href={Config.userAccountUrl} key="useraccount" target="_blank" >
+      <Dropdown.Item style={{"fontSize": "0.9rem"}} href={config.userAccountUrl} key="useraccount" target="_blank" >
         User Account
       </Dropdown.Item>
       <Dropdown.Item
@@ -55,7 +55,7 @@ function UserInfo() {
 
       //     return url;
       //   }
-       const url = window.location.protocol + "//" + window.location.host + Config.basename;
+       const url = window.location.protocol + "//" + window.location.host + config.basename;
        //console.log("Logout redir url: " + url);
       // console.log(keycloak);
           keycloak.logout({

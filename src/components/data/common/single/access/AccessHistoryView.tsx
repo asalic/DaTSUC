@@ -4,7 +4,7 @@ import { CellProps, Column, useTable } from 'react-table';
 import { useKeycloak } from '@react-keycloak/web';
 import { useSearchParams } from "react-router-dom";
 
-import Config from "../../../../../config.json";
+import config from "../../../../../service/config";
 import Message from "../../../../../model/Message";
 import Util from '../../../../../Util';
 import type AccessHistory from "../../../../../model/AccessHistory";
@@ -102,7 +102,7 @@ function AccessHistoryView(props: AccessHistoryViewProps): JSX.Element {
     });
     const updSearchParams = useCallback((params: Object) => Util.updSearchParams(params, searchParams, setSearchParams), [searchParams, setSearchParams]);
     const skip = searchParams.get("skip") ? Number(searchParams.get("skip")) : 0;
-    const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : Config.defaultLimitAccess;
+    const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : config.defaultLimitAccess;
   
     const onSkipChange = useCallback((skip: number) => {
       updSearchParams({skip: skip === 0 ? null : skip});

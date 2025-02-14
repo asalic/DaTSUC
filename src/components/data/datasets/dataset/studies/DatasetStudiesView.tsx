@@ -4,7 +4,7 @@ import { CellProps, useTable } from 'react-table';
 import type { Column } from 'react-table';
 import { useKeycloak } from '@react-keycloak/web';
 
-import Config from "../../../../../config.json";
+import config from "../../../../../service/config";
 import Message from "../../../../../model/Message";
 import LoadingView from "../../../../common/LoadingView";
 import Series from "../../../../../model/Series";
@@ -109,7 +109,7 @@ function DatasetStudiesView(props: DatasetStudiesViewProps): JSX.Element {
   const updSearchParams = useCallback((params: Object) => Util.updSearchParams(params, searchParams, setSearchParams), 
     [searchParams, setSearchParams]);
   const skip = searchParams.get("skip") ? Number(searchParams.get("skip")) : 0;
-  const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : Config.defaultLimitStudies;
+  const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : config.defaultLimitStudies;
   const onSkipChange = useCallback((skip: number) => {
     console.log(skip);
     updSearchParams({skip: skip === 0 ? null : skip});
